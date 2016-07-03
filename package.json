@@ -31,6 +31,9 @@
   },
   "dependencies": {
     "express": "^4.14.0",
-    "passport": "^0.3.2"
+    "lodash": "^4.13.1",
+    "nconf": "^0.8.4",
+    "passport": "^0.3.2",
+    "winston": "^2.2.0"
   }
 }
