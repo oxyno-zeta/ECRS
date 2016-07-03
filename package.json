@@ -1,0 +1,36 @@
+{
+  "name": "crash-reporter-electron",
+  "version": "0.0.1",
+  "description": "Electron Crash Reporter Server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oxyno-zeta/crash-reporter-electron.git"
+  },
+  "keywords": [
+    "Electron",
+    "Crash Reporter",
+    "Reporter",
+    "Crash"
+  ],
+  "author": "Oxyno-zeta",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "bugs": {
+    "url": "https://github.com/oxyno-zeta/crash-reporter-electron/issues"
+  },
+  "homepage": "https://github.com/oxyno-zeta/crash-reporter-electron#readme",
+  "devDependencies": {
+    "del": "^2.2.1",
+    "gulp": "^3.9.1",
+    "gulp-bump": "^2.2.0",
+    "gulp-nodemon": "^2.1.0",
+    "run-sequence": "^1.2.2"
+  },
+  "dependencies": {
+    "express": "^4.14.0",
+    "passport": "^0.3.2"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "crash-reporter-electron",
+  "version": "0.0.1",
+  "description": "Electron Crash Reporter Server",
+  "author": "Oxyno-zeta",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "https://github.com/oxyno-zeta/crash-reporter-electron#readme"
+}
