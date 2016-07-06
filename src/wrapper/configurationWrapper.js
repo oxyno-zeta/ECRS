@@ -7,15 +7,17 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
-var nconf = require('nconf');
-var _ = require('lodash');
+const nconf = require('nconf');
+const _ = require('lodash');
+const path = require('path');
 
 // Variables
-var CONSTANTS = {
+const CONSTANTS = {
 	PORT: 'CRASH_REPORTER_PORT',
-	LOG_LEVEL: 'CRASH_REPORTER_LOG_LEVEL'
+	LOG_LEVEL: 'CRASH_REPORTER_LOG_LEVEL',
+	LOG_UPLOAD_DIR: 'CRASH_REPORTER_LOG_UPLOAD_DIR'
 };
-var LOG_LEVELS = {
+const LOG_LEVELS = {
 	DEBUG: 'debug',
 	INFO: 'info',
 	ERROR: 'error',
@@ -23,9 +25,10 @@ var LOG_LEVELS = {
 };
 
 // Default configuration
-var DEFAULT_CONFIG = {
+const DEFAULT_CONFIG = {
 	'CRASH_REPORTER_PORT': 2000,
-	'CRASH_REPORTER_LOG_LEVEL': LOG_LEVELS.INFO
+	'CRASH_REPORTER_LOG_LEVEL': LOG_LEVELS.INFO,
+	'CRASH_REPORTER_LOG_UPLOAD_DIR': path.join(process.cwd(), 'upload-logs/')
 };
 
 /**

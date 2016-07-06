@@ -7,8 +7,9 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
-var configurationWrapper = require('../wrapper/configurationWrapper');
-var configuration = configurationWrapper.getConfig();
+const configurationWrapper = require('../wrapper/configurationWrapper');
+const configuration = configurationWrapper.getConfig();
+const {CONSTANTS} = configurationWrapper;
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
@@ -16,7 +17,8 @@ var configuration = configurationWrapper.getConfig();
 
 module.exports = {
 	getPort: getPort,
-	getLogLevel: getLogLevel
+	getLogLevel: getLogLevel,
+	getLogUploadDirectory: getLogUploadDirectory
 };
 
 /* ************************************* */
@@ -30,11 +32,19 @@ module.exports = {
 /* ************************************* */
 
 /**
+ * Get log upload directory.
+ * @returns {*}
+ */
+function getLogUploadDirectory(){
+	return configuration[CONSTANTS.LOG_UPLOAD_DIR];
+}
+
+/**
  * Get Log Level.
  * @returns {*}
  */
 function getLogLevel(){
-	return configuration[configurationWrapper.CONSTANTS.LOG_LEVEL];
+	return configuration[CONSTANTS.LOG_LEVEL];
 }
 
 /**
@@ -42,7 +52,7 @@ function getLogLevel(){
  * @returns {*}
  */
 function getPort(){
-	return configuration[configurationWrapper.CONSTANTS.PORT];
+	return configuration[CONSTANTS.PORT];
 }
 
 
