@@ -7,7 +7,11 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
-var express = require('express');
+const express = require('express');
+const multer = require('multer');
+const logger = require('../../shared/logger');
+const configurationService = require('../../services/configurationService');
+const upload = multer({ dest: configurationService.getLogUploadDirectory() });
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
@@ -44,7 +48,7 @@ function exposeWithoutSecurity(){
 	var router = express.Router();
 
 	// Post crash log
-	router.post('/crash/log', postCrashLog);
+	router.post('/crash/log', upload.single('upload_file_minidump'), postCrashLog);
 
 	return router;
 }
