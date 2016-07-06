@@ -7,11 +7,12 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
-var express = require('express');
-var helmet = require('helmet');
-var api = require('./api/api');
-var configurationService = require('./services/configurationService');
-var app = express();
+const express = require('express');
+const helmet = require('helmet');
+const bodyParser = require('body-parser');
+const api = require('./api/api');
+const configurationService = require('./services/configurationService');
+const app = express();
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
@@ -41,6 +42,12 @@ function prepare(){
 
 	// Put security
 	app.use(helmet());
+
+	// Parse application/x-www-form-urlencoded
+	app.use(bodyParser.urlencoded({ extended: false }));
+
+	// Parse application/json
+	app.use(bodyParser.json());
 
 	// Put api
 	app.use(api.expose());

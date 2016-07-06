@@ -8,12 +8,12 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 
-var winston = require('winston');
-var _ = require('lodash');
-var configurationService = require('../services/configurationService');
+const winston = require('winston');
+const _ = require('lodash');
+const configurationService = require('../services/configurationService');
 
 // Configuration
-var configBase = {
+const configBase = {
 	file: {
 		filename: 'all-logs.log',
 		json: false,
@@ -26,7 +26,7 @@ var configBase = {
 };
 
 // Create logger
-var logger = new (winston.Logger)({
+const logger = new (winston.Logger)({
 	transports: [
 		new (winston.transports.Console)(_.assignIn({}, configBase.console)),
 		new winston.transports.File(_.assignIn({name: 'logs'}, configBase.file))
