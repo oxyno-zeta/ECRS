@@ -45,6 +45,7 @@ function postCrashLog(req, res){
  * @returns {*} Express Router
  */
 function exposeWithoutSecurity(){
+	logger.debug('Putting crash log without security API...');
 	var router = express.Router();
 
 	// Post crash log

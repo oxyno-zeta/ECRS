@@ -10,6 +10,7 @@
 const express = require('express');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
+const logger = require('./shared/logger');
 const api = require('./api/api');
 const configurationService = require('./services/configurationService');
 const app = express();
@@ -37,8 +38,9 @@ module.exports = {
  * Prepare server.
  */
 function prepare(){
+	logger.info('Preparing server...');
 	// Put express application in place
-	// TODO Configure express logger
+	app.use(logger.middleware.connectLogger());
 
 	// Put security
 	app.use(helmet());
@@ -57,5 +59,6 @@ function prepare(){
  * Listen server.
  */
 function listen(){
+	logger.info(`Server listening on port : ${configurationService.getPort()}`);
 	app.listen(configurationService.getPort());
 }

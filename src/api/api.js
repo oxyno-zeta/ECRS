@@ -7,8 +7,9 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
-var express = require('express');
-var crashLog = require('./crash-log/crash-log');
+const express = require('express');
+const logger = require('../shared/logger');
+const crashLog = require('./crash-log/crash-log');
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
@@ -33,6 +34,8 @@ module.exports = {
  * @return {*} Express Router
  */
 function expose(){
+	logger.debug('Putting API in place...');
+
 	var router = express.Router();
 
 	// Api without security
