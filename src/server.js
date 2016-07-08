@@ -13,6 +13,7 @@ const bodyParser = require('body-parser');
 const logger = require('./shared/logger');
 const api = require('./api/api');
 const configurationService = require('./services/configurationService');
+const initializeService = require('./services/initializeService');
 const app = express();
 
 /* ************************************* */
@@ -21,7 +22,7 @@ const app = express();
 
 module.exports = {
 	prepare: prepare,
-	listen: listen
+	listenSync: listenSync
 };
 
 /* ************************************* */
@@ -36,29 +37,42 @@ module.exports = {
 
 /**
  * Prepare server.
+ * @returns {Promise} Promise
  */
 function prepare(){
-	logger.info('Preparing server...');
-	// Put express application in place
-	app.use(logger.middleware.connectLogger());
+	return new Promise(function(resolve, reject){
+		logger.info('Initialize server...');
 
-	// Put security
-	app.use(helmet());
+		initializeService.run().then(function(){
+			logger.info('Preparing server...');
 
-	// Parse application/x-www-form-urlencoded
-	app.use(bodyParser.urlencoded({ extended: false }));
+			// Put express application in place
+			app.use(logger.middleware.connectLogger());
 
-	// Parse application/json
-	app.use(bodyParser.json());
+			// Put security
+			app.use(helmet());
 
-	// Put api
-	app.use(api.expose());
+			// Parse application/x-www-form-urlencoded
+			app.use(bodyParser.urlencoded({ extended: false }));
+
+			// Parse application/json
+			app.use(bodyParser.json());
+
+			// Put api
+			app.use(api.expose());
+
+			resolve();
+		}, function(err){
+			logger.error(err);
+			reject();
+		});
+	});
 }
 
 /**
  * Listen server.
  */
-function listen(){
+function listenSync(){
 	logger.info(`Server listening on port : ${configurationService.getPort()}`);
 	app.listen(configurationService.getPort());
 }

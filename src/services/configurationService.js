@@ -18,7 +18,8 @@ const {CONSTANTS} = configurationWrapper;
 module.exports = {
 	getPort: getPort,
 	getLogLevel: getLogLevel,
-	getLogUploadDirectory: getLogUploadDirectory
+	getLogUploadDirectory: getLogUploadDirectory,
+	getAppCrashLogDirectory: getAppCrashLogDirectory
 };
 
 /* ************************************* */
@@ -30,6 +31,14 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Get app crash logs directory.
+ * @returns {*}
+ */
+function getAppCrashLogDirectory(){
+	return configuration[CONSTANTS.LOG_APP_CRASH_DIR];
+}
 
 /**
  * Get log upload directory.

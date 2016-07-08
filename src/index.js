@@ -14,7 +14,7 @@ const server = require('./server');
 /* ************************************* */
 
 // Prepare server
-server.prepare();
-
-// Listen server
-server.listen();
+server.prepare().then(function(){
+	// Listen server
+	server.listenSync();
+});

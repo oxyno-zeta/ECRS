@@ -15,7 +15,8 @@ const path = require('path');
 const CONSTANTS = {
 	PORT: 'CRASH_REPORTER_PORT',
 	LOG_LEVEL: 'CRASH_REPORTER_LOG_LEVEL',
-	LOG_UPLOAD_DIR: 'CRASH_REPORTER_LOG_UPLOAD_DIR'
+	LOG_UPLOAD_DIR: 'CRASH_REPORTER_LOG_UPLOAD_DIR',
+	LOG_APP_CRASH_DIR: 'CRASH_REPORTER_LOG_APP_CRASH_DIR'
 };
 const LOG_LEVELS = {
 	DEBUG: 'debug',
@@ -28,7 +29,8 @@ const LOG_LEVELS = {
 const DEFAULT_CONFIG = {
 	'CRASH_REPORTER_PORT': 2000,
 	'CRASH_REPORTER_LOG_LEVEL': LOG_LEVELS.INFO,
-	'CRASH_REPORTER_LOG_UPLOAD_DIR': path.join(process.cwd(), 'upload-logs/')
+	'CRASH_REPORTER_LOG_UPLOAD_DIR': path.join(process.cwd(), 'upload-logs/'),
+	'CRASH_REPORTER_LOG_APP_CRASH_DIR': path.join(process.cwd(), 'app-crash-logs/')
 };
 
 /**
