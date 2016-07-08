@@ -15,7 +15,7 @@ const configurationService = require('../services/configurationService');
 // Configuration
 const configBase = {
 	file: {
-		filename: 'all-logs.log',
+		filename: 'server.log',
 		json: false,
 		level: configurationService.getLogLevel()
 	},
