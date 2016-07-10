@@ -40,7 +40,7 @@ function sendResponse(response, body, statusObject){
 	// Check status code
 	if (statusObject.code === 204){
 		// Debug part
-		logger.debug(`Answer: Code = ${statusCode.code}`);
+		logger.debug(`Answer: Code = ${statusObject.code}`);
 		// Send response
 		response.end();
 	}
@@ -48,7 +48,7 @@ function sendResponse(response, body, statusObject){
 		// Update body
 		body.reason = statusObject.reason;
 		// Debug part
-		logger.debug(`Answer: Code = ${statusCode.code}, Body = ${JSON.stringify(body)}`);
+		logger.debug(`Answer: Code = ${statusObject.code}, Body = ${JSON.stringify(body)}`);
 		// Send response
 		response.json(body);
 	}
