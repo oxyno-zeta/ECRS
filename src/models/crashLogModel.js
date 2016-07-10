@@ -20,7 +20,8 @@ const crashLogSchema = new Schema({
 	_companyName: String,
 	upload_file_minidump: String,
 	extra: {},
-	project: Schema.Types.ObjectId
+	project: Schema.Types.ObjectId,
+	date: { type: Date, default: Date.now }
 });
 const CrashLog = mongoose.model('CrashLog', crashLogSchema);
 
