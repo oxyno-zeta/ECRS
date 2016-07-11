@@ -14,6 +14,7 @@ const logger = require('../../shared/logger');
 /* ************************************* */
 module.exports = {
 	sendResponse: sendResponse,
+	sendTextResponse: sendTextResponse,
 	getDefaultResponseBody: getDefaultResponseBody
 };
 
@@ -26,6 +27,31 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Send text response.
+ * @param response {Object} Response
+ * @param text {String} Text
+ * @param statusObject {Object} Status object (from APICodes)
+ */
+function sendTextResponse(response, text, statusObject){
+	// Update response
+	response.status(statusObject.code);
+
+	// Check status code
+	if (statusObject.code === 204){
+		// Debug part
+		logger.debug(`Answer: Code = ${statusObject.code}`);
+		// Send response
+		response.end();
+	}
+	else {
+		// Debug part
+		logger.debug(`Answer: Code = ${statusObject.code}, Text = ${text}`);
+		// Send response
+		response.send(text);
+	}
+}
 
 /**
  * Send response.

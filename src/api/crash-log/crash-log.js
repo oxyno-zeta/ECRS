@@ -72,8 +72,7 @@ function postCrashLog(req, res){
 		// Continue function
 		function go() {
 			crashLogService.saveNewCrashLog(requestBody, project).then(function (crashLog) {
-				body = _.assignIn(body, crashLogMapper.formatToApi(crashLog));
-				APIResponse.sendResponse(res, body, APICodes.normal.CREATED);
+				APIResponse.sendTextResponse(res, crashLog._id, APICodes.normal.CREATED);
 			}, function (err) {
 				logger.error(err);
 				APIResponse.sendResponse(res, body, APICodes.serverErrors.INTERNAL_ERROR);
