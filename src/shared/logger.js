@@ -10,6 +10,7 @@
 
 const winston = require('winston');
 const _ = require('lodash');
+const moment = require('moment');
 const configurationService = require('../services/configurationService');
 
 // Configuration
@@ -17,11 +18,23 @@ const configBase = {
 	file: {
 		filename: 'server.log',
 		json: false,
-		level: configurationService.getLogLevel()
+		level: configurationService.getLogLevel(),
+		formatter: function (options) {
+			let message = (_.keys(options.meta).length !== 5) ? options.message : options.meta.stack.join('\n');
+
+			// Return string will be passed to logger.
+			return `${moment.utc().format('YYYY/MM/DD HH:mm:ss')} [${options.level.toUpperCase()}] ${message}`;
+		}
 	},
 	console: {
 		colorize: true,
-		level: configurationService.getLogLevel()
+		level: configurationService.getLogLevel(),
+		formatter: function (options) {
+			let message = (_.keys(options.meta).length !== 5) ? options.message : options.meta.stack.join('\n');
+
+			// Return string will be passed to logger.
+			return `${moment.utc().format('YYYY/MM/DD HH:mm:ss')} [${options.level.toUpperCase()}] ${message}`;
+		}
 	}
 };
 
