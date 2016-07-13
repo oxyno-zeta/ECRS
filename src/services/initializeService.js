@@ -1,5 +1,5 @@
 /*
- * Author: Alexandre Havrileck (Oxyno-zeta) 
+ * Author: Alexandre Havrileck (Oxyno-zeta)
  * Date: 08/07/16
  * Licence: See Readme
  */
@@ -9,7 +9,7 @@
 /* ************************************* */
 const fs = require('fs');
 const configurationService = require('./configurationService');
-const logger = require('../shared/logger');
+const logger = require('../shared/logger')('[InitializeService]');
 const databaseService = require('./databaseService');
 
 /* ************************************* */
@@ -29,18 +29,18 @@ module.exports = {
  * @param path {String} Path to create
  * @returns {Promise} Promise
  */
-function createDirectory(path){
-	return new Promise(function(resolve, reject){
+function createDirectory(path) {
+	return new Promise(function (resolve, reject) {
 		logger.debug(`Create directory: Check if directory "${path}" exists`);
-		fs.exists(path, function(exists){
-			if (exists){
+		fs.exists(path, function (exists) {
+			if (exists) {
 				// Already exists
 				resolve();
 			}
 			else {
 				logger.debug(`Create directory: Create directory "${path}"`);
-				fs.mkdir(path, function(err){
-					if (err){
+				fs.mkdir(path, function (err) {
+					if (err) {
 						reject(err);
 					}
 					else {
@@ -60,8 +60,8 @@ function createDirectory(path){
  * Run initialize.
  * @returns {Promise} Promise
  */
-function run(){
-	return new Promise(function(resolve, reject){
+function run() {
+	return new Promise(function (resolve, reject) {
 		logger.debug('Run initialize service');
 
 		// Promise storage

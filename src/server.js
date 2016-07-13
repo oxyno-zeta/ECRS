@@ -1,5 +1,5 @@
 /*
- * Author: Alexandre Havrileck (Oxyno-zeta) 
+ * Author: Alexandre Havrileck (Oxyno-zeta)
  * Date: 05/07/16
  * Licence: See Readme
  */
@@ -10,7 +10,7 @@
 const express = require('express');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
-const logger = require('./shared/logger');
+const logger = require('./shared/logger')('[Server]');
 const api = require('./api/api');
 const configurationService = require('./services/configurationService');
 const initializeService = require('./services/initializeService');
@@ -39,11 +39,11 @@ module.exports = {
  * Prepare server.
  * @returns {Promise} Promise
  */
-function prepare(){
-	return new Promise(function(resolve, reject){
+function prepare() {
+	return new Promise(function (resolve, reject) {
 		logger.info('Initialize server...');
 
-		initializeService.run().then(function(){
+		initializeService.run().then(function () {
 			logger.info('Preparing server...');
 
 			// Put express application in place
@@ -53,7 +53,7 @@ function prepare(){
 			app.use(helmet());
 
 			// Parse application/x-www-form-urlencoded
-			app.use(bodyParser.urlencoded({ extended: false }));
+			app.use(bodyParser.urlencoded({extended: false}));
 
 			// Parse application/json
 			app.use(bodyParser.json());
@@ -62,7 +62,7 @@ function prepare(){
 			app.use(api.expose());
 
 			resolve();
-		}, function(err){
+		}, function (err) {
 			logger.error(err);
 			reject();
 		});
@@ -72,7 +72,7 @@ function prepare(){
 /**
  * Listen server.
  */
-function listenSync(){
+function listenSync() {
 	logger.info(`Server listening on port : ${configurationService.getPort()}`);
 	app.listen(configurationService.getPort());
 }

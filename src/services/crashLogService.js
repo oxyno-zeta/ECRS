@@ -1,5 +1,5 @@
 /*
- * Author: Alexandre Havrileck (Oxyno-zeta) 
+ * Author: Alexandre Havrileck (Oxyno-zeta)
  * Date: 09/07/16
  * Licence: See Readme
  */
@@ -7,7 +7,7 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
-const logger = require('../shared/logger');
+const logger = require('../shared/logger')('[CrashLogService]');
 const crashLogMapper = require('../mappers/crashLogMapper');
 const crashLogDao = require('../dao/crashLogDao');
 const projectDao = require('../dao/projectDao');
@@ -37,7 +37,7 @@ module.exports = {
  * @param id {String} id
  * @returns {Promise} Promise
  */
-function findById(id){
+function findById(id) {
 	return crashLogDao.findById(id);
 }
 
@@ -46,7 +46,7 @@ function findById(id){
  * @param crashLogObject {Object} CrashLog Object
  * @returns {Promise} Promise
  */
-function save(crashLogObject){
+function save(crashLogObject) {
 	return crashLogDao.save(crashLogObject);
 }
 
@@ -56,8 +56,8 @@ function save(crashLogObject){
  * @param projectObject
  * @returns {Promise}
  */
-function saveNewCrashLog(crashLogApiData, projectObject){
-	return new Promise(function(resolve, reject){
+function saveNewCrashLog(crashLogApiData, projectObject) {
+	return new Promise(function (resolve, reject) {
 		// Build CrashLog object
 		let crashLog = crashLogMapper.build(crashLogApiData);
 
@@ -71,9 +71,9 @@ function saveNewCrashLog(crashLogApiData, projectObject){
 		let promises = [];
 		promises.push(crashLogDao.save(crashLog));
 		promises.push(projectDao.save(projectObject));
-		Promise.all(promises).then(function([crashLogSaved]){
+		Promise.all(promises).then(function ([crashLogSaved]) {
 			resolve(crashLogSaved);
-		}, function(err){
+		}, function (err) {
 			logger.error(err);
 			reject(err);
 		});

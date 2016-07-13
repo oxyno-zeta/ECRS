@@ -1,5 +1,5 @@
 /*
- * Author: Alexandre Havrileck (Oxyno-zeta) 
+ * Author: Alexandre Havrileck (Oxyno-zeta)
  * Date: 05/07/16
  * Licence: See Readme
  */
@@ -8,7 +8,7 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 const express = require('express');
-const logger = require('../shared/logger');
+const logger = require('../shared/logger')('[API]');
 const crashLog = require('./crash-log/crash-log');
 
 /* ************************************* */
@@ -33,7 +33,7 @@ module.exports = {
  * Expose Api.
  * @return {*} Express Router
  */
-function expose(){
+function expose() {
 	logger.debug('Putting API in place...');
 
 	var router = express.Router();

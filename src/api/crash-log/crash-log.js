@@ -1,5 +1,5 @@
 /*
- * Author: Alexandre Havrileck (Oxyno-zeta) 
+ * Author: Alexandre Havrileck (Oxyno-zeta)
  * Date: 05/07/16
  * Licence: See Readme
  */
@@ -12,14 +12,14 @@ const path = require('path');
 const express = require('express');
 const multer = require('multer');
 const _ = require('lodash');
-const logger = require('../../shared/logger');
+const logger = require('../../shared/logger')('[CrashLog API]');
 const APIResponse = require('../core/APIResponse');
 const APICodes = require('../core/APICodes');
 const configurationService = require('../../services/configurationService');
 const crashLogService = require('../../services/crashLogService');
 const projectService = require('../../services/projectService');
 const crashLogMapper = require('../../mappers/crashLogMapper');
-const upload = multer({ dest: configurationService.getLogUploadDirectory() });
+const upload = multer({dest: configurationService.getLogUploadDirectory()});
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
@@ -40,13 +40,13 @@ module.exports = {
  * @param req {Object} Request
  * @param res {Object} Response
  */
-function postCrashLog(req, res){
+function postCrashLog(req, res) {
 	// Get default body
 	let body = APIResponse.getDefaultResponseBody();
 	// Get project Id
 	let projectId = req.params.projectId;
 	// Check if project id exists
-	if (_.isUndefined(projectId) || _.isNull(projectId)){
+	if (_.isUndefined(projectId) || _.isNull(projectId)) {
 		APIResponse.sendResponse(res, body, APICodes.clientErrors.BAD_REQUEST);
 		// Stop here
 		return;
@@ -55,7 +55,7 @@ function postCrashLog(req, res){
 	logger.debug(`Project Id : ${projectId}`);
 
 	// Find Project by id
-	projectService.findById(projectId).then(function(project){
+	projectService.findById(projectId).then(function (project) {
 		let file = req.file;
 		// Create file object if not exists
 		if (_.isUndefined(file) || _.isNull(file)) {
@@ -110,7 +110,7 @@ function postCrashLog(req, res){
 		else {
 			go();
 		}
-	}, function(err){
+	}, function (err) {
 		logger.error(err);
 		// Send response
 		APIResponse.sendResponse(res, body, APICodes.clientErrors.NOT_FOUND);
@@ -125,7 +125,7 @@ function postCrashLog(req, res){
  * Expose API without security.
  * @returns {*} Express Router
  */
-function exposeWithoutSecurity(){
+function exposeWithoutSecurity() {
 	logger.debug('Putting crash log without security API...');
 	var router = express.Router();
 

@@ -1,5 +1,5 @@
 /*
- * Author: Alexandre Havrileck (Oxyno-zeta) 
+ * Author: Alexandre Havrileck (Oxyno-zeta)
  * Date: 09/07/16
  * Licence: See Readme
  */
@@ -7,7 +7,7 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
-const logger = require('../../shared/logger');
+const logger = require('../../shared/logger')('[Core API]');
 
 /* ************************************* */
 /* ********       EXPORTS       ******** */
@@ -34,12 +34,12 @@ module.exports = {
  * @param text {String} Text
  * @param statusObject {Object} Status object (from APICodes)
  */
-function sendTextResponse(response, text, statusObject){
+function sendTextResponse(response, text, statusObject) {
 	// Update response
 	response.status(statusObject.code);
 
 	// Check status code
-	if (statusObject.code === 204){
+	if (statusObject.code === 204) {
 		// Debug part
 		logger.debug(`Answer: Code = ${statusObject.code}`);
 		// Send response
@@ -59,12 +59,12 @@ function sendTextResponse(response, text, statusObject){
  * @param body {Object} Body response
  * @param statusObject {Object} Status object (from APICodes)
  */
-function sendResponse(response, body, statusObject){
+function sendResponse(response, body, statusObject) {
 	// Update response
 	response.status(statusObject.code);
 
 	// Check status code
-	if (statusObject.code === 204){
+	if (statusObject.code === 204) {
 		// Debug part
 		logger.debug(`Answer: Code = ${statusObject.code}`);
 		// Send response
@@ -84,7 +84,7 @@ function sendResponse(response, body, statusObject){
  * Return default response body.
  * @returns {{reason: string}}
  */
-function getDefaultResponseBody(){
+function getDefaultResponseBody() {
 	return {
 		reason: ''
 	};

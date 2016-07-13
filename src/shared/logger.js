@@ -1,5 +1,5 @@
 /*
- * Author: Alexandre Havrileck (Oxyno-zeta) 
+ * Author: Alexandre Havrileck (Oxyno-zeta)
  * Date: 03/07/16
  * Licence: See Readme
  */
@@ -41,21 +41,33 @@ const logger = new (winston.Logger)({
 /* ********        EXPORTS      ******** */
 /* ************************************* */
 
-module.exports = {
-	middleware: {
-		connectLogger: connectLogger
-	},
-	debug: logger.debug,
-	info: logger.info,
-	error: logger.error,
-	warn: logger.warn
+module.exports = function (prefix = '') {
+	return {
+		middleware: {
+			connectLogger: connectLogger
+		},
+		debug: logForger(prefix, logger.debug),
+		info: logForger(prefix, logger.info),
+		error: logForger(prefix, logger.error),
+		warn: logForger(prefix, logger.warn)
+	};
 };
 
 /* ************************************* */
 /* ********  PRIVATE FUNCTIONS  ******** */
 /* ************************************* */
 
-
+/**
+ * Log forger.
+ * @param prefix {String} Log prefix
+ * @param logFunction {Function} Log function
+ * @returns {Function}
+ */
+function logForger(prefix, logFunction) {
+	return function (text) {
+		logFunction(`${prefix} ${text}`);
+	}
+}
 
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
@@ -65,9 +77,8 @@ module.exports = {
  * Connect Logger.
  * @returns {Function} Logger Middleware
  */
-function connectLogger(){
-	// Example taken from log4js
-	return function(req, res, next) {
+function connectLogger() {
+	return function (req, res, next) {
 
 		// Wait for finish to log
 		res.on('finish', function () {
