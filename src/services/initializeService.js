@@ -10,6 +10,7 @@
 const fs = require('fs');
 const configurationService = require('./configurationService');
 const logger = require('../shared/logger');
+const databaseService = require('./databaseService');
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
@@ -69,6 +70,7 @@ function run(){
 		// Add promise
 		promises.push(createDirectory(configurationService.getAppCrashLogDirectory()));
 		promises.push(createDirectory(configurationService.getLogUploadDirectory()));
+		promises.push(databaseService.initDatabase());
 
 		Promise.all(promises).then(resolve, reject);
 	});

@@ -19,7 +19,12 @@ module.exports = {
 	getPort: getPort,
 	getLogLevel: getLogLevel,
 	getLogUploadDirectory: getLogUploadDirectory,
-	getAppCrashLogDirectory: getAppCrashLogDirectory
+	getAppCrashLogDirectory: getAppCrashLogDirectory,
+	database: {
+		getUrl: getUrl,
+		getLogin: getLogin,
+		getPassword: getPassword
+	}
 };
 
 /* ************************************* */
@@ -31,6 +36,30 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Get database password.
+ * @returns {*}
+ */
+function getPassword(){
+	return configuration[CONSTANTS.DATABASE_PASSWORD];
+}
+
+/**
+ * Get database login.
+ * @returns {*}
+ */
+function getLogin(){
+	return configuration[CONSTANTS.DATABASE_LOGIN];
+}
+
+/**
+ * Get database url.
+ * @returns {*}
+ */
+function getUrl(){
+	return configuration[CONSTANTS.DATABASE_URL];
+}
 
 /**
  * Get app crash logs directory.
