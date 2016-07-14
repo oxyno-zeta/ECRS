@@ -11,7 +11,7 @@ const logger = require('../shared/logger')('[CrashLogService]');
 const crashLogMapper = require('../mappers/crashLogMapper');
 const crashLogDao = require('../dao/crashLogDao');
 const projectDao = require('../dao/projectDao');
-const configurationService = require('./configurationService');
+const configurationService = require('./core/configurationService');
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */

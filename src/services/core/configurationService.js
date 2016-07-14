@@ -1,5 +1,5 @@
 /*
- * Author: Alexandre Havrileck (Oxyno-zeta) 
+ * Author: Alexandre Havrileck (Oxyno-zeta)
  * Date: 03/07/16
  * Licence: See Readme
  */
@@ -7,7 +7,7 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
-const configurationWrapper = require('../wrapper/configurationWrapper');
+const configurationWrapper = require('../../wrapper/configurationWrapper');
 const configuration = configurationWrapper.getConfig();
 const {CONSTANTS} = configurationWrapper;
 
@@ -41,7 +41,7 @@ module.exports = {
  * Get database password.
  * @returns {*}
  */
-function getPassword(){
+function getPassword() {
 	return configuration[CONSTANTS.DATABASE_PASSWORD];
 }
 
@@ -49,7 +49,7 @@ function getPassword(){
  * Get database login.
  * @returns {*}
  */
-function getLogin(){
+function getLogin() {
 	return configuration[CONSTANTS.DATABASE_LOGIN];
 }
 
@@ -57,7 +57,7 @@ function getLogin(){
  * Get database url.
  * @returns {*}
  */
-function getUrl(){
+function getUrl() {
 	return configuration[CONSTANTS.DATABASE_URL];
 }
 
@@ -65,7 +65,7 @@ function getUrl(){
  * Get app crash logs directory.
  * @returns {*}
  */
-function getAppCrashLogDirectory(){
+function getAppCrashLogDirectory() {
 	return configuration[CONSTANTS.LOG_APP_CRASH_DIR];
 }
 
@@ -73,7 +73,7 @@ function getAppCrashLogDirectory(){
  * Get log upload directory.
  * @returns {*}
  */
-function getLogUploadDirectory(){
+function getLogUploadDirectory() {
 	return configuration[CONSTANTS.LOG_UPLOAD_DIR];
 }
 
@@ -81,7 +81,7 @@ function getLogUploadDirectory(){
  * Get Log Level.
  * @returns {*}
  */
-function getLogLevel(){
+function getLogLevel() {
 	return configuration[CONSTANTS.LOG_LEVEL];
 }
 
@@ -89,7 +89,7 @@ function getLogLevel(){
  * Get Server Port.
  * @returns {*}
  */
-function getPort(){
+function getPort() {
 	return configuration[CONSTANTS.PORT];
 }
 

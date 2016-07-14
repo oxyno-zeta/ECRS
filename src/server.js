@@ -12,8 +12,8 @@ const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const logger = require('./shared/logger')('[Server]');
 const api = require('./api/api');
-const configurationService = require('./services/configurationService');
-const initializeService = require('./services/initializeService');
+const configurationService = require('./services/core/configurationService');
+const initializeService = require('./services/core/initializeService');
 const app = express();
 
 /* ************************************* */

@@ -11,7 +11,7 @@
 const winston = require('winston');
 const _ = require('lodash');
 const moment = require('moment');
-const configurationService = require('../services/configurationService');
+const configurationService = require('../services/core/configurationService');
 
 // Configuration
 const configBase = {

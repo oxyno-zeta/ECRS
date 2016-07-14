@@ -8,7 +8,7 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 var mongoose = require('mongoose');
-var logger = require('../shared/logger')('[DatabaseService]');
+var logger = require('../../shared/logger')('[DatabaseService]');
 var configurationService = require('./configurationService');
 
 /* ************************************* */

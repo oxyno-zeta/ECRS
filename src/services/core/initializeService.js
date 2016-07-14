@@ -9,7 +9,7 @@
 /* ************************************* */
 const fs = require('fs');
 const configurationService = require('./configurationService');
-const logger = require('../shared/logger')('[InitializeService]');
+const logger = require('../../shared/logger')('[InitializeService]');
 const databaseService = require('./databaseService');
 
 /* ************************************* */
