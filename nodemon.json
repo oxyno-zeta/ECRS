@@ -13,11 +13,14 @@
   "env": {
     "CRASH_REPORTER_LOG_LEVEL": "debug",
     "CRASH_REPORTER_PORT": 2000,
-    "CRASH_REPORTER_DATABASE_URL": "mongodb://localhost:27017/crash-db"
+    "CRASH_REPORTER_DATABASE_URL": "mongodb://localhost:27017/crash-db",
+    "CRASH_REPORTER_AUTH_JWT_SECRET": "aqnzr0pD2c0yv1o*0{C6!99^aQ*1fk<4|*][4Jh2X*jK4)N2sXIY8Wxj/1YWGr>"
   },
   "script": "src/index.js",
   "options": {
-    "extensions": ["js"],
+    "extensions": [
+      "js"
+    ],
     "exec": "node"
   }
 }

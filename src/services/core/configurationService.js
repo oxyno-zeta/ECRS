@@ -24,6 +24,14 @@ module.exports = {
 		getUrl: getUrl,
 		getLogin: getLogin,
 		getPassword: getPassword
+	},
+	auth: {
+		getJwtSecret: getJwtSecret,
+		github: {
+			isEnabled: isGithubEnabled,
+			getClientId: getGithubClientId,
+			getClientSecret: getGithubClientSecret
+		}
 	}
 };
 
@@ -36,6 +44,38 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Get Jwt Secret.
+ * @returns {*}
+ */
+function getJwtSecret() {
+	return configuration[CONSTANTS.JWT_SECRET];
+}
+
+/**
+ * Get Github Client Secret.
+ * @returns {*}
+ */
+function getGithubClientSecret() {
+	return configuration[CONSTANTS.GITHUB_CLIENT_SECRET];
+}
+
+/**
+ * Get Github Client id.
+ * @returns {*}
+ */
+function getGithubClientId() {
+	return configuration[CONSTANTS.GITHUB_CLIENT_ID];
+}
+
+/**
+ * Is Github enabled.
+ * @returns {*}
+ */
+function isGithubEnabled() {
+	return configuration[CONSTANTS.GITHUB_OAUTH_ENABLED];
+}
 
 /**
  * Get database password.

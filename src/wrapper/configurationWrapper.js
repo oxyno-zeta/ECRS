@@ -1,5 +1,5 @@
 /*
- * Author: Alexandre Havrileck (Oxyno-zeta) 
+ * Author: Alexandre Havrileck (Oxyno-zeta)
  * Date: 03/07/16
  * Licence: See Readme
  */
@@ -19,7 +19,11 @@ const CONSTANTS = {
 	LOG_APP_CRASH_DIR: 'CRASH_REPORTER_LOG_APP_CRASH_DIR',
 	DATABASE_URL: 'CRASH_REPORTER_DATABASE_URL',
 	DATABASE_LOGIN: 'CRASH_REPORTER_DATABASE_LOGIN',
-	DATABASE_PASSWORD: 'CRASH_REPORTER_DATABASE_PASSWORD'
+	DATABASE_PASSWORD: 'CRASH_REPORTER_DATABASE_PASSWORD',
+	GITHUB_OAUTH_ENABLED: 'CRASH_REPORTER_AUTH_GITHUB_OAUTH_ENABLED',
+	GITHUB_CLIENT_ID: 'CRASH_REPORTER_AUTH_GITHUB_CLIENT_ID',
+	GITHUB_CLIENT_SECRET: 'CRASH_REPORTER_AUTH_GITHUB_CLIENT_SECRET',
+	JWT_SECRET: 'CRASH_REPORTER_AUTH_JWT_SECRET'
 };
 const LOG_LEVELS = {
 	DEBUG: 'debug',
@@ -36,7 +40,11 @@ const DEFAULT_CONFIG = {
 	'CRASH_REPORTER_LOG_APP_CRASH_DIR': path.join(process.cwd(), 'app-crash-logs/'),
 	'CRASH_REPORTER_DATABASE_URL': '',
 	'CRASH_REPORTER_DATABASE_LOGIN': '',
-	'CRASH_REPORTER_DATABASE_PASSWORD': ''
+	'CRASH_REPORTER_DATABASE_PASSWORD': '',
+	'CRASH_REPORTER_AUTH_GITHUB_OAUTH_ENABLED': true,
+	'CRASH_REPORTER_AUTH_GITHUB_CLIENT_ID': '',
+	'CRASH_REPORTER_AUTH_GITHUB_CLIENT_SECRET': '',
+	'CRASH_REPORTER_AUTH_JWT_SECRET': ''
 };
 
 /**
@@ -77,24 +85,27 @@ module.exports = {
  * Get configuration.
  * @returns {{}}
  */
-function getConfig(){
+function getConfig() {
 	var config = {};
 
 	var key;
-	for (key in DEFAULT_CONFIG){
+	for (key in DEFAULT_CONFIG) {
 		if (DEFAULT_CONFIG.hasOwnProperty(key)) {
 			config[key] = nconf.get(key);
 		}
 	}
 
 	// Valid log level
-	if (!_.includes(LOG_LEVELS, config[CONSTANTS.LOG_LEVEL])){
+	if (!_.includes(LOG_LEVELS, config[CONSTANTS.LOG_LEVEL])) {
 		config[CONSTANTS.LOG_LEVEL] = LOG_LEVELS.INFO;
 	}
 
 	// Change type if necessary
-	if (!_.isInteger(config[CONSTANTS.PORT])){
+	if (!_.isInteger(config[CONSTANTS.PORT])) {
 		config[CONSTANTS.PORT] = _.parseInt(config[CONSTANTS.PORT]);
+	}
+	if (!_.isBoolean(config[CONSTANTS.GITHUB_OAUTH_ENABLED])) {
+		config[CONSTANTS.GITHUB_OAUTH_ENABLED] = (config[CONSTANTS.GITHUB_OAUTH_ENABLED === 'true']);
 	}
 
 	return config;
