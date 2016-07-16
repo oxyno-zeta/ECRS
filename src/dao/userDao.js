@@ -1,6 +1,6 @@
 /*
  * Author: Alexandre Havrileck (Oxyno-zeta)
- * Date: 15/07/16
+ * Date: 16/07/16
  * Licence: See Readme
  */
 
@@ -13,8 +13,8 @@ const {User} = require('../models/userModel');
 /* ********       EXPORTS       ******** */
 /* ************************************* */
 module.exports = {
-	formatToApi: formatToApi,
-	build: build
+	save: save,
+	findFromGithubId: findFromGithubId
 };
 
 /* ************************************* */
@@ -28,28 +28,19 @@ module.exports = {
 /* ************************************* */
 
 /**
- * Build.
- * @param data {Object} User data
+ * Find From Github id.
+ * @param githubId {String} Github id
  * @returns {*}
  */
-function build(data) {
-	return new User(data);
+function findFromGithubId(githubId) {
+	return User.findOne({'github.id': githubId});
 }
 
 /**
- * Format to api.
- * @param userInstance
- * @returns {{id: *, username: (*|string), email: (*|Person.email|{type, required, index}), github: {id: *, profileUrl: *}}}
+ * Save.
+ * @param userInstance {User} User Instance
+ * @returns {*|Promise}
  */
-function formatToApi(userInstance) {
-	return {
-		id: userInstance._id,
-		username: userInstance.username,
-		email: userInstance.email,
-		github: {
-			id: userInstance.github.id,
-			profileUrl: userInstance.github.profileUrl
-		}
-	}
+function save(userInstance) {
+	return userInstance.save();
 }
-
