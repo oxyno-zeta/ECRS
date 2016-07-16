@@ -10,6 +10,7 @@
 const express = require('express');
 const logger = require('../shared/logger')('[API]');
 const crashLog = require('./crash-log/crash-log');
+const apiAuth = require('./core/apiAuth');
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
@@ -37,6 +38,9 @@ function expose() {
 	logger.debug('Putting API in place...');
 
 	var router = express.Router();
+
+	// Add auth
+	router.use('/api/v1/', apiAuth.getRouter());
 
 	// Api without security
 	router.use('/api/v1/', crashLog.withoutSecurity.expose());

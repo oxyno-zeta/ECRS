@@ -10,10 +10,12 @@
 const express = require('express');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const logger = require('./shared/logger')('[Server]');
 const api = require('./api/api');
 const configurationService = require('./services/core/configurationService');
 const initializeService = require('./services/core/initializeService');
+const apiSecurity = require('./api/core/apiSecurity');
 const app = express();
 
 /* ************************************* */
@@ -57,6 +59,12 @@ function prepare() {
 
 			// Parse application/json
 			app.use(bodyParser.json());
+
+			// Cookie parser
+			app.use(cookieParser());
+
+			// Application security
+			app.use(apiSecurity.middleware.securityToken());
 
 			// Put api
 			app.use(api.expose());

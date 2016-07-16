@@ -11,6 +11,7 @@ const fs = require('fs');
 const configurationService = require('./configurationService');
 const logger = require('../../shared/logger')('[InitializeService]');
 const databaseService = require('./databaseService');
+const apiAuth = require('../../api/core/apiAuth');
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
@@ -71,6 +72,7 @@ function run() {
 		promises.push(createDirectory(configurationService.getAppCrashLogDirectory()));
 		promises.push(createDirectory(configurationService.getLogUploadDirectory()));
 		promises.push(databaseService.initDatabase());
+		promises.push(apiAuth.initAuth());
 
 		Promise.all(promises).then(resolve, reject);
 	});
