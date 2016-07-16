@@ -105,7 +105,7 @@ function getConfig() {
 		config[CONSTANTS.PORT] = _.parseInt(config[CONSTANTS.PORT]);
 	}
 	if (!_.isBoolean(config[CONSTANTS.GITHUB_OAUTH_ENABLED])) {
-		config[CONSTANTS.GITHUB_OAUTH_ENABLED] = (config[CONSTANTS.GITHUB_OAUTH_ENABLED === 'true']);
+		config[CONSTANTS.GITHUB_OAUTH_ENABLED] = (config[CONSTANTS.GITHUB_OAUTH_ENABLED] === 'true');
 	}
 
 	return config;
