@@ -5,6 +5,11 @@
  */
 
 /* ************************************* */
+/* ********       REQUIRE       ******** */
+/* ************************************* */
+const _ = require('lodash');
+
+/* ************************************* */
 /* ********      CONSTANTS      ******** */
 /* ************************************* */
 
@@ -80,6 +85,27 @@ const SERVER_ERROR = {
 	NOT_EXTENDED: {code: '510', reason: 'Not Extended'},
 	NETWORK_AUTHENTICATION_REQUIRED: {code: '511', reason: 'Network Authentication Required'}
 };
+const ALL_BY_CODES = {};
+
+/* ************************************* */
+/* ********         RUN         ******** */
+/* ************************************* */
+
+_.forEach(INFORMATIONAL, function (obj) {
+	ALL_BY_CODES[obj.code] = obj;
+});
+_.forEach(SUCCESS, function (obj) {
+	ALL_BY_CODES[obj.code] = obj;
+});
+_.forEach(REDIRECTION, function (obj) {
+	ALL_BY_CODES[obj.code] = obj;
+});
+_.forEach(CLIENT_ERROR, function (obj) {
+	ALL_BY_CODES[obj.code] = obj;
+});
+_.forEach(SERVER_ERROR, function (obj) {
+	ALL_BY_CODES[obj.code] = obj;
+});
 
 /* ************************************* */
 /* ********       EXPORTS       ******** */
@@ -90,7 +116,8 @@ module.exports = {
 	SUCCESS: SUCCESS,
 	REDIRECTION: REDIRECTION,
 	CLIENT_ERROR: CLIENT_ERROR,
-	SERVER_ERROR: SERVER_ERROR
+	SERVER_ERROR: SERVER_ERROR,
+	ALL_BY_CODES: ALL_BY_CODES
 };
 
 /* ************************************* */
