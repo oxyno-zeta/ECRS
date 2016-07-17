@@ -47,7 +47,7 @@ function postCrashLog(req, res) {
 	let projectId = req.params.projectId;
 	// Check if project id exists
 	if (_.isUndefined(projectId) || _.isNull(projectId)) {
-		APIResponse.sendResponse(res, body, APICodes.clientErrors.BAD_REQUEST);
+		APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.BAD_REQUEST);
 		// Stop here
 		return;
 	}
@@ -59,7 +59,7 @@ function postCrashLog(req, res) {
 		// Check if project exists in database
 		if (_.isUndefined(project) || _.isNull(project)) {
 			// Send response
-			APIResponse.sendResponse(res, body, APICodes.clientErrors.NOT_FOUND);
+			APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
 			return;
 		}
 
@@ -79,10 +79,10 @@ function postCrashLog(req, res) {
 		// Continue function
 		function go() {
 			crashLogService.saveNewCrashLog(requestBody, project).then(function (crashLog) {
-				APIResponse.sendTextResponse(res, crashLog._id, APICodes.normal.CREATED);
+				APIResponse.sendTextResponse(res, crashLog._id, APICodes.SUCCESS.CREATED);
 			}, function (err) {
 				logger.error(err);
-				APIResponse.sendResponse(res, body, APICodes.serverErrors.INTERNAL_ERROR);
+				APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 			});
 		}
 
@@ -100,7 +100,7 @@ function postCrashLog(req, res) {
 
 					fs.rename(uploadFilePath, newFilePath, function (err) {
 						if (err) {
-							APIResponse.sendResponse(res, body, APICodes.serverErrors.INTERNAL_ERROR);
+							APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 						}
 						else {
 							logger.debug('File moved => Continue');
@@ -120,7 +120,7 @@ function postCrashLog(req, res) {
 	}, function (err) {
 		logger.error(err);
 		// Send response
-		APIResponse.sendResponse(res, body, APICodes.serverErrors.INTERNAL_ERROR);
+		APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 	});
 }
 
