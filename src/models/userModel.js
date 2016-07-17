@@ -11,10 +11,19 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 // Variables
+const roles = ['admin', 'normal'];
+const rolesObj = {
+	admin: 'admin',
+	normal: 'normal'
+};
 const UserSchema = new Schema({
 	username: String,
 	email: String,
 	photo: String,
+	role: {
+		type: String,
+		enum: roles
+	},
 	projects: [Schema.Types.ObjectId], // Project ids
 	local: {
 		hash: String,
@@ -33,6 +42,7 @@ const User = mongoose.model('User', UserSchema);
 /* ********       EXPORTS       ******** */
 /* ************************************* */
 module.exports = {
+	rolesObj: rolesObj,
 	User: User
 };
 

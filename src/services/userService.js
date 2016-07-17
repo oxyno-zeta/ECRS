@@ -9,6 +9,7 @@
 /* ************************************* */
 const _ = require('lodash');
 const userMapper = require('../mappers/userMapper');
+const {rolesObj} = require('../models/userModel');
 const userDao = require('../dao/userDao');
 const logger = require('../shared/logger')('[UserService]');
 
@@ -42,6 +43,7 @@ function saveOrUpdateFromGithub(userData) {
 				// Doesn't exists => create new one
 				let userDataForBuilder = {
 					username: userData.username,
+					role: rolesObj.normal,
 					github: {
 						id: userData.githubId,
 						accessToken: userData.accessToken,
@@ -66,7 +68,10 @@ function saveOrUpdateFromGithub(userData) {
 				result.github.accessToken = userData.accessToken;
 				result.github.id = userData.githubId;
 				result.github.profileUrl = userData.profileUrl;
-				result.username = userData.username;
+
+				if (_.isUndefined(userData.username) || _.isNull(userData.username)) {
+					result.username = userData.username;
+				}
 
 				// Update email
 				if (_.isUndefined(userData.emails) && _.isArray(userData.emails) && userData.emails.length !== 0) {
