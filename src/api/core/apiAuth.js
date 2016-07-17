@@ -15,11 +15,20 @@ const configurationService = require('../../services/core/configurationService')
 const apiSecurity = require('./apiSecurity');
 const userService = require('../../services/userService');
 const userMapper = require('../../mappers/userMapper');
+// Variables
+const urls = {
+	github: {
+		main: '/auth/github',
+		callback: '/auth/github/callback'
+	}
+};
+const pathsWithoutSecurity = [urls.github.main, urls.github.callback];
 
 /* ************************************* */
 /* ********       EXPORTS       ******** */
 /* ************************************* */
 module.exports = {
+	pathsWithoutSecurity: pathsWithoutSecurity,
 	initAuth: initAuth,
 	getRouter: getRouter
 };
@@ -61,10 +70,10 @@ function getRouter() {
 	router.use(passport.initialize());
 
 	if (configurationService.auth.github.isEnabled()) {
-		router.get('/auth/github',
+		router.get(urls.github.main,
 			passport.authenticate('github', {scope: ['user:email']}));
 
-		router.get('/auth/github/callback',
+		router.get(urls.github.callback,
 			passport.authenticate('github', {failureRedirect: '/auth/github'}), githubCallback);
 	}
 

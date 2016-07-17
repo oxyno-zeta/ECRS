@@ -40,10 +40,16 @@ module.exports = {
 function getPathsWithoutSecurity() {
 	let pathsWithoutSecurity = [];
 	// Prepare
+	// Crash log api
 	let tmp1 = crashLog.pathsWithoutSecurity.map(function (item) {
 		return urlJoin(prefix, item);
 	});
 	pathsWithoutSecurity = pathsWithoutSecurity.concat(tmp1);
+	// Auth api
+	let tmp2 = apiAuth.pathsWithoutSecurity.map(function (item) {
+		return urlJoin(prefix, item);
+	});
+	pathsWithoutSecurity = pathsWithoutSecurity.concat(tmp2);
 
 	// Result
 	return pathsWithoutSecurity;
