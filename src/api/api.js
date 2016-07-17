@@ -8,15 +8,18 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 const express = require('express');
+const urlJoin = require('url-join');
 const logger = require('../shared/logger')('[API]');
 const crashLog = require('./crash-log/crash-log');
 const apiAuth = require('./core/apiAuth');
+const prefix = '/api/v1/';
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
 /* ************************************* */
 
 module.exports = {
+	getPathsWithoutSecurity: getPathsWithoutSecurity,
 	expose: expose
 };
 
@@ -31,6 +34,22 @@ module.exports = {
 /* ************************************* */
 
 /**
+ * Get paths without security.
+ * @returns {Array}
+ */
+function getPathsWithoutSecurity() {
+	let pathsWithoutSecurity = [];
+	// Prepare
+	let tmp1 = crashLog.pathsWithoutSecurity.map(function (item) {
+		return urlJoin(prefix, item);
+	});
+	pathsWithoutSecurity = pathsWithoutSecurity.concat(tmp1);
+
+	// Result
+	return pathsWithoutSecurity;
+}
+
+/**
  * Expose Api.
  * @return {*} Express Router
  */
@@ -40,10 +59,10 @@ function expose() {
 	var router = express.Router();
 
 	// Add auth
-	router.use('/api/v1/', apiAuth.getRouter());
+	router.use(prefix, apiAuth.getRouter());
 
 	// Api without security
-	router.use('/api/v1/', crashLog.withoutSecurity.expose());
+	router.use(prefix, crashLog.expose());
 
 	return router;
 }

@@ -43,9 +43,10 @@ function encode(data, options = {}) {
 
 /**
  * Security Token.
+ * @param pathsWithoutSecurity {Array} Paths Without Security
  * @returns {*}
  */
-function securityToken() {
+function securityToken(pathsWithoutSecurity) {
 	return expressJwt({
 		secret: configurationService.auth.getJwtSecret(),
 		getToken: function (req) {
@@ -56,5 +57,5 @@ function securityToken() {
 			}
 			return null;
 		}
-	});
+	}).unless({path: pathsWithoutSecurity});
 }

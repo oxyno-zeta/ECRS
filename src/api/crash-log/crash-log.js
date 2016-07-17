@@ -20,15 +20,15 @@ const crashLogService = require('../../services/crashLogService');
 const projectService = require('../../services/projectService');
 const crashLogMapper = require('../../mappers/crashLogMapper');
 const upload = multer({dest: configurationService.getLogUploadDirectory()});
+const pathsWithoutSecurity = ['/crash/log/:projectId'];
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
 /* ************************************* */
 
 module.exports = {
-	withoutSecurity: {
-		expose: exposeWithoutSecurity
-	}
+	expose: expose,
+	pathsWithoutSecurity: pathsWithoutSecurity
 };
 
 /* ************************************* */
@@ -122,11 +122,11 @@ function postCrashLog(req, res) {
 /* ************************************* */
 
 /**
- * Expose API without security.
+ * Expose API.
  * @returns {*} Express Router
  */
-function exposeWithoutSecurity() {
-	logger.debug('Putting crash log without security API...');
+function expose() {
+	logger.debug('Putting crash log API...');
 	var router = express.Router();
 
 	// Post crash log

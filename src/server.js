@@ -64,7 +64,7 @@ function prepare() {
 			app.use(cookieParser());
 
 			// Application security
-			app.use(apiSecurity.middleware.securityToken());
+			app.use(apiSecurity.middleware.securityToken(api.getPathsWithoutSecurity()));
 
 			// Put api
 			app.use(api.expose());
