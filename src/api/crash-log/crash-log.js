@@ -56,6 +56,13 @@ function postCrashLog(req, res) {
 
 	// Find Project by id
 	projectService.findById(projectId).then(function (project) {
+		// Check if project exists in database
+		if (_.isUndefined(project) || _.isNull(project)) {
+			// Send response
+			APIResponse.sendResponse(res, body, APICodes.clientErrors.NOT_FOUND);
+			return;
+		}
+
 		let file = req.file;
 		// Create file object if not exists
 		if (_.isUndefined(file) || _.isNull(file)) {
@@ -113,7 +120,7 @@ function postCrashLog(req, res) {
 	}, function (err) {
 		logger.error(err);
 		// Send response
-		APIResponse.sendResponse(res, body, APICodes.clientErrors.NOT_FOUND);
+		APIResponse.sendResponse(res, body, APICodes.serverErrors.INTERNAL_ERROR);
 	});
 }
 
