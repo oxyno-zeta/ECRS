@@ -16,6 +16,7 @@ const api = require('./api/api');
 const configurationService = require('./services/core/configurationService');
 const initializeService = require('./services/core/initializeService');
 const apiSecurity = require('./api/core/apiSecurity');
+const apiError = require('./api/core/apiError');
 const app = express();
 
 /* ************************************* */
@@ -68,6 +69,9 @@ function prepare() {
 
 			// Put api
 			app.use(api.expose());
+
+			// Error cleaner
+			app.use(apiError.middleware.errorCleaner());
 
 			resolve();
 		}, function (err) {
