@@ -10,7 +10,8 @@
   "ignore": [
     ".git",
     "src/webDev",
-    "src/views"
+    "src/views",
+    "src/bower_components"
   ],
   "env": {
     "CRASH_REPORTER_LOG_LEVEL": "debug",
