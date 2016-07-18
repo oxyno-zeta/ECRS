@@ -8,7 +8,9 @@
     "src/"
   ],
   "ignore": [
-    ".git"
+    ".git",
+    "src/webDev",
+    "src/views"
   ],
   "env": {
     "CRASH_REPORTER_LOG_LEVEL": "debug",
