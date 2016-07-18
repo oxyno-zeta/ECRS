@@ -14,7 +14,9 @@ const {User} = require('../models/userModel');
 /* ************************************* */
 module.exports = {
 	save: save,
-	findFromGithubId: findFromGithubId
+	findByGithubId: findByGithubId,
+	findByUsernameWithLocalHashNotNull: findByUsernameWithLocalHashNotNull,
+	findAllByRole: findAllByRole
 };
 
 /* ************************************* */
@@ -28,11 +30,29 @@ module.exports = {
 /* ************************************* */
 
 /**
- * Find From Github id.
+ * Find all by role.
+ * @param role {String} role
+ * @returns {*}
+ */
+function findAllByRole(role) {
+	return User.find({role: role});
+}
+
+/**
+ * Find By Username With Local Hash Not Null.
+ * @param username {String} Username
+ * @returns {*}
+ */
+function findByUsernameWithLocalHashNotNull(username) {
+	return User.findOne({username: username, 'local.hash': {$ne: null}});
+}
+
+/**
+ * Find By Github id.
  * @param githubId {String} Github id
  * @returns {*}
  */
-function findFromGithubId(githubId) {
+function findByGithubId(githubId) {
 	return User.findOne({'github.id': githubId});
 }
 

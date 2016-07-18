@@ -12,11 +12,13 @@ const userMapper = require('../mappers/userMapper');
 const {rolesObj} = require('../models/userModel');
 const userDao = require('../dao/userDao');
 const logger = require('../shared/logger')('[UserService]');
+const securityService = require('./core/securityService');
 
 /* ************************************* */
 /* ********       EXPORTS       ******** */
 /* ************************************* */
 module.exports = {
+	initialize: initialize,
 	saveOrUpdateFromGithub: saveOrUpdateFromGithub
 };
 
@@ -24,11 +26,92 @@ module.exports = {
 /* ********  PRIVATE FUNCTIONS  ******** */
 /* ************************************* */
 
+/**
+ * Find by username for local.
+ * @param username {String} username
+ * @returns {*}
+ */
+function findByUsernameForLocal(username) {
+	return userDao.findByUsernameWithLocalHashNotNull(username);
+}
 
+/**
+ * Create for local user.
+ * @param userData {Object} User data
+ * @returns {Promise}
+ */
+function createForLocal(userData) {
+	return new Promise(function (resolve, reject) {
+		let salt = securityService.generateSaltSync();
+		securityService.generateHash(userData.password, salt).then(function (hash) {
+			let userDataForBuild = {
+				username: userData.username,
+				email: userData.email,
+				photo: null,
+				role: userData.role,
+				local: {
+					hash: hash,
+					salt: salt
+				},
+				github: {
+					accessToken: null,
+					id: null,
+					profileUrl: null
+				}
+			};
+
+			let user = userMapper.build(userDataForBuild);
+			userDao.save(user).then(resolve, reject);
+		}, reject);
+	});
+}
 
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Initialize.
+ * @returns {Promise}
+ */
+function initialize() {
+	return new Promise(function (resolve, reject) {
+		logger.debug('Begin initialize...');
+		let userData = {
+			username: 'admin',
+			password: 'admin',
+			role: rolesObj.admin
+		};
+
+		findByUsernameForLocal(userData.username).then(function (result) {
+			if (!_.isNull(result)) {
+				logger.debug('User "admin" already exist in database');
+				resolve();
+				return;
+			}
+
+			// Check if need another administrator
+			userDao.findAllByRole(rolesObj.admin).then(function (users) {
+				// Check there are users with admin role
+				if (!_.isNull(users) && users.length !== 0) {
+					// There are others admin
+					logger.debug('Another user with admin role exists => Don\'t create a new one');
+					resolve();
+					return;
+				}
+
+				// Save new user
+				logger.debug('Save admin user in database');
+				createForLocal(userData)
+					.then(function (result) {
+						logger.debug('End initialize...');
+						resolve(result);
+					}, reject);
+			}, reject);
+		}, reject);
+	});
+}
+
 
 /**
  * Save or Update from Github.
@@ -37,17 +120,23 @@ module.exports = {
  */
 function saveOrUpdateFromGithub(userData) {
 	return new Promise(function (resolve, reject) {
-		userDao.findFromGithubId(userData.githubId).then(function (result) {
+		userDao.findByGithubId(userData.githubId).then(function (result) {
 			// Check if user exists in database
 			if (_.isUndefined(result) || _.isNull(result)) {
 				// Doesn't exists => create new one
 				let userDataForBuilder = {
 					username: userData.username,
+					email: null,
+					photo: null,
 					role: rolesObj.normal,
 					github: {
 						id: userData.githubId,
 						accessToken: userData.accessToken,
 						profileUrl: userData.profileUrl
+					},
+					local: {
+						hash: null,
+						salt: null
 					}
 				};
 				// Get email

@@ -7,9 +7,10 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
-var mongoose = require('mongoose');
-var logger = require('../../shared/logger')('[DatabaseService]');
-var configurationService = require('./configurationService');
+const mongoose = require('mongoose');
+const logger = require('../../shared/logger')('[DatabaseService]');
+const configurationService = require('./configurationService');
+const userService = require('../userService');
 
 /* ************************************* */
 /* ********       EXPORTS       ******** */
@@ -51,8 +52,10 @@ function initDatabase() {
 
 		mongoose.connection.on('connected', function () {
 			logger.debug('Mongoose connection open to ' + configurationService.database.getUrl());
-			logger.debug('End initialize database');
-			resolve();
+			userService.initialize().then(function (result) {
+				logger.debug('End initialize database');
+				resolve();
+			}, reject);
 		});
 
 		// If the connection throws an error
