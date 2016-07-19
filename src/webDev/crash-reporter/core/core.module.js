@@ -7,10 +7,11 @@
 	'use strict';
 
 	angular
-		.module('crash-reporter', [
-			'crash-reporter.core',
-			'crash-reporter.technical',
-			'crash-reporter.views'
+		.module('crash-reporter.core', [
+			// Third party
+			'ngResource',
+			'ngMaterial',
+			'ui.router'
 		]);
 
 })();
