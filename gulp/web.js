@@ -111,12 +111,20 @@ gulp.task('web:inject', function () {
 		.pipe(gulp.dest(conf.sources.web.dist));
 });
 
+gulp.task('web:fonts', function () {
+	var paths = [];
+	paths = paths.concat(conf.sources.other.fonts);
+
+	return gulp.src(paths)
+		.pipe(gulp.dest(path.join(conf.sources.web.dist, 'fonts')));
+});
+
 gulp.task('web:clean', function () {
 	return del(conf.sources.web.dist);
 });
 
 gulp.task('web:dev', function (cb) {
-	return runSequence('web:clean', ['web:partials', 'web:sass', 'web:js'], 'web:inject', cb);
+	return runSequence('web:clean', ['web:partials', 'web:sass', 'web:js', 'web:fonts'], 'web:inject', cb);
 });
 
 gulp.task('web:watch', ['web:dev'], function () {

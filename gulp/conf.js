@@ -30,6 +30,9 @@ module.exports = {
 		web: {
 			dir: 'src/webDev/',
 			dist: 'src/views/'
+		},
+		other: {
+			fonts: ['src/bower_components/font-awesome/fonts/*']
 		}
 	},
 	other: {
