@@ -4,5 +4,11 @@
   "description": "Electron Crash Reporter Server",
   "author": "Oxyno-zeta",
   "license": "SEE LICENSE IN LICENSE.md",
-  "homepage": "https://github.com/oxyno-zeta/crash-reporter-electron#readme"
+  "homepage": "https://github.com/oxyno-zeta/crash-reporter-electron#readme",
+  "dependencies": {
+    "angular": "^1.5.7",
+    "angular-ui-router": "^0.3.1",
+    "angular-material": "^1.0.9",
+    "angular-resource": "^1.5.7"
+  }
 }

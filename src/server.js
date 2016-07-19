@@ -11,6 +11,8 @@ const express = require('express');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const serveStatic = require('serve-static');
+const compression = require('compression');
 const logger = require('./shared/logger')('[Server]');
 const api = require('./api/api');
 const configurationService = require('./services/core/configurationService');
@@ -64,6 +66,14 @@ function prepare() {
 			// Cookie parser
 			app.use(cookieParser());
 
+			// Put compression
+			app.use(compression());
+
+			// Static files and views
+			app.set('views', __dirname + '/views');
+			app.use('/bower_components', serveStatic(__dirname + '/bower_components/'));
+			app.use(serveStatic(__dirname + '/views/'));
+			
 			// Application security
 			app.use(apiSecurity.middleware.securityToken(api.getPathsWithoutSecurity()));
 
