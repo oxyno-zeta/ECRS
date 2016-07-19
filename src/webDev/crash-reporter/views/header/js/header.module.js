@@ -7,8 +7,6 @@
 	'use strict';
 
 	angular
-		.module('crash-reporter.views', [
-			'crash-reporter.views.header'
-		]);
+		.module('crash-reporter.views.header', []);
 
 })();
