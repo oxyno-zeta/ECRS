@@ -9,6 +9,7 @@
     "angular": "^1.5.7",
     "angular-ui-router": "^0.3.1",
     "angular-material": "^1.0.9",
-    "angular-resource": "^1.5.7"
+    "angular-resource": "^1.5.7",
+    "font-awesome": "^4.6.3"
   }
 }
