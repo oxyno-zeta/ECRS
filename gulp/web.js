@@ -49,7 +49,7 @@ gulp.task('web:partials', function () {
 			quotes: true
 		}))
 		.pipe(angularTemplatecache('templateCacheHtml.js', {
-			module: 'admin'
+			module: 'crash-reporter'
 		}))
 		.pipe(gulp.dest(conf.sources.web.dist));
 });
