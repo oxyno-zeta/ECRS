@@ -19,21 +19,14 @@ const securityService = require('./core/securityService');
 /* ************************************* */
 module.exports = {
 	initialize: initialize,
-	saveOrUpdateFromGithub: saveOrUpdateFromGithub
+	saveOrUpdateFromGithub: saveOrUpdateFromGithub,
+	findByUsernameForLocal: findByUsernameForLocal,
+	localLogin: localLogin
 };
 
 /* ************************************* */
 /* ********  PRIVATE FUNCTIONS  ******** */
 /* ************************************* */
-
-/**
- * Find by username for local.
- * @param username {String} username
- * @returns {*}
- */
-function findByUsernameForLocal(username) {
-	return userDao.findByUsernameWithLocalHashNotNull(username);
-}
 
 /**
  * Create for local user.
@@ -69,6 +62,36 @@ function createForLocal(userData) {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Local login.
+ * @param username {String} Username
+ * @param password {String} Password
+ * @returns {Promise}
+ */
+function localLogin(username, password) {
+	return new Promise(function (resolve, reject) {
+		findByUsernameForLocal(username).then(function (user) {
+			securityService.compare(password, user.local.hash, user.local.salt).then(function (result) {
+				if (result) {
+					resolve(user);
+				}
+				else {
+					resolve(null);
+				}
+			}, reject)
+		}, reject);
+	});
+}
+
+/**
+ * Find by username for local.
+ * @param username {String} username
+ * @returns {*}
+ */
+function findByUsernameForLocal(username) {
+	return userDao.findByUsernameWithLocalHashNotNull(username);
+}
 
 /**
  * Initialize.

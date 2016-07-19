@@ -13,6 +13,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const serveStatic = require('serve-static');
 const compression = require('compression');
+const expressValidator = require('express-validator');
 const logger = require('./shared/logger')('[Server]');
 const api = require('./api/api');
 const configurationService = require('./services/core/configurationService');
@@ -68,6 +69,9 @@ function prepare() {
 
 			// Put compression
 			app.use(compression());
+
+			// Express validator
+			app.use(expressValidator());
 
 			// Static files and views
 			app.set('views', __dirname + '/views');

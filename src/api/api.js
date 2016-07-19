@@ -12,6 +12,7 @@ const urlJoin = require('url-join');
 const logger = require('../shared/logger')('[API]');
 const crashLog = require('./crash-log/crash-log');
 const apiAuth = require('./core/apiAuth');
+const login = require('./login/login');
 const prefix = '/api/v1/';
 
 /* ************************************* */
@@ -50,6 +51,11 @@ function getPathsWithoutSecurity() {
 		return urlJoin(prefix, item);
 	});
 	pathsWithoutSecurity = pathsWithoutSecurity.concat(tmp2);
+	// Login api
+	let tmp3 = login.pathsWithoutSecurity.map(function (item) {
+		return urlJoin(prefix, item);
+	});
+	pathsWithoutSecurity = pathsWithoutSecurity.concat(tmp3);
 
 	// Result
 	return pathsWithoutSecurity;
@@ -67,8 +73,11 @@ function expose() {
 	// Add auth
 	router.use(prefix, apiAuth.getRouter());
 
-	// Api without security
+	// Api Crash log
 	router.use(prefix, crashLog.expose());
+
+	// Api login
+	router.use(prefix, login.expose());
 
 	return router;
 }
