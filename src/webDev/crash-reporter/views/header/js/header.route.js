@@ -13,7 +13,7 @@
 	/** @ngInject */
 	function routeConfig($stateProvider) {
 		$stateProvider.state('header', {
-			url: '/',
+			abstract: true,
 			views: {
 				content: {
 					templateUrl: 'crash-reporter/views/header/header.html',

@@ -20,7 +20,7 @@
 
 			if (loginService.isLoggedIn() && _.isEqual(toState.url, '/login')) {
 				event.preventDefault();
-				$state.go('header');
+				$state.go('header.projects');
 			}
 		});
 	}
