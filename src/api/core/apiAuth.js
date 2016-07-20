@@ -22,7 +22,15 @@ const urls = {
 		callback: '/auth/github/callback'
 	}
 };
-const pathsWithoutSecurity = [urls.github.main, urls.github.callback];
+const pathsWithoutSecurity = [
+	{
+		url: urls.github.main,
+		methods: ['GET']
+	}, {
+		url: urls.github.callback,
+		methods: ['GET']
+	}
+];
 
 /* ************************************* */
 /* ********       EXPORTS       ******** */

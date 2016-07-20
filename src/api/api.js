@@ -7,12 +7,14 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
+const _ = require('lodash');
 const express = require('express');
 const urlJoin = require('url-join');
 const logger = require('../shared/logger')('[API]');
 const crashLog = require('./crash-log/crash-log');
 const apiAuth = require('./core/apiAuth');
 const login = require('./login/login');
+const configuration = require('./configuration/configuration');
 const prefix = '/api/v1/';
 
 /* ************************************* */
@@ -28,7 +30,22 @@ module.exports = {
 /* ********  PRIVATE FUNCTIONS  ******** */
 /* ************************************* */
 
+/**
+ * Map function.
+ * @param item
+ * @returns {*}
+ */
+function mapFunction(item) {
+	if (_.isString(item)) {
+		return urlJoin(prefix, item);
+	}
 
+	if (_.isObject(item) && _.isString(item.url)) {
+		item.url = urlJoin(prefix, item.url);
+	}
+
+	return item;
+}
 
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
@@ -42,20 +59,17 @@ function getPathsWithoutSecurity() {
 	let pathsWithoutSecurity = [];
 	// Prepare
 	// Crash log api
-	let tmp1 = crashLog.pathsWithoutSecurity.map(function (item) {
-		return urlJoin(prefix, item);
-	});
+	let tmp1 = crashLog.pathsWithoutSecurity.map(mapFunction);
 	pathsWithoutSecurity = pathsWithoutSecurity.concat(tmp1);
 	// Auth api
-	let tmp2 = apiAuth.pathsWithoutSecurity.map(function (item) {
-		return urlJoin(prefix, item);
-	});
+	let tmp2 = apiAuth.pathsWithoutSecurity.map(mapFunction);
 	pathsWithoutSecurity = pathsWithoutSecurity.concat(tmp2);
 	// Login api
-	let tmp3 = login.pathsWithoutSecurity.map(function (item) {
-		return urlJoin(prefix, item);
-	});
+	let tmp3 = login.pathsWithoutSecurity.map(mapFunction);
 	pathsWithoutSecurity = pathsWithoutSecurity.concat(tmp3);
+	// Configuration api
+	let tmp4 = configuration.pathsWithoutSecurity.map(mapFunction);
+	pathsWithoutSecurity = pathsWithoutSecurity.concat(tmp4);
 
 	// Result
 	return pathsWithoutSecurity;
@@ -78,6 +92,9 @@ function expose() {
 
 	// Api login
 	router.use(prefix, login.expose());
+
+	// Api configuration
+	router.use(prefix, configuration.expose());
 
 	return router;
 }

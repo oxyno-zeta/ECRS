@@ -25,7 +25,12 @@ const upload = multer({
 		fileSize: 2 * 1000 * 1000 // 2 Mb
 	}
 });
-const pathsWithoutSecurity = ['/crash/log/:projectId'];
+const pathsWithoutSecurity = [
+	{
+		url: /.*crash\/log\/.*/ig,
+		methods: ['POST']
+	}
+];
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */

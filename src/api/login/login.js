@@ -15,7 +15,12 @@ const APICodes = require('../core/APICodes');
 const userService = require('../../services/userService');
 const userMapper = require('../../mappers/userMapper');
 const apiSecurity = require('../core/apiSecurity');
-const pathsWithoutSecurity = ['/login'];
+const pathsWithoutSecurity = [
+	{
+		url: '/login',
+		methods: ['POST']
+	}
+];
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
