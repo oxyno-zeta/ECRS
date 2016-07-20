@@ -31,8 +31,12 @@ module.exports = {
 			isEnabled: isGithubEnabled,
 			getClientId: getGithubClientId,
 			getClientSecret: getGithubClientSecret
+		},
+		local: {
+			isEnabled: isLocalEnabled
 		}
-	}
+	},
+	isLocalRegisterEnabled: isLocalRegisterEnabled
 };
 
 /* ************************************* */
@@ -44,6 +48,22 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Is local register enabled.
+ * @returns {*}
+ */
+function isLocalRegisterEnabled() {
+	return configuration[CONSTANTS.LOCAL_REGISTER_ENABLED];
+}
+
+/**
+ * Is local auth enabled.
+ * @returns {*}
+ */
+function isLocalEnabled() {
+	return configuration[CONSTANTS.LOCAL_AUTH_ENABLED];
+}
 
 /**
  * Get Jwt Secret.
