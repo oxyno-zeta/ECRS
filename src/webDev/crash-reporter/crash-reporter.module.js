@@ -9,6 +9,7 @@
 	angular
 		.module('crash-reporter', [
 			'crash-reporter.core',
+			'crash-reporter.initialize',
 			'crash-reporter.technical',
 			'crash-reporter.views'
 		]);

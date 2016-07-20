@@ -11,13 +11,29 @@
 		.factory('loginService', loginService);
 
 	/** @ngInject */
-	function loginService(loginDao) {
+	function loginService($rootScope, $cookies, loginDao) {
 		var service = {
-			login: login
+			login: login,
+			isLoggedIn: isLoggedIn
 		};
-		return service;
 
 		////////////////
+
+		/* ************************************* */
+		/* ********        WATCHER      ******** */
+		/* ************************************* */
+
+		$rootScope.$watch(function () {
+			return $cookies.get('id_token');
+		}, function (newValue, oldValue) {
+			if (_.isUndefined(newValue) && _.isString(oldValue)) {
+				$rootScope.$broadcast('login:cookieDeleted');
+			}
+
+			if (_.isString(newValue) && _.isUndefined(oldValue)) {
+				$rootScope.$broadcast('login:cookieCreated');
+			}
+		});
 
 		/* ************************************* */
 		/* ********  PRIVATE FUNCTIONS  ******** */
@@ -28,6 +44,14 @@
 		/* ************************************* */
 
 		/**
+		 * Is logged in.
+		 * @returns {boolean}
+		 */
+		function isLoggedIn() {
+			return !_.isUndefined($cookies.get('id_token'));
+		}
+
+		/**
 		 * Login.
 		 * @param username {String} Username
 		 * @param password {String} Password
@@ -36,6 +60,8 @@
 		function login(username, password) {
 			return loginDao.login(username, password);
 		}
+
+		return service;
 	}
 
 })();
