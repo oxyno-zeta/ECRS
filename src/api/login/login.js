@@ -52,7 +52,7 @@ function login(req, res) {
 	userService.findByUsernameForLocal(username).then(function (user) {
 		if (_.isNull(user)) {
 			// User not found in database
-			APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
+			APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.UNAUTHORIZED);
 			return;
 		}
 
