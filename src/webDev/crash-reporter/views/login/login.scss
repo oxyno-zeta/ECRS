@@ -1,0 +1,30 @@
+.login {
+  .login-box {
+    max-width: 90%;
+    width: 500px;
+    padding: 0 !important;
+
+    .toolbar {
+      min-height: 50px;
+      height: 50px;
+    }
+
+    md-content {
+      md-input-container {
+        .big-icon {
+          padding-top: 5px;
+          font-size: 20px;
+        }
+      }
+      .md-input-invalid {
+        .big-icon {
+          color: rgb(221, 44, 0);
+        }
+      }
+    }
+  }
+
+  .stretch input {
+    width: 100%
+  }
+}

@@ -1,0 +1,31 @@
+<div class="login" layout="row" layout-padding layout-wrap layout-align="center center" layout-fill>
+    <md-whiteframe class="login-box md-whiteframe-1dp" layout="column">
+        <md-toolbar
+                class="toolbar md-primary md-hue-2                                                                                                                                                                                                                                                                                                                                                                                                                                                      ">
+            <h2 class="md-toolbar-tools">
+                <span>Login</span>
+            </h2>
+        </md-toolbar>
+        <md-content class="md-padding" layout="column">
+            <md-input-container>
+                <label>Username</label>
+                <md-icon class="fa fa-user big-icon"></md-icon>
+                <input ng-change="loginCtrl.activateSubmit()" ng-model="loginCtrl.username" type="text" required>
+            </md-input-container>
+            <md-input-container>
+                <label>Password</label>
+                <md-icon class="fa fa-lock big-icon"></md-icon>
+                <input ng-change="loginCtrl.activateSubmit()" ng-model="loginCtrl.password" type="password" required>
+            </md-input-container>
+            <div layout="row" layout-align="center center">
+                <md-button class="md-raised md-primary"
+                           ng-disabled="loginCtrl.submitDisabled"
+                           ng-click="loginCtrl.login()">
+                    Submit
+                </md-button>
+                <!--<div flex></div>
+                <md-button class="md-warn">test</md-button>-->
+            </div>
+        </md-content>
+    </md-whiteframe>
+</div>

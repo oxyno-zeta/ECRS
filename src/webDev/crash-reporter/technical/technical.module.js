@@ -7,6 +7,10 @@
 	'use strict';
 
 	angular
-		.module('crash-reporter.technical', []);
+		.module('crash-reporter.technical', [
+			'crash-reporter.technical.cache',
+			'crash-reporter.technical.dao',
+			'crash-reporter.technical.service'
+		]);
 
 })();
