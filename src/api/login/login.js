@@ -30,6 +30,11 @@ module.exports = {
 /* ********  PRIVATE FUNCTIONS  ******** */
 /* ************************************* */
 
+/**
+ * Login.
+ * @param req
+ * @param res
+ */
 function login(req, res) {
 	// Get default body
 	let body = APIResponse.getDefaultResponseBody();
