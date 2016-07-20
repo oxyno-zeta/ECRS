@@ -27,7 +27,7 @@ const upload = multer({
 });
 const pathsWithoutSecurity = [
 	{
-		url: /.*crash\/log\/.*/ig,
+		url: /.*crash-logs\/.*/ig,
 		methods: ['POST']
 	}
 ];
@@ -147,7 +147,7 @@ function expose() {
 	var router = express.Router();
 
 	// Post crash log
-	router.post('/crash/log/:projectId', upload.single('upload_file_minidump'), postCrashLog);
+	router.post('/crash-logs/:projectId', upload.single('upload_file_minidump'), postCrashLog);
 
 	return router;
 }
