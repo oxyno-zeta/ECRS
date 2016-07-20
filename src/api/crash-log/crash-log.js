@@ -19,7 +19,12 @@ const configurationService = require('../../services/core/configurationService')
 const crashLogService = require('../../services/crashLogService');
 const projectService = require('../../services/projectService');
 const crashLogMapper = require('../../mappers/crashLogMapper');
-const upload = multer({dest: configurationService.getLogUploadDirectory()});
+const upload = multer({
+	dest: configurationService.getLogUploadDirectory(),
+	limits: {
+		fileSize: 2 * 1000 * 1000 // 2 Mb
+	}
+});
 const pathsWithoutSecurity = ['/crash/log/:projectId'];
 
 /* ************************************* */
