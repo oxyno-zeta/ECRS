@@ -11,7 +11,8 @@
 			// Third party
 			'ngResource',
 			'ngMaterial',
-			'ui.router'
+			'ui.router',
+			'ngCookies'
 		]);
 
 })();
