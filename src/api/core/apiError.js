@@ -7,6 +7,7 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
+const _ = require('lodash');
 const APIResponse = require('./APIResponse');
 const APICodes = require('./APICodes');
 const logger = require('../../shared/logger')('[Error API]');
@@ -40,6 +41,12 @@ function errorCleaner() {
 		logger.error(err);
 		// Response
 		let statusCode = err.statusCode || err.status || 500;
+
+		// Special code for upload file
+		if (err && err.code && _.isEqual('LIMIT_FILE_SIZE', err.code)) {
+			statusCode = 413;
+		}
+
 		let body = APIResponse.getDefaultResponseBody();
 		APIResponse.sendResponse(res, body, APICodes.ALL_BY_CODES[statusCode]);
 	}
