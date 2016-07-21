@@ -8,7 +8,8 @@
 
 	angular
 		.module('crash-reporter.core')
-		.config(routeConfig);
+		.config(routeConfig)
+		.config(loadingConfig);
 
 	/** @ngInject */
 	function routeConfig($urlRouterProvider, $httpProvider) {
@@ -16,6 +17,11 @@
 		$urlRouterProvider.otherwise('/');
 
 		$httpProvider.interceptors.push('responseCodeInterceptor');
+	}
+
+	/** @ngInject */
+	function loadingConfig(cfpLoadingBarProvider) {
+		cfpLoadingBarProvider.includeSpinner = false;
 	}
 
 })();

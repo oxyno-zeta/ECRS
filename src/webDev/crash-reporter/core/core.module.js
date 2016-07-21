@@ -12,7 +12,8 @@
 			'ngResource',
 			'ngMaterial',
 			'ui.router',
-			'ngCookies'
+			'ngCookies',
+			'angular-loading-bar'
 		]);
 
 })();
