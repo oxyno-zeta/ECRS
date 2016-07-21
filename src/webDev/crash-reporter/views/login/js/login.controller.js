@@ -11,7 +11,7 @@
 		.controller('LoginController', LoginController);
 
 	/** @ngInject */
-	function LoginController(loginService, $log, configuration) {
+	function LoginController($state, $mdToast, loginService, configuration) {
 		var vm = this;
 		// Variables
 		vm.username = null;
@@ -72,7 +72,19 @@
 		 * Login.
 		 */
 		function login() {
-			loginService.login(vm.username, vm.password).then($log.debug, $log.error);
+			loginService.login(vm.username, vm.password).then(function () {
+				// Success
+				// Redirect to main page
+				$state.go('header.projects', {reload: true});
+			}, function () {
+				// Error
+				var toast = $mdToast.simple()
+					.textContent('Login failed !')
+					.position('top right')
+					.hideDelay(3000);
+				// Show toast
+				$mdToast.show(toast);
+			});
 		}
 
 	}
