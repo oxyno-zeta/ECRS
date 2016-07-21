@@ -1,6 +1,6 @@
 /*
  * Author: Alexandre Havrileck (Oxyno-zeta)
- * Date: 20/07/16
+ * Date: 21/07/16
  * Licence: See Readme
  */
 (function () {
@@ -8,15 +8,14 @@
 
 	angular
 		.module('crash-reporter.technical.service')
-		.factory('loginService', loginService);
+		.factory('configurationService', configurationService);
 
 	/** @ngInject */
-	function loginService($cookies, loginDao) {
+	function configurationService(configurationDao) {
 		var service = {
-			login: login,
-			isLoggedIn: isLoggedIn,
-			urls: loginDao.urls
+			getConfiguration: getConfiguration
 		};
+		return service;
 
 		////////////////
 
@@ -29,24 +28,12 @@
 		/* ************************************* */
 
 		/**
-		 * Is logged in.
-		 * @returns {boolean}
-		 */
-		function isLoggedIn() {
-			return !_.isUndefined($cookies.get('id_token'));
-		}
-
-		/**
-		 * Login.
-		 * @param username {String} Username
-		 * @param password {String} Password
+		 * Get configuration.
 		 * @returns {*}
 		 */
-		function login(username, password) {
-			return loginDao.login(username, password);
+		function getConfiguration() {
+			return configurationDao.getConfiguration();
 		}
-
-		return service;
 	}
 
 })();

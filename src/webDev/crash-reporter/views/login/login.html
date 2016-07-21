@@ -1,12 +1,43 @@
 <div class="login" layout="row" layout-padding layout-wrap layout-align="center center" layout-fill>
     <md-whiteframe class="login-box md-whiteframe-1dp" layout="column">
-        <md-toolbar
-                class="toolbar md-primary md-hue-2                                                                                                                                                                                                                                                                                                                                                                                                                                                      ">
-            <h2 class="md-toolbar-tools">
-                <span>Login</span>
-            </h2>
+        <md-toolbar class="toolbar md-primary md-hue-2">
+            <div class="md-toolbar-tools">
+                <md-button class="md-icon-button" ng-if="loginCtrl.localLoginSelected"
+                           ng-click="loginCtrl.resetChoices()" aria-label="Reset choices">
+                    <md-icon class="fa fa-angle-left big-icon"></md-icon>
+                </md-button>
+                <h2 class="md-toolbar-tools">
+                    <span ng-if="!loginCtrl.localLoginSelected">Login</span>
+                    <span ng-if="loginCtrl.localLoginSelected">Local Login</span>
+                </h2>
+                <span flex></span>
+            </div>
         </md-toolbar>
-        <md-content class="md-padding" layout="column">
+        <md-content class="md-padding" layout="column" layout-align="center center"
+                    ng-if="!loginCtrl.localLoginSelected">
+            <md-button class="md-raised md-primary button-200" layout="row"
+                       ng-if="loginCtrl.configuration.auth.isLocalEnabled"
+                       ng-click="loginCtrl.selectLocalLogin()" aria-label="Local login">
+                <span flex></span>
+                <md-icon class="fa fa-sign-in big-icon-button"></md-icon>
+                Local login
+                <span flex></span>
+            </md-button>
+            <md-button class="md-raised button-200" layout="row"
+                       ng-if="loginCtrl.configuration.auth.isGithubEnabled"
+                       ng-href="{{loginCtrl.urls.auth.github}}" aria-label="Github login">
+                <span flex></span>
+                <md-icon class="fa fa-github big-icon-button"></md-icon>
+                Github login
+                <span flex></span>
+            </md-button>
+            <p ng-if="!loginCtrl.configuration.auth.isGithubEnabled && !loginCtrl.configuration.auth.isLocalEnabled">
+                No login options.
+                <br>
+                Please contact your administrator to enabled them.
+            </p>
+        </md-content>
+        <md-content class="md-padding" layout="column" ng-if="loginCtrl.localLoginSelected">
             <md-input-container>
                 <label>Username</label>
                 <md-icon class="fa fa-user big-icon"></md-icon>
@@ -15,7 +46,8 @@
             <md-input-container>
                 <label>Password</label>
                 <md-icon class="fa fa-lock big-icon"></md-icon>
-                <input ng-change="loginCtrl.activateSubmit()" ng-model="loginCtrl.password" type="password" required>
+                <input ng-change="loginCtrl.activateSubmit()" ng-model="loginCtrl.password" type="password"
+                       required>
             </md-input-container>
             <div layout="row" layout-align="center center">
                 <md-button class="md-raised md-primary"

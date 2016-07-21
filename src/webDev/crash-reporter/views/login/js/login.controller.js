@@ -11,15 +11,20 @@
 		.controller('LoginController', LoginController);
 
 	/** @ngInject */
-	function LoginController(loginService, $log) {
+	function LoginController(loginService, $log, configuration) {
 		var vm = this;
 		// Variables
 		vm.username = null;
 		vm.password = null;
 		vm.submitDisabled = true;
+		vm.localLoginSelected = false;
+		vm.configuration = configuration;
+		vm.urls = loginService.urls;
 		// Functions
+		vm.selectLocalLogin = selectLocalLogin;
 		vm.login = login;
 		vm.activateSubmit = activateSubmit;
+		vm.resetChoices = resetChoices;
 
 		////////////////
 
@@ -31,6 +36,20 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Reset all choices.
+		 */
+		function resetChoices() {
+			vm.localLoginSelected = false;
+		}
+
+		/**
+		 * Select local login.
+		 */
+		function selectLocalLogin() {
+			vm.localLoginSelected = true;
+		}
 
 		/**
 		 * Activate submit ?

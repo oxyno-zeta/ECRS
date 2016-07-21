@@ -1,6 +1,6 @@
 /*
  * Author: Alexandre Havrileck (Oxyno-zeta)
- * Date: 20/07/16
+ * Date: 21/07/16
  * Licence: See Readme
  */
 (function () {
@@ -8,24 +8,19 @@
 
 	angular
 		.module('crash-reporter.technical.dao')
-		.factory('loginDao', loginDao);
+		.factory('configurationDao', configurationDao);
 
 	/** @ngInject */
-	function loginDao($q, $resource, CONFIG) {
+	function configurationDao($q, $resource, CONFIG) {
 		var service = {
-			login: login,
-			urls: {
-				auth: {
-					github: CONFIG.URL.PREFIX + '/auth/github'
-				}
-			}
+			getConfiguration: getConfiguration
 		};
 
 		/* ************************************* */
 		/* ********  PRIVATE VARIABLES  ******** */
 		/* ************************************* */
 
-		var loginResource = $resource(CONFIG.URL.PREFIX + '/login', {}, {});
+		var configurationResource = $resource(CONFIG.URL.PREFIX + '/configurations', {}, {});
 
 
 		return service;
@@ -41,20 +36,12 @@
 		/* ************************************* */
 
 		/**
-		 * Login.
-		 * @param username {String} Username
-		 * @param password {String} Password
+		 * Get configuration.
 		 * @returns {*}
 		 */
-		function login(username, password) {
+		function getConfiguration() {
 			var deferred = $q.defer();
-			var body = {
-				username: username,
-				password: password
-			};
-
-			loginResource.save(body, deferred.resolve, deferred.reject);
-
+			configurationResource.get(deferred.resolve, deferred.reject);
 			return deferred.promise;
 		}
 	}

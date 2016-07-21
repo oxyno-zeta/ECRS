@@ -21,6 +21,11 @@
 						controller: 'LoginController',
 						controllerAs: 'loginCtrl'
 					}
+				},
+				resolve: {
+					configuration: function (configurationService) {
+						return configurationService.getConfiguration();
+					}
 				}
 			});
 	}
