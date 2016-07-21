@@ -16,7 +16,8 @@ module.exports = {
 	save: save,
 	findByGithubId: findByGithubId,
 	findByUsernameWithLocalHashNotNull: findByUsernameWithLocalHashNotNull,
-	findAllByRole: findAllByRole
+	findAllByRole: findAllByRole,
+	findById: findById
 };
 
 /* ************************************* */
@@ -28,6 +29,15 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Find by id.
+ * @param id {String} id
+ * @returns {*}
+ */
+function findById(id) {
+	return User.findById(id);
+}
 
 /**
  * Find all by role.

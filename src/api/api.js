@@ -14,6 +14,7 @@ const logger = require('../shared/logger')('[API]');
 const crashLog = require('./crash-log/crash-log');
 const apiAuth = require('./core/apiAuth');
 const login = require('./login/login');
+const user = require('./user/user');
 const configuration = require('./configuration/configuration');
 const prefix = '/api/v1/';
 
@@ -95,6 +96,9 @@ function expose() {
 
 	// Api configuration
 	router.use(prefix, configuration.expose());
+
+	// User configuration
+	router.use(prefix, user.expose());
 
 	return router;
 }

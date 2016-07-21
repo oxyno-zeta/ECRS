@@ -21,7 +21,8 @@ module.exports = {
 	initialize: initialize,
 	saveOrUpdateFromGithub: saveOrUpdateFromGithub,
 	findByUsernameForLocal: findByUsernameForLocal,
-	localLogin: localLogin
+	localLogin: localLogin,
+	findById: findById
 };
 
 /* ************************************* */
@@ -62,6 +63,15 @@ function createForLocal(userData) {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Find by id.
+ * @param id {String} id
+ * @returns {*}
+ */
+function findById(id) {
+	return userDao.findById(id);
+}
 
 /**
  * Local login.
