@@ -27,15 +27,21 @@
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
 
+		/**
+		 * Response error.
+		 * @param response
+		 * @returns {*}
+		 */
 		function responseError(response) {
 			switch (response.status) {
 				case 401:
 					$rootScope.$broadcast('errorResponse:unauthorized');
-					$q.reject(response);
 					break;
 				default:
-					$q.reject(response);
+					break;
 			}
+
+			return $q.reject(response);
 		}
 	}
 
