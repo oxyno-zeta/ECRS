@@ -25,7 +25,7 @@
 		});
 
 		$rootScope.$on('errorResponse:unauthorized', function () {
-			$state.go('header.login');
+			$state.go('header.login', {reload: true});
 		});
 	}
 
