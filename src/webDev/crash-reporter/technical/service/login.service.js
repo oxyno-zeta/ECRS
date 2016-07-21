@@ -20,22 +20,6 @@
 		////////////////
 
 		/* ************************************* */
-		/* ********        WATCHER      ******** */
-		/* ************************************* */
-
-		$rootScope.$watch(function () {
-			return $cookies.get('id_token');
-		}, function (newValue, oldValue) {
-			if (_.isUndefined(newValue) && _.isString(oldValue)) {
-				$rootScope.$broadcast('login:cookieDeleted');
-			}
-
-			if (_.isString(newValue) && _.isUndefined(oldValue)) {
-				$rootScope.$broadcast('login:cookieCreated');
-			}
-		});
-
-		/* ************************************* */
 		/* ********  PRIVATE FUNCTIONS  ******** */
 		/* ************************************* */
 

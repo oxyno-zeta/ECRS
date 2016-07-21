@@ -11,9 +11,11 @@
 		.config(routeConfig);
 
 	/** @ngInject */
-	function routeConfig($urlRouterProvider) {
+	function routeConfig($urlRouterProvider, $httpProvider) {
 		// Default url
 		$urlRouterProvider.otherwise('/');
+
+		$httpProvider.interceptors.push('responseCodeInterceptor');
 	}
 
 })();

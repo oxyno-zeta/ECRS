@@ -23,6 +23,10 @@
 				$state.go('header.projects');
 			}
 		});
+
+		$rootScope.$on('errorResponse:unauthorized', function () {
+			$state.go('header.login');
+		});
 	}
 
 })();

@@ -10,7 +10,8 @@
 		.module('crash-reporter.technical', [
 			'crash-reporter.technical.cache',
 			'crash-reporter.technical.dao',
-			'crash-reporter.technical.service'
+			'crash-reporter.technical.service',
+			'crash-reporter.technical.interceptors'
 		]);
 
 })();
