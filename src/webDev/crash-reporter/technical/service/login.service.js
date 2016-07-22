@@ -11,7 +11,7 @@
 		.factory('loginService', loginService);
 
 	/** @ngInject */
-	function loginService($cookies, loginDao) {
+	function loginService($cookies, $rootScope, loginDao) {
 		var service = {
 			login: login,
 			isLoggedIn: isLoggedIn,
@@ -19,6 +19,22 @@
 		};
 
 		////////////////
+
+		/* ************************************* */
+		/* ********       WATCHER       ******** */
+		/* ************************************* */
+
+		$rootScope.$watch(function () {
+			return $cookies.get('id_token');
+		}, function (newValue, oldValue) {
+			if (_.isString(newValue) && _.isUndefined(oldValue)) {
+				$rootScope.$broadcast('loginService:update:login');
+			}
+
+			if (_.isString(oldValue) && _.isUndefined(newValue)) {
+				$rootScope.$broadcast('loginService:update:logout');
+			}
+		});
 
 		/* ************************************* */
 		/* ********  PRIVATE FUNCTIONS  ******** */

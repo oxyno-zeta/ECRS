@@ -11,13 +11,26 @@
 		.controller('HeaderController', HeaderController);
 
 	/** @ngInject */
-	function HeaderController() {
+	function HeaderController($rootScope, loginService) {
 		var vm = this;
-		vm.title = 'HeaderController';
+		// Variables
+		vm.isLoggedIn = loginService.isLoggedIn();
+		// Functions
 
 		////////////////
 
 
+		/* ************************************* */
+		/* ********       UPDATE        ******** */
+		/* ************************************* */
+
+		$rootScope.$on('loginService:update:login', function () {
+			vm.isLoggedIn = true;
+		});
+
+		$rootScope.$on('loginService:update:logout', function () {
+			vm.isLoggedIn = false;
+		});
 	}
 
 })();
