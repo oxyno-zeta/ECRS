@@ -11,6 +11,10 @@
 		.constant('CONFIG', {
 			'URL': {
 				'PREFIX': '/api/v1'
+			},
+			'ROLES': {
+				admin: 'admin',
+				normal: 'normal'
 			}
 		});
 

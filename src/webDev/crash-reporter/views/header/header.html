@@ -1,15 +1,26 @@
 <md-toolbar class="header">
     <div class="md-toolbar-tools">
-        <md-button class="md-icon-button" aria-label="Navigation" ng-disabled="!headerCtrl.isLoggedIn">
-            <i class="fa fa-bars big-icons"></i>
+        <md-button class="md-icon-button opened" aria-label="Navigation" ng-disabled="!headerCtrl.isLoggedIn">
+            <md-icon class="fa fa-bars big-icons"></md-icon>
         </md-button>
         <h2>
             <span>Crash Reporter Server</span>
         </h2>
         <span flex></span>
-        <md-button class="md-icon-button" aria-label="Settings" ng-disabled="true">
-            <i class="fa fa-cog big-icons"></i>
-        </md-button>
+
+        <md-menu md-offset="-5 75" ng-if="headerCtrl.currentUser.role === headerCtrl.roles.admin">
+            <md-button class="md-icon-button opened" aria-label="Administration" ng-click="$mdOpenMenu($event)">
+                <md-icon class="fa fa-cog big-icons"></md-icon>
+            </md-button>
+            <md-menu-content width="2">
+                <md-menu-item>
+                    <md-button ng-disabled="true">
+                        <span md-menu-align-target>Users</span>
+                    </md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>
+
         <md-menu md-offset="-5 66" ng-if="headerCtrl.isLoggedIn">
             <md-button aria-label="User menu" class="md-icon-button opened"
                        ng-click="$mdOpenMenu($event)">
