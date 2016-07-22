@@ -46,6 +46,7 @@ function formatToApi(userInstance) {
 		id: userInstance._id,
 		username: userInstance.username,
 		email: userInstance.email,
+		role: userInstance.role,
 		github: {
 			id: userInstance.github.id,
 			profileUrl: userInstance.github.profileUrl
