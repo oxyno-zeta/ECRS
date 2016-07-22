@@ -16,6 +16,7 @@
 		// Variables
 		vm.isLoggedIn = loginService.isLoggedIn();
 		// Functions
+		vm.logout = loginService.logout;
 
 		////////////////
 

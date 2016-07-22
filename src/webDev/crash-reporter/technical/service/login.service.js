@@ -11,9 +11,10 @@
 		.factory('loginService', loginService);
 
 	/** @ngInject */
-	function loginService($cookies, $rootScope, loginDao) {
+	function loginService($cookies, $rootScope, $state, loginDao) {
 		var service = {
 			login: login,
+			logout: logout,
 			isLoggedIn: isLoggedIn,
 			urls: loginDao.urls
 		};
@@ -43,6 +44,17 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Logout.
+		 */
+		function logout() {
+			// Delete cookie name
+			$cookies.remove('id_token');
+
+			// Redirect to login page
+			$state.go('header.login', {reload: true});
+		}
 
 		/**
 		 * Is logged in.
