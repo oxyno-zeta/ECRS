@@ -12,6 +12,7 @@ const _ = require('lodash');
 const logger = require('../../shared/logger')('[Users API]');
 const APIResponse = require('../core/APIResponse');
 const APICodes = require('../core/APICodes');
+const apiSecurity = require('../core/apiSecurity');
 const userService = require('../../services/userService');
 const userMapper = require('../../mappers/userMapper');
 
@@ -32,22 +33,12 @@ module.exports = {
  * @param res
  */
 function getCurrentUser(req, res) {
-	let userId = req.user.id;
+	let user = req.userDb;
 	let body = APIResponse.getDefaultResponseBody();
 
-	userService.findById(userId).then(function (user) {
-		if (_.isNull(user)) {
-			APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
-			return;
-		}
-
-		// Update body
-		body.user = userMapper.formatToApi(user);
-		APIResponse.sendResponse(res, body, APICodes.SUCCESS.OK);
-	}, function (err) {
-		logger.error(err);
-		APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
-	})
+	// Update body
+	body.user = userMapper.formatToApi(user);
+	APIResponse.sendResponse(res, body, APICodes.SUCCESS.OK);
 }
 
 /* ************************************* */
@@ -62,7 +53,7 @@ function expose() {
 	logger.debug('Putting users API...');
 	var router = express.Router();
 
-	router.get('/users/current', getCurrentUser);
+	router.get('/users/current', apiSecurity.middleware.populateUser(), getCurrentUser);
 
 	return router;
 }

@@ -7,16 +7,22 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
+const _ = require('lodash');
 const expressJwt = require('express-jwt');
 const jsonwebtoken = require('jsonwebtoken');
+const APIResponse = require('./APIResponse');
+const APICodes = require('./APICodes');
 const configurationService = require('../../services/core/configurationService');
+const userService = require('../../services/userService');
+const logger = require('../../shared/logger')('[API Security]');
 
 /* ************************************* */
 /* ********       EXPORTS       ******** */
 /* ************************************* */
 module.exports = {
 	middleware: {
-		securityToken: securityToken
+		securityToken: securityToken,
+		populateUser: populateUser
 	},
 	encode: encode
 };
@@ -30,6 +36,32 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Populate user middleware (Must be placed after token middleware).
+ * @returns {Function}
+ */
+function populateUser() {
+	return function (req, res, next) {
+		let userId = req.user.id;
+		let body = APIResponse.getDefaultResponseBody();
+
+		userService.findById(userId).then(function (user) {
+			if (_.isNull(user)) {
+				// User not found in database
+				APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.UNAUTHORIZED);
+				return;
+			}
+
+			// Next
+			req.userDb = user;
+			next();
+		}, function (err) {
+			logger.error(err);
+			APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+		});
+	}
+}
 
 /**
  * Encode data.
