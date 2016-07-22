@@ -1,5 +1,5 @@
 /*
- * Author: Alexandre Havrileck (Oxyno-zeta) 
+ * Author: Alexandre Havrileck (Oxyno-zeta)
  * Date: 09/07/16
  * Licence: See Readme
  */
@@ -16,6 +16,7 @@ const {Project} = require('../models/projectModel');
 
 module.exports = {
 	formatToApi: formatToApi,
+	formatListToApi: formatListToApi,
 	build: build
 };
 
@@ -29,11 +30,20 @@ module.exports = {
 /* ************************************* */
 
 /**
+ * Format List to api.
+ * @param projectList {Array} Project list
+ * @returns {Array}
+ */
+function formatListToApi(projectList) {
+	return projectList.map(formatToApi);
+}
+
+/**
  * Build.
  * @param data {Object} Project data
  * @returns {*} Project
  */
-function build(data){
+function build(data) {
 	return new Project(data);
 }
 
@@ -42,7 +52,7 @@ function build(data){
  * @param projectObject {Object} Project Object
  * @returns {{name: *, projectUrl: string}}
  */
-function formatToApi(projectObject){
+function formatToApi(projectObject) {
 	return {
 		name: projectObject.name,
 		projectUrl: projectObject.url

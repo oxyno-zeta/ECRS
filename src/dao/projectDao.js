@@ -1,5 +1,5 @@
 /*
- * Author: Alexandre Havrileck (Oxyno-zeta) 
+ * Author: Alexandre Havrileck (Oxyno-zeta)
  * Date: 10/07/16
  * Licence: See Readme
  */
@@ -15,7 +15,9 @@ const {Project} = require('../models/projectModel');
 
 module.exports = {
 	save: save,
-	findById: findById
+	findById: findById,
+	findByIds: findByIds,
+	findAll: findAll
 };
 
 /* ************************************* */
@@ -28,14 +30,37 @@ module.exports = {
 /* ************************************* */
 
 /**
+ * Find all.
+ * @returns {*}
+ */
+function findAll() {
+	return Project.find();
+}
+
+/**
+ * Find by ids.
+ * @param ids {Array} Array of id.
+ * @returns {Promise}
+ */
+function findByIds(ids) {
+	// Promise storage
+	let promises = [];
+	// Find by id for all ids
+	promises = ids.map(findById);
+
+	// Return all
+	return Promise.all(promises);
+}
+
+/**
  * Find by Id.
  * @param id {String} Object id
  * @returns {Promise}
  */
-function findById(id){
-	return new Promise(function(resolve, reject){
+function findById(id) {
+	return new Promise(function (resolve, reject) {
 		Project.findById(id, (err, project) => {
-			if (err){
+			if (err) {
 				reject(err);
 			}
 			else {
@@ -50,10 +75,10 @@ function findById(id){
  * @param projectObject {Object} Project Object
  * @returns {Promise} Promise
  */
-function save(projectObject){
-	return new Promise(function(resolve, reject){
+function save(projectObject) {
+	return new Promise(function (resolve, reject) {
 		projectObject.save((err, project) => {
-			if (err){
+			if (err) {
 				reject(err);
 			}
 			else {

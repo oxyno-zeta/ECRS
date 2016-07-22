@@ -18,6 +18,7 @@ const securityService = require('./core/securityService');
 /* ********       EXPORTS       ******** */
 /* ************************************* */
 module.exports = {
+	rolesObj: rolesObj,
 	initialize: initialize,
 	saveOrUpdateFromGithub: saveOrUpdateFromGithub,
 	findByUsernameForLocal: findByUsernameForLocal,

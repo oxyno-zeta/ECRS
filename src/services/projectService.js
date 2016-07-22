@@ -1,5 +1,5 @@
 /*
- * Author: Alexandre Havrileck (Oxyno-zeta) 
+ * Author: Alexandre Havrileck (Oxyno-zeta)
  * Date: 10/07/16
  * Licence: See Readme
  */
@@ -15,6 +15,8 @@ const projectDao = require('../dao/projectDao');
 
 module.exports = {
 	findById: findById,
+	findByIds: findByIds,
+	findAll: findAll,
 	save: save,
 	update: update
 };
@@ -29,11 +31,28 @@ module.exports = {
 /* ************************************* */
 
 /**
+ * Find all.
+ * @returns {*}
+ */
+function findAll() {
+	return projectDao.findAll();
+}
+
+/**
+ * Find by ids.
+ * @param ids {Array} Array of id.
+ * @returns {Promise}
+ */
+function findByIds(ids) {
+	return projectDao.findByIds(ids);
+}
+
+/**
  * Update in database.
  * @param projectObject {Object} Project object
  * @returns {Promise} Promise
  */
-function update(projectObject){
+function update(projectObject) {
 	return projectDao.update(projectObject);
 }
 
@@ -42,7 +61,7 @@ function update(projectObject){
  * @param projectObject {Object} Project Object
  * @returns {Promise} Promise
  */
-function save(projectObject){
+function save(projectObject) {
 	return projectDao.save(projectObject);
 }
 
@@ -51,7 +70,7 @@ function save(projectObject){
  * @param id {String} Object id
  * @returns {Promise}
  */
-function findById(id){
+function findById(id) {
 	return projectDao.findById(id);
 }
 
