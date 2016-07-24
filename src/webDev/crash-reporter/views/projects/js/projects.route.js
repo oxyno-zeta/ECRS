@@ -17,7 +17,14 @@
 				url: '/',
 				views: {
 					'content@header': {
-						templateUrl: 'crash-reporter/views/projects/projects.html'
+						templateUrl: 'crash-reporter/views/projects/projects.html',
+						controller: 'ProjectsController',
+						controllerAs: 'projectsCtrl'
+					}
+				},
+				resolve: {
+					projectList: function (projectsService) {
+						return projectsService.getAll();
 					}
 				}
 			});
