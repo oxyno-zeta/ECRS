@@ -38,7 +38,12 @@ module.exports = {
 function errorCleaner() {
 	return function (err, req, res, next) {
 		// Log error
-		logger.error(err);
+		if (_.has('stack')) {
+			logger.error(err.stack);
+		}
+		else {
+			logger.error(err);
+		}
 		// Response
 		let statusCode = err.statusCode || err.status || 500;
 
