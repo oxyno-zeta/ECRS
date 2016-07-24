@@ -54,7 +54,8 @@ function build(data) {
  */
 function formatToApi(projectObject) {
 	return {
+		id: projectObject._id,
 		name: projectObject.name,
-		projectUrl: projectObject.url
+		projectUrl: projectObject.projectUrl
 	};
 }
