@@ -14,12 +14,14 @@ const cookieParser = require('cookie-parser');
 const serveStatic = require('serve-static');
 const compression = require('compression');
 const expressValidator = require('express-validator');
+const _ = require('lodash');
 const logger = require('./shared/logger')('[Server]');
 const api = require('./api/api');
 const configurationService = require('./services/core/configurationService');
 const initializeService = require('./services/core/initializeService');
 const apiSecurity = require('./api/core/apiSecurity');
 const apiError = require('./api/core/apiError');
+const inputValidatorWrapper = require('./wrapper/inputValidatorWrapper');
 const app = express();
 
 /* ************************************* */
@@ -71,13 +73,23 @@ function prepare() {
 			app.use(compression());
 
 			// Express validator
-			app.use(expressValidator());
+			app.use(expressValidator({
+				customValidators: {
+					isUrl: function (value, mandatory) {
+						if (_.isUndefined(value) || _.isNull(value)) {
+							return !mandatory;
+						}
+
+						return inputValidatorWrapper.isUrlSync(value);
+					}
+				}
+			}));
 
 			// Static files and views
 			app.set('views', __dirname + '/views');
 			app.use('/bower_components', serveStatic(__dirname + '/bower_components/'));
 			app.use(serveStatic(__dirname + '/views/'));
-			
+
 			// Application security
 			app.use(apiSecurity.middleware.securityToken(api.getPathsWithoutSecurity()));
 

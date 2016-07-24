@@ -17,7 +17,8 @@ module.exports = {
 	save: save,
 	findById: findById,
 	findByIds: findByIds,
-	findAll: findAll
+	findAll: findAll,
+	findByName: findByName
 };
 
 /* ************************************* */
@@ -28,6 +29,15 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Find by name.
+ * @param name {String} name
+ * @returns {*}
+ */
+function findByName(name) {
+	return Project.findOne({name: name});
+}
 
 /**
  * Find all.

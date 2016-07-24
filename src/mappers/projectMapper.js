@@ -44,7 +44,14 @@ function formatListToApi(projectList) {
  * @returns {*} Project
  */
 function build(data) {
-	return new Project(data);
+	let d = _.cloneDeep(data);
+	if (_.isUndefined(data.projectUrl)) {
+		d.projectUrl = null;
+	}
+	if (_.isUndefined(data.crashLogList)) {
+		d.crashLogList = [];
+	}
+	return new Project(d);
 }
 
 /**

@@ -8,6 +8,7 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 const projectDao = require('../dao/projectDao');
+const projectMapper = require('../mappers/projectMapper');
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
@@ -17,8 +18,8 @@ module.exports = {
 	findById: findById,
 	findByIds: findByIds,
 	findAll: findAll,
-	save: save,
-	update: update
+	findByName: findByName,
+	create: create
 };
 
 /* ************************************* */
@@ -29,6 +30,27 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Create project.
+ * @param data {Object} project data
+ * @returns {Promise}
+ */
+function create(data) {
+	// Create project instance
+	let project = projectMapper.build(data);
+
+	return projectDao.save(project);
+}
+
+/**
+ * Find by name.
+ * @param name {String} name
+ * @returns {*}
+ */
+function findByName(name) {
+	return projectDao.findByName(name);
+}
 
 /**
  * Find all.
@@ -45,24 +67,6 @@ function findAll() {
  */
 function findByIds(ids) {
 	return projectDao.findByIds(ids);
-}
-
-/**
- * Update in database.
- * @param projectObject {Object} Project object
- * @returns {Promise} Promise
- */
-function update(projectObject) {
-	return projectDao.update(projectObject);
-}
-
-/**
- * Save.
- * @param projectObject {Object} Project Object
- * @returns {Promise} Promise
- */
-function save(projectObject) {
-	return projectDao.save(projectObject);
 }
 
 /**
