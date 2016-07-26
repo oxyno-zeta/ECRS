@@ -13,7 +13,8 @@
 	/** @ngInject */
 	function projectsDao($q, $resource, CONFIG) {
 		var service = {
-			getAll: getAll
+			getAll: getAll,
+			create: create
 		};
 
 		/* ************************************* */
@@ -34,6 +35,19 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Create Project.
+		 * @param data {Object} Project data
+		 * @returns {*}
+		 */
+		function create(data) {
+			var deferred = $q.defer();
+			projectResource.save(null, data, function (result) {
+				deferred.resolve(result.project);
+			}, deferred.reject);
+			return deferred.promise;
+		}
 
 		/**
 		 * Get all projects.

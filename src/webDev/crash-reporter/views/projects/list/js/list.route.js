@@ -7,17 +7,17 @@
 	'use strict';
 
 	angular
-		.module('crash-reporter.views.projects')
+		.module('crash-reporter.views.projects.list')
 		.config(routeConfig);
 
 	/** @ngInject */
 	function routeConfig($stateProvider) {
 		$stateProvider
-			.state('header.projects', {
+			.state('header.projects.list', {
 				url: '/',
 				views: {
 					'content@header': {
-						templateUrl: 'crash-reporter/views/projects/projects.html',
+						templateUrl: 'crash-reporter/views/projects/list/list.html',
 						controller: 'ProjectsController',
 						controllerAs: 'projectsCtrl'
 					}

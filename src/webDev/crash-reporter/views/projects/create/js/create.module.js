@@ -1,12 +1,12 @@
 /*
  * Author: Alexandre Havrileck (Oxyno-zeta)
- * Date: 21/07/16
+ * Date: 26/07/16
  * Licence: See Readme
  */
 (function () {
 	'use strict';
 
 	angular
-		.module('crash-reporter.views.projects', []);
+		.module('crash-reporter.views.projects.create', []);
 
 })();

@@ -13,7 +13,8 @@
 			'ngMaterial',
 			'ui.router',
 			'ngCookies',
-			'angular-loading-bar'
+			'angular-loading-bar',
+			'ngMessages'
 		]);
 
 })();

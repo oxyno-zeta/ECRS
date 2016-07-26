@@ -13,7 +13,8 @@
 	/** @ngInject */
 	function projectsService(projectsDao) {
 		var service = {
-			getAll: getAll
+			getAll: getAll,
+			create: create
 		};
 		return service;
 
@@ -26,6 +27,15 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Create Project.
+		 * @param data {Object} Project data
+		 * @returns {*}
+		 */
+		function create(data) {
+			return projectsDao.create(data);
+		}
 
 		/**
 		 * Get all projects.
