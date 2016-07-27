@@ -11,7 +11,7 @@
 		.controller('ProjectCreateController', ProjectCreateController);
 
 	/** @ngInject */
-	function ProjectCreateController($mdToast, $interval, projectsService) {
+	function ProjectCreateController($mdToast, projectsService) {
 		var vm = this;
 		// Variables
 		vm.project = {
@@ -32,6 +32,9 @@
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
 
+		/**
+		 * Create.
+		 */
 		function create() {
 			// Change data
 			vm.project.projectUrl = null;
