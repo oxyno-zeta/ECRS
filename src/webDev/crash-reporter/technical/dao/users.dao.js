@@ -41,9 +41,7 @@
 		 */
 		function getCurrent() {
 			var deferred = $q.defer();
-			userResource.get({id: 'current'}, function (result) {
-				deferred.resolve(result.user);
-			}, deferred.reject);
+			userResource.get({id: 'current'}, deferred.resolve, deferred.reject);
 			return deferred.promise;
 		}
 	}

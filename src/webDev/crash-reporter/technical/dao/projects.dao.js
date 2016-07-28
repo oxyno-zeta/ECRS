@@ -43,9 +43,7 @@
 		 */
 		function create(data) {
 			var deferred = $q.defer();
-			projectResource.save(null, data, function (result) {
-				deferred.resolve(result.project);
-			}, deferred.reject);
+			projectResource.save(null, data, deferred.resolve, deferred.reject);
 			return deferred.promise;
 		}
 
@@ -55,9 +53,7 @@
 		 */
 		function getAll() {
 			var deferred = $q.defer();
-			projectResource.get(null, function (result) {
-				deferred.resolve(result.projects);
-			}, deferred.reject);
+			projectResource.query(null, deferred.resolve, deferred.reject);
 			return deferred.promise;
 		}
 	}
