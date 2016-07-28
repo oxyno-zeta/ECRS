@@ -13,6 +13,7 @@ const logger = require('../../shared/logger')('[Core API]');
 /* ********       EXPORTS       ******** */
 /* ************************************* */
 module.exports = {
+	sendArrayResponse: sendArrayResponse,
 	sendResponse: sendResponse,
 	sendTextResponse: sendTextResponse,
 	getDefaultResponseBody: getDefaultResponseBody
@@ -27,6 +28,21 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Send array response.
+ * @param response {Object} Response
+ * @param array {Array} Array
+ * @param statusObject {Object} Status object (from APICodes)
+ */
+function sendArrayResponse(response, array, statusObject) {
+	// Update response
+	response.status(statusObject.code);
+	// Debug part
+	logger.debug(`Answer: Code = ${statusObject.code}, Text = ${array}`);
+	// Send response
+	response.send(array);
+}
 
 /**
  * Send text response.

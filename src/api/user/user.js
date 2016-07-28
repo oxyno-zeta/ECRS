@@ -34,11 +34,7 @@ module.exports = {
  */
 function getCurrentUser(req, res) {
 	let user = req.userDb;
-	let body = APIResponse.getDefaultResponseBody();
-
-	// Update body
-	body.user = userMapper.formatToApi(user);
-	APIResponse.sendResponse(res, body, APICodes.SUCCESS.OK);
+	APIResponse.sendResponse(res, userMapper.formatToApi(user), APICodes.SUCCESS.OK);
 }
 
 /* ************************************* */

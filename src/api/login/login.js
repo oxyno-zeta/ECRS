@@ -82,9 +82,7 @@ function login(req, res) {
 					expires: ((new Date).getTime() + time2daysInMs),
 					maxAge: time2daysInMs
 				});
-			// Update body
-			body.user = userMapper.formatToApi(user);
-			APIResponse.sendResponse(res, body, APICodes.SUCCESS.OK);
+			APIResponse.sendResponse(res, userMapper.formatToApi(user), APICodes.SUCCESS.OK);
 		}, function (err) {
 			logger.error(err);
 			APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);

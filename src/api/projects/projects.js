@@ -48,9 +48,7 @@ function getProjects(req, res) {
 	}
 
 	promise.then(function (results) {
-		// Update body
-		body.projects = projectMapper.formatListToApi(results);
-		APIResponse.sendResponse(res, body, APICodes.SUCCESS.OK);
+		APIResponse.sendResponse(res, projectMapper.formatListToApi(results), APICodes.SUCCESS.OK);
 	}, function (err) {
 		logger.error(err);
 		APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
@@ -92,9 +90,7 @@ function create(req, res) {
 
 		// Create in database
 		projectService.create(data).then(function (result) {
-			// Update body
-			body.project = projectMapper.formatToApi(result);
-			APIResponse.sendResponse(res, body, APICodes.SUCCESS.CREATED);
+			APIResponse.sendResponse(res, projectMapper.formatToApi(result), APICodes.SUCCESS.CREATED);
 		}, function (err) {
 			logger.error(err);
 			APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
