@@ -34,7 +34,7 @@ module.exports = {
  * @param req
  * @param res
  */
-function getProjects(req, res) {
+function getAllProjects(req, res) {
 	let body = APIResponse.getDefaultResponseBody();
 	let promise = null;
 	// Get user
@@ -101,6 +101,47 @@ function create(req, res) {
 	});
 }
 
+/**
+ * Get project.
+ * @param req
+ * @param res
+ */
+function getProject(req, res) {
+	let body = APIResponse.getDefaultResponseBody();
+	// Get project id
+	let projectId = req.params.id;
+
+	let promise = null;
+	// Get user
+	let user = req.userDb;
+	// Check if user is administrator
+	if (_.isEqual(user.role, rolesObj.admin)) {
+		promise = projectService.findById(projectId);
+	}
+	else if (_.indexOf(user.projects, projectId) !== -1) {
+		promise = projectService.findById(projectId);
+	}
+
+	// Check if promise exist
+	if (_.isNull(promise)) {
+		APIResponse.sendResponse(req, body, APICodes.CLIENT_ERROR.FORBIDDEN);
+		return;
+	}
+
+	promise.then(function (result) {
+		// Check if exists
+		if (_.isNull(result)) {
+			APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
+			return;
+		}
+
+		APIResponse.sendResponse(res, projectMapper.formatToApi(result), APICodes.SUCCESS.OK);
+	}, function (err) {
+		logger.error(err);
+		APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+	});
+}
+
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
@@ -113,8 +154,9 @@ function expose() {
 	logger.debug('Putting projects API...');
 	var router = express.Router();
 
-	router.get('/projects', apiSecurity.middleware.populateUser(), getProjects);
+	router.get('/projects', apiSecurity.middleware.populateUser(), getAllProjects);
 	router.post('/projects', apiSecurity.middleware.populateUser(), create);
+	router.get('/projects/:id', apiSecurity.middleware.populateUser(), getProject);
 
 	return router;
 }
