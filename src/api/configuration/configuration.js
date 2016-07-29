@@ -45,7 +45,8 @@ function getConfiguration(req, res) {
 			isGithubEnabled: configurationService.auth.github.isEnabled(),
 			isLocalEnabled: configurationService.auth.local.isEnabled()
 		},
-		isLocalRegisterEnabled: configurationService.isLocalRegisterEnabled()
+		isLocalRegisterEnabled: configurationService.isLocalRegisterEnabled(),
+		backendUrl: configurationService.getBackendUrl()
 	};
 	body = _.assign(body, configuration);
 
