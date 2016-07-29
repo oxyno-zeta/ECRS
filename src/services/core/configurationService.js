@@ -36,7 +36,8 @@ module.exports = {
 			isEnabled: isLocalEnabled
 		}
 	},
-	isLocalRegisterEnabled: isLocalRegisterEnabled
+	isLocalRegisterEnabled: isLocalRegisterEnabled,
+	getBackendUrl: getBackendUrl
 };
 
 /* ************************************* */
@@ -48,6 +49,14 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Get Backend URL.
+ * @returns {*}
+ */
+function getBackendUrl() {
+	return configuration[CONSTANTS.BACKEND_URL];
+}
 
 /**
  * Is local register enabled.
