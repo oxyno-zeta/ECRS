@@ -23,7 +23,7 @@ const configBase = {
 			let message = (_.keys(options.meta).length !== 5) ? options.message : options.meta.stack.join('\n');
 
 			// Return string will be passed to logger.
-			return `${moment.utc().format('YYYY/MM/DD HH:mm:ss')} [${options.level.toUpperCase()}] ${message}`;
+			return `${moment().format('YYYY/MM/DD HH:mm:ss')} [${options.level.toUpperCase()}] ${message}`;
 		}
 	},
 	console: {
@@ -33,7 +33,7 @@ const configBase = {
 			let message = (_.keys(options.meta).length !== 5) ? options.message : options.meta.stack.join('\n');
 
 			// Return string will be passed to logger.
-			return `${moment.utc().format('YYYY/MM/DD HH:mm:ss')} [${options.level.toUpperCase()}] ${message}`;
+			return `${moment().format('YYYY/MM/DD HH:mm:ss')} [${options.level.toUpperCase()}] ${message}`;
 		}
 	}
 };
@@ -78,6 +78,9 @@ module.exports = function (prefix = '') {
  */
 function logForger(prefix, logFunction) {
 	return function (text) {
+		if (_.isArray(text) || _.isObject(text) || _.isError(text)) {
+			text = JSON.stringify(text);
+		}
 		logFunction(`${prefix} ${text}`);
 	}
 }
