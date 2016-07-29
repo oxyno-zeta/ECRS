@@ -7,6 +7,7 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
+const _ = require('lodash');
 const logger = require('../../shared/logger')('[Core API]');
 
 /* ************************************* */
@@ -87,8 +88,10 @@ function sendResponse(response, body, statusObject) {
 		response.end();
 	}
 	else {
-		// Update body
-		body.reason = statusObject.reason;
+		// Update body if necessary
+		if (_.has(body, 'reason')) {
+			body.reason = statusObject.reason;
+		}
 		// Debug part
 		logger.debug(`Answer: Code = ${statusObject.code}, Body = ${JSON.stringify(body)}`);
 		// Send response
