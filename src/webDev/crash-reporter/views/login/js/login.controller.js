@@ -75,7 +75,7 @@
 			loginService.login(vm.username, vm.password).then(function () {
 				// Success
 				// Redirect to main page
-				$state.go('header.projects', {reload: true});
+				$state.go('header.projects.list', {reload: true});
 			}, function () {
 				// Error
 				var toast = $mdToast.simple()
