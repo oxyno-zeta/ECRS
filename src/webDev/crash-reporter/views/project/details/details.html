@@ -10,17 +10,17 @@
         <div layout="row">
             <div flex layout="column">
                 <p>
-                    Name: <span class="text-bold" ng-bind="projectAbstractCtrl.project.name"></span>
+                    Name: <span class="text-bold" ng-bind="projectDetailsCtrl.project.name"></span>
                 </p>
             </div>
             <div flex layout="column">
-                <p ng-if="!projectAbstractCtrl.project.projectUrl">
+                <p ng-if="!projectDetailsCtrl.project.projectUrl">
                     Project Url: <span class="text-bold">No Project Url !</span>
                 </p>
 
-                <p ng-if="projectAbstractCtrl.project.projectUrl">
-                    Project Url: <a class="text-bold" ng-bind="projectAbstractCtrl.project.projectUrl"
-                                    ng-href="{{projectAbstractCtrl.project.projectUrl}}" target="_blank"></a>
+                <p ng-if="projectDetailsCtrl.project.projectUrl">
+                    Project Url: <a class="text-bold" ng-bind="projectDetailsCtrl.project.projectUrl"
+                                    ng-href="{{projectDetailsCtrl.project.projectUrl}}" target="_blank"></a>
                 </p>
             </div>
         </div>
@@ -28,7 +28,7 @@
             <div flex layout="column">
                 <p>
                     Crash Report Post URL: <span class="text-bold"
-                                                 ng-bind="projectAbstractCtrl.crashLogsPostUrl"></span>
+                                                 ng-bind="projectDetailsCtrl.crashLogsPostUrl"></span>
                 </p>
             </div>
         </div>
