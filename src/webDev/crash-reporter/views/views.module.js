@@ -10,7 +10,8 @@
 		.module('crash-reporter.views', [
 			'crash-reporter.views.header',
 			'crash-reporter.views.projects',
-			'crash-reporter.views.login'
+			'crash-reporter.views.login',
+			'crash-reporter.views.project'
 		]);
 
 })();

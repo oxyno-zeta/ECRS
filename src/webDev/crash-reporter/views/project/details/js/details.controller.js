@@ -1,20 +1,21 @@
 /*
  * Author: Alexandre Havrileck (Oxyno-zeta)
- * Date: 22/07/16
+ * Date: 29/07/16
  * Licence: See Readme
  */
 (function () {
 	'use strict';
 
 	angular
-		.module('crash-reporter.views.projects.list')
-		.controller('ProjectsController', ProjectsController);
+		.module('crash-reporter.views.project.details')
+		.controller('ProjectDetailsController', ProjectDetailsController);
 
 	/** @ngInject */
-	function ProjectsController(projectList) {
+	function ProjectDetailsController(project, crashLogsPostUrl) {
 		var vm = this;
 		// Variables
-		vm.projectList = projectList;
+		vm.project = project;
+		vm.crashLogsPostUrl = crashLogsPostUrl;
 		// Functions
 
 		////////////////

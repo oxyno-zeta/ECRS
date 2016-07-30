@@ -16,7 +16,7 @@
         <md-grid-tile class="gray"
                       md-colspan="2" md-colspan-sm="1" md-colspan-xs="1"
                       ng-repeat="project in projectsCtrl.projectList"
-                      ng-click="projectsCtrl.openProject(project)">
+                      ui-sref="header.project({projectId: project.id})">
             <h3 ng-bind="project.name"></h3>
             <md-grid-tile-footer>
                 <span flex></span>

@@ -14,7 +14,8 @@
 	function projectsDao($q, $resource, CONFIG) {
 		var service = {
 			getAll: getAll,
-			create: create
+			create: create,
+			getById: getById
 		};
 
 		/* ************************************* */
@@ -35,6 +36,17 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Get by id.
+		 * @param id {String} id
+		 * @returns {*}
+		 */
+		function getById(id) {
+			var deferred = $q.defer();
+			projectResource.get({id: id}, deferred.resolve, deferred.reject);
+			return deferred.promise;
+		}
 
 		/**
 		 * Create Project.

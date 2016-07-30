@@ -11,9 +11,10 @@
 		.factory('configurationService', configurationService);
 
 	/** @ngInject */
-	function configurationService(configurationDao) {
+	function configurationService($q, configurationDao, CONFIG) {
 		var service = {
-			getConfiguration: getConfiguration
+			getConfiguration: getConfiguration,
+			getCrashLogsPostUrl: getCrashLogsPostUrl
 		};
 		return service;
 
@@ -26,6 +27,23 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Get crash logs post url.
+		 * @param projectId {String} id
+		 * @returns {*}
+		 */
+		function getCrashLogsPostUrl(projectId) {
+			var deferred = $q.defer();
+			configurationDao.getConfiguration().then(function (config) {
+				var url = config.backendUrl;
+				url += CONFIG.URL.PREFIX;
+				url += '/crash-logs/';
+				url += projectId;
+				deferred.resolve(url);
+			}, deferred.reject);
+			return deferred.promise;
+		}
 
 		/**
 		 * Get configuration.

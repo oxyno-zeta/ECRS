@@ -14,7 +14,8 @@
 	function projectsService(projectsDao) {
 		var service = {
 			getAll: getAll,
-			create: create
+			create: create,
+			getById: getById
 		};
 		return service;
 
@@ -27,6 +28,15 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Get by id.
+		 * @param id {String} id
+		 * @returns {*}
+		 */
+		function getById(id) {
+			return projectsDao.getById(id);
+		}
 
 		/**
 		 * Create Project.
