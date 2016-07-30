@@ -121,9 +121,10 @@ function getConfig() {
 	}
 
 	// Check end of backend url
-	if (!_.endsWith(config[CONSTANTS.BACKEND_URL], '/')) {
-		config[CONSTANTS.BACKEND_URL] += '/';
+	if (_.endsWith(config[CONSTANTS.BACKEND_URL], '/')) {
+		config[CONSTANTS.BACKEND_URL] = config[CONSTANTS.BACKEND_URL].substr(0, config[CONSTANTS.BACKEND_URL].length - 1);
 	}
+
 
 	return config;
 }
