@@ -1,11 +1,14 @@
 <md-toolbar class="header">
     <div class="md-toolbar-tools">
-        <md-button class="md-icon-button opened" aria-label="Navigation" ng-disabled="!headerCtrl.isLoggedIn">
-            <md-icon class="fa fa-bars big-icons"></md-icon>
-        </md-button>
         <h2>
             <span>Crash Reporter Server</span>
         </h2>
+        <md-button class="top-button top-button-space-left" aria-label="Projects"
+                   ui-sref="header.projects.list"
+                   ui-sref-active="active"
+                   ng-disabled="!headerCtrl.isLoggedIn">
+            <span class="title">Projects</span>
+        </md-button>
         <span flex></span>
 
         <md-menu md-offset="-5 75" ng-if="headerCtrl.currentUser.role === headerCtrl.roles.admin">
