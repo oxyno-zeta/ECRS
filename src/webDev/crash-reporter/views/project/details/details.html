@@ -37,7 +37,8 @@
     <md-tabs md-dynamic-height md-border-bottom>
         <md-tab label="electron code">
             <md-content class="md-padding">
-                Code !
+                <div ui-codemirror="{lineNumbers: true, readOnly: true, lineWrapping : true, mode: 'javascript'}"
+                     ng-model="projectDetailsCtrl.electronCode"></div>
             </md-content>
         </md-tab>
     </md-tabs>

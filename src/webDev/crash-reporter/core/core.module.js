@@ -14,7 +14,8 @@
 			'ui.router',
 			'ngCookies',
 			'angular-loading-bar',
-			'ngMessages'
+			'ngMessages',
+			'ui.codemirror'
 		]);
 
 })();

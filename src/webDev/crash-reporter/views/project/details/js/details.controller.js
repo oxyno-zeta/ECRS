@@ -16,6 +16,10 @@
 		// Variables
 		vm.project = project;
 		vm.crashLogsPostUrl = crashLogsPostUrl;
+		vm.electronCode = "\nconst {crashReporter} = require('electron')\n\ncrashReporter.start({\n	productName: 'YourName'," +
+			"\n	companyName: 'YourCompany',\n	submitURL: '" + crashLogsPostUrl + "'," +
+			"\n	autoSubmit: true\n})\n";
+
 		// Functions
 
 		////////////////

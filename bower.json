@@ -13,6 +13,16 @@
     "font-awesome": "^4.6.3",
     "angular-cookies": "^1.5.7",
     "lodash": "^4.13.1",
-    "angular-loading-bar": "^0.9.0"
+    "angular-loading-bar": "^0.9.0",
+    "angular-ui-codemirror": "^0.3.0"
+  },
+  "overrides": {
+    "codemirror": {
+      "main": [
+        "lib/codemirror.js",
+        "mode/javascript/javascript.js",
+        "lib/codemirror.css"
+      ]
+    }
   }
 }
