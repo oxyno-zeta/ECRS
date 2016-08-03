@@ -40,7 +40,7 @@ function sendArrayResponse(response, array, statusObject) {
 	// Update response
 	response.status(statusObject.code);
 	// Debug part
-	logger.debug(`Answer: Code = ${statusObject.code}, Text = ${array}`);
+	logger.debug(`Answer: Code = ${statusObject.code}, Text = ${JSON.stringify(array)}`);
 	// Send response
 	response.send(array);
 }
