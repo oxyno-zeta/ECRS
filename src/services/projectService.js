@@ -19,7 +19,12 @@ module.exports = {
 	findByIds: findByIds,
 	findAll: findAll,
 	findByName: findByName,
-	create: create
+	create: create,
+	statisticsNumberByVersion: statisticsNumberByVersion,
+	statisticsNumberByDate: statisticsNumberByDate,
+	statisticsNumberByVersionByDate: statisticsNumberByVersionByDate,
+	statisticsNumberByVersionByDateAndStartDate: statisticsNumberByVersionByDateAndStartDate,
+	getAllVersions: getAllVersions
 };
 
 /* ************************************* */
@@ -30,6 +35,55 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Get all versions for project.
+ * @param projectId {String} Project id
+ * @returns {Promise}
+ */
+function getAllVersions(projectId) {
+	return projectDao.getAllVersions(projectId);
+}
+
+/**
+ * Statistics number by version by date.
+ * @param projectId {String} project id
+ * @param versions {Array} Versions in array
+ * @returns {Promise}
+ */
+function statisticsNumberByVersionByDate(projectId, versions) {
+	return projectDao.statisticsNumberByVersionByDate(projectId, versions);
+}
+
+/**
+ * Statistics number by version by date.
+ * @param projectId {String} project id
+ * @param versions {Array} Versions in array
+ * @param startDate {Integer} Start date (in timestamp ms)
+ * @returns {Promise}
+ */
+function statisticsNumberByVersionByDateAndStartDate(projectId, versions, startDate) {
+	return projectDao.statisticsNumberByVersionByDateAndStartDate(projectId, versions, startDate);
+}
+
+/**
+ * Statistics Number By Date
+ * @param projectId {String} Project Id
+ * @param startDate {Integer} Start date in timestamp (in ms)
+ * @returns {Promise}
+ */
+function statisticsNumberByDate(projectId, startDate) {
+	return projectDao.statisticsNumberByDate(projectId, startDate);
+}
+
+/**
+ * Statistics Number By Version.
+ * @param project {Object} Project
+ * @returns {Promise}
+ */
+function statisticsNumberByVersion(project) {
+	return projectDao.statisticsNumberByVersion(project);
+}
 
 /**
  * Create project.

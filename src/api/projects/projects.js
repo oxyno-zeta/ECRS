@@ -115,10 +115,7 @@ function getProject(req, res) {
 	// Get user
 	let user = req.userDb;
 	// Check if user is administrator
-	if (_.isEqual(user.role, rolesObj.admin)) {
-		promise = projectService.findById(projectId);
-	}
-	else if (_.indexOf(user.projects, projectId) !== -1) {
+	if (_.isEqual(user.role, rolesObj.admin) || _.indexOf(user.projects, projectId) !== -1) {
 		promise = projectService.findById(projectId);
 	}
 
@@ -142,6 +139,226 @@ function getProject(req, res) {
 	});
 }
 
+/**
+ * Statistics Number By Version.
+ * @param req
+ * @param res
+ */
+function statisticsNumberByVersion(req, res) {
+	let body = APIResponse.getDefaultResponseBody();
+	// Get project id
+	let projectId = req.params.id;
+
+	let promise = null;
+	// Get user
+	let user = req.userDb;
+	// Check if user is administrator
+	if (_.isEqual(user.role, rolesObj.admin) || _.indexOf(user.projects, projectId) !== -1) {
+		promise = projectService.findById(projectId);
+	}
+
+	// Check if promise exist
+	if (_.isNull(promise)) {
+		APIResponse.sendResponse(req, body, APICodes.CLIENT_ERROR.FORBIDDEN);
+		return;
+	}
+
+	promise.then(function (project) {
+		// Check if project exists
+		if (_.isNull(project)) {
+			APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
+			return;
+		}
+
+		projectService.statisticsNumberByVersion(project).then(function (statistics) {
+			APIResponse.sendResponse(res, statistics, APICodes.SUCCESS.OK);
+		}, function (err) {
+			logger.error(err);
+			APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+		});
+	}, function (err) {
+		logger.error(err);
+		APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+	});
+}
+
+/**
+ * Get all Versions for specific project.
+ * @param req
+ * @param res
+ */
+function getAllVersions(req, res) {
+	let body = APIResponse.getDefaultResponseBody();
+	// Get project id
+	let projectId = req.params.id;
+
+	let promise = null;
+	// Get user
+	let user = req.userDb;
+	// Check if user is administrator
+	if (_.isEqual(user.role, rolesObj.admin) || _.indexOf(user.projects, projectId) !== -1) {
+		promise = projectService.findById(projectId);
+	}
+
+	// Check if promise exist
+	if (_.isNull(promise)) {
+		APIResponse.sendResponse(req, body, APICodes.CLIENT_ERROR.FORBIDDEN);
+		return;
+	}
+
+	promise.then(function (project) {
+		// Check if project exists
+		if (_.isNull(project)) {
+			APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
+			return;
+		}
+
+		projectService.getAllVersions(projectId).then(function (versions) {
+			APIResponse.sendArrayResponse(res, versions, APICodes.SUCCESS.OK);
+		}, function (err) {
+			logger.error(err);
+			APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+		});
+	}, function (err) {
+		logger.error(err);
+		APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+	});
+}
+
+/**
+ * Statistics Number by Date.
+ * @param req
+ * @param res
+ */
+function statisticsNumberByDate(req, res) {
+	let body = APIResponse.getDefaultResponseBody();
+
+	// Check Query
+	req.checkQuery('startDate', 'Invalid Start Date (not timestamp)').isInt();
+
+	let errors = req.validationErrors();
+	// Check if validation failed
+	if (errors) {
+		body.errors = errors;
+		APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.BAD_REQUEST);
+		return;
+	}
+
+	// Get project id
+	let projectId = req.params.id;
+	// Get start date
+	let startDate = req.query.startDate;
+
+	let promise = null;
+	// Get user
+	let user = req.userDb;
+	// Check if user is administrator
+	if (_.isEqual(user.role, rolesObj.admin) || _.indexOf(user.projects, projectId) !== -1) {
+		promise = projectService.findById(projectId);
+	}
+
+	// Check if promise exist
+	if (_.isNull(promise)) {
+		APIResponse.sendResponse(req, body, APICodes.CLIENT_ERROR.FORBIDDEN);
+		return;
+	}
+
+	promise.then(function (project) {
+		// Check if project exists
+		if (_.isNull(project)) {
+			APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
+			return;
+		}
+
+		projectService.statisticsNumberByDate(projectId, startDate).then(function (statistics) {
+			APIResponse.sendResponse(res, statistics, APICodes.SUCCESS.OK);
+		}, function (err) {
+			logger.error(err);
+			APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+		});
+	}, function (err) {
+		logger.error(err);
+		APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+	});
+}
+
+/**
+ * Statistics number by version by date.
+ * @param req
+ * @param res
+ */
+function statisticsNumberByVersionByDate(req, res) {
+	let body = APIResponse.getDefaultResponseBody();
+	// Get versions
+	let versions = req.query.versions;
+
+	// Check if it is a String
+	if (_.isString(versions)) {
+		versions = [versions];
+	}
+
+	// Check if it is array
+	if (!_.isArray(versions)) {
+		APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.BAD_REQUEST);
+		return;
+	}
+
+	// Get start date
+	let startDate = req.query.startDate;
+	// Change type if necessary
+	if (_.isString(startDate)) {
+		startDate = _.parseInt(startDate);
+	}
+
+	// Check if it is int only if startDate exists
+	if (!_.isInteger(startDate) && !_.isUndefined(startDate)) {
+		APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.BAD_REQUEST);
+		return;
+	}
+
+	// Get project id
+	let projectId = req.params.id;
+
+	let promise = null;
+	// Get user
+	let user = req.userDb;
+	// Check if user is administrator
+	if (_.isEqual(user.role, rolesObj.admin) || _.indexOf(user.projects, projectId) !== -1) {
+		promise = projectService.findById(projectId);
+	}
+
+	// Check if promise exist
+	if (_.isNull(promise)) {
+		APIResponse.sendResponse(req, body, APICodes.CLIENT_ERROR.FORBIDDEN);
+		return;
+	}
+
+	promise.then(function (project) {
+		// Check if project exists
+		if (_.isNull(project)) {
+			APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
+			return;
+		}
+
+		if (_.isNull(startDate) || _.isUndefined(startDate)) {
+			promise = projectService.statisticsNumberByVersionByDate(projectId, versions);
+		}
+		else {
+			promise = projectService.statisticsNumberByVersionByDateAndStartDate(projectId, versions, startDate);
+		}
+
+		promise.then(function (statistics) {
+			APIResponse.sendResponse(res, statistics, APICodes.SUCCESS.OK);
+		}, function (err) {
+			logger.error(err);
+			APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+		});
+	}, function (err) {
+		logger.error(err);
+		APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+	});
+}
+
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
@@ -156,7 +373,14 @@ function expose() {
 
 	router.get('/projects', apiSecurity.middleware.populateUser(), getAllProjects);
 	router.post('/projects', apiSecurity.middleware.populateUser(), create);
+	router.get('/projects/:id/versions', apiSecurity.middleware.populateUser(), getAllVersions);
 	router.get('/projects/:id', apiSecurity.middleware.populateUser(), getProject);
+	// Statistics
+	router.get('/projects/:id/statistics/number/version', apiSecurity.middleware.populateUser(),
+		statisticsNumberByVersion);
+	router.get('/projects/:id/statistics/number/date', apiSecurity.middleware.populateUser(), statisticsNumberByDate);
+	router.get('/projects/:id/statistics/number/version/date', apiSecurity.middleware.populateUser(),
+		statisticsNumberByVersionByDate);
 
 	return router;
 }
