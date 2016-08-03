@@ -78,9 +78,21 @@ module.exports = function (prefix = '') {
  */
 function logForger(prefix, logFunction) {
 	return function (text) {
-		if (_.isArray(text) || _.isObject(text) || _.isError(text)) {
+		// Check if error
+		if (_.isError(text)) {
+			if (!_.isUndefined(text.stack)) {
+				text = text.stack;
+			}
+			else {
+				text = text.toString();
+			}
+		}
+
+		// Check if array or object
+		if (_.isArray(text) || _.isObject(text)) {
 			text = JSON.stringify(text);
 		}
+
 		logFunction(`${prefix} ${text}`);
 	}
 }
