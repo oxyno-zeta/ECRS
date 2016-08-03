@@ -75,13 +75,8 @@ function prepare() {
 			// Express validator
 			app.use(expressValidator({
 				customValidators: {
-					isUrl: function (value, mandatory) {
-						if (_.isUndefined(value) || _.isNull(value)) {
-							return !mandatory;
-						}
-
-						return inputValidatorWrapper.isUrlSync(value);
-					}
+					isUrl: inputValidatorWrapper.isArraySync,
+					isArray: inputValidatorWrapper.isArraySync
 				}
 			}));
 

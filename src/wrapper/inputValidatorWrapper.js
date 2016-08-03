@@ -8,12 +8,14 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 const isUrl = require('is-url');
+const _ = require('lodash');
 
 /* ************************************* */
 /* ********       EXPORTS       ******** */
 /* ************************************* */
 module.exports = {
-	isUrlSync: isUrl
+	isUrlSync: isUrlSync,
+	isArraySync: _.isArray
 };
 
 /* ************************************* */
@@ -26,4 +28,16 @@ module.exports = {
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
 
+/**
+ * Is Url Sync.
+ * @param value {Object} Value to test
+ * @param mandatory {Boolean} Is field mandatory
+ * @returns {*}
+ */
+function isUrlSync(value, mandatory) {
+	if (_.isUndefined(value) || _.isNull(value)) {
+		return !mandatory;
+	}
 
+	return isUrl(value);
+}
