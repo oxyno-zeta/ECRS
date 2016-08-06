@@ -11,7 +11,7 @@
 		.controller('ProjectDetailsController', ProjectDetailsController);
 
 	/** @ngInject */
-	function ProjectDetailsController(project, crashLogsPostUrl) {
+	function ProjectDetailsController($state, project, crashLogsPostUrl) {
 		var vm = this;
 		// Variables
 		vm.project = project;
@@ -21,6 +21,7 @@
 			"\n	autoSubmit: true\n})\n";
 
 		// Functions
+		vm.isState = isState;
 
 		////////////////
 
@@ -32,6 +33,15 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Check is State.
+		 * @param stateName {String} State name
+		 * @returns {*}
+		 */
+		function isState(stateName) {
+			return $state.is(stateName);
+		}
 
 	}
 

@@ -15,14 +15,20 @@
 		var service = {
 			getAll: getAll,
 			create: create,
-			getById: getById
+			getById: getById,
+			statisticsNumberByVersion: statisticsNumberByVersion,
+			statisticsNumberByDate: statisticsNumberByDate,
+			getAllVersions: getAllVersions,
+			statisticsNumberByVersionByDate: statisticsNumberByVersionByDate
 		};
 
 		/* ************************************* */
 		/* ********  PRIVATE VARIABLES  ******** */
 		/* ************************************* */
 
-		var projectResource = $resource(CONFIG.URL.PREFIX + '/projects/:id', {}, {});
+		var projectResource = $resource(CONFIG.URL.PREFIX + '/projects/:id/:verb1', {}, {});
+		var projectStatisticsResource =
+			$resource(CONFIG.URL.PREFIX + '/projects/:id/statistics/number/:verb1/:verb2', {}, {});
 
 
 		return service;
@@ -36,6 +42,68 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Statistics Number by version by date.
+		 * @param id {String} id
+		 * @param versions {Array} versions
+		 * @param startDate {Date} Start date
+		 * @returns {*}
+		 */
+		function statisticsNumberByVersionByDate(id, versions, startDate) {
+			var deferred = $q.defer();
+			var timestamp;
+			// Get timestamp if necessary
+			if (startDate) {
+				timestamp = startDate.getTime();
+			}
+
+			projectStatisticsResource.get({
+				id: id, verb1: 'version',
+				verb2: 'date', versions: versions, startDate: timestamp
+			}, function (result) {
+				deferred.resolve(result.toJSON());
+			}, deferred.reject);
+			return deferred.promise;
+		}
+
+		/**
+		 * Get versions in project.
+		 * @param id {String} id
+		 * @returns {*}
+		 */
+		function getAllVersions(id) {
+			var deferred = $q.defer();
+			projectResource.query({id: id, verb1: 'versions'}, deferred.resolve, deferred.reject);
+			return deferred.promise;
+		}
+
+		/**
+		 * Statistics Number By Date.
+		 * @param id {String} id
+		 * @param startDate {Date} Start date
+		 * @returns {*}
+		 */
+		function statisticsNumberByDate(id, startDate) {
+			var deferred = $q.defer();
+			projectStatisticsResource.get({id: id, verb1: 'date', startDate: startDate.getTime()}, function (result) {
+				deferred.resolve(result.toJSON());
+			}, deferred.reject);
+			return deferred.promise;
+		}
+
+		/**
+		 * Statistics Number By Version.
+		 * @param id {String} id
+		 * @returns {*}
+		 */
+		function statisticsNumberByVersion(id) {
+			var deferred = $q.defer();
+			projectStatisticsResource.get({id: id, verb1: 'version'}, function (result) {
+				deferred.resolve(result.toJSON());
+			}, deferred.reject);
+			return deferred.promise;
+		}
 
 		/**
 		 * Get by id.

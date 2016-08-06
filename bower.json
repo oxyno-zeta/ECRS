@@ -14,7 +14,9 @@
     "angular-cookies": "^1.5.7",
     "lodash": "^4.13.1",
     "angular-loading-bar": "^0.9.0",
-    "angular-ui-codemirror": "^0.3.0"
+    "angular-ui-codemirror": "^0.3.0",
+    "angular-nvd3": "^1.0.8",
+    "moment": "^2.14.1"
   },
   "overrides": {
     "codemirror": {

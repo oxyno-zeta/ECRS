@@ -1,0 +1,68 @@
+<md-sidenav class="statistics md-sidenav-left md-whiteframe-z2" md-component-id="left">
+    <md-toolbar class="md-theme-indigo">
+        <h1 class="md-toolbar-tools">Statistics</h1>
+    </md-toolbar>
+    <md-content layout-padding layout="column">
+        <md-input-container flex layout="row">
+            <label>Statistics</label>
+            <md-select flex ng-model="projectStatisticsCtrl.choice"
+                       ng-change="projectStatisticsCtrl.choiceChange()">
+                <md-option value="1">Number by versions</md-option>
+                <md-option value="2">Number by date</md-option>
+                <md-option value="3">Number by versions and by date</md-option>
+            </md-select>
+        </md-input-container>
+
+        <div ng-if="projectStatisticsCtrl.versions.length !== 0 && projectStatisticsCtrl.choice === '3'" layout="row">
+            <md-chips flex layout="column" ng-model="projectStatisticsCtrl.selectedVersions" md-autocomplete-snap
+                      md-require-match="true">
+                <md-autocomplete
+                        md-selected-item="selectedItem"
+                        md-search-text="projectStatisticsCtrl.searchText"
+                        md-items="item in projectStatisticsCtrl.querySearch(projectStatisticsCtrl.searchText)"
+                        md-item-text="item"
+                        md-min-length="-1"
+                        md-autoselect="true"
+                        md-select-on-match="true"
+                        placeholder="Search for a version">
+                    <span ng-bind="item"></span>
+                </md-autocomplete>
+                <md-chip-template>
+                <span>
+                  <strong>{{$chip}}</strong>
+                </span>
+                </md-chip-template>
+            </md-chips>
+            <md-button layout="column" ng-click="projectStatisticsCtrl.openSeeAllVersionsModal()"
+                       class="md-icon-button top-margin-button" aria-label="Sidenav">
+                <md-icon class="fa fa-info-circle big-icons"></md-icon>
+            </md-button>
+        </div>
+
+        <md-datepicker class="date-picker" layout="row"
+                       ng-if="projectStatisticsCtrl.choice === '2' ||
+                        (projectStatisticsCtrl.choice === '3' && projectStatisticsCtrl.isStartDateWanted)"
+                       ng-model="projectStatisticsCtrl.startDate" md-placeholder="Enter start date">
+        </md-datepicker>
+
+        <md-checkbox flex layout="row" class="checkbox-start-date" ng-if="projectStatisticsCtrl.choice === '3'"
+                     ng-model="projectStatisticsCtrl.isStartDateWanted" aria-label="Want start date ?">
+            Want a start date ?
+        </md-checkbox>
+
+        <div layout="row" layout-align="center center">
+            <md-button class="md-raised" ng-disabled="projectStatisticsCtrl.isApplyDisabled()"
+                       ng-click="projectStatisticsCtrl.applyStatistics()">
+                Apply
+            </md-button>
+        </div>
+    </md-content>
+</md-sidenav>
+
+<md-content flex layout="row">
+    <md-button ng-click="projectStatisticsCtrl.openSidenav()"
+               class="md-icon-button" aria-label="Sidenav">
+        <md-icon class="fa fa-bars big-icons"></md-icon>
+    </md-button>
+    <nvd3 flex layout="column" options="projectStatisticsCtrl.options" data="projectStatisticsCtrl.data"></nvd3>
+</md-content>

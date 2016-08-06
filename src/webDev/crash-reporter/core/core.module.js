@@ -15,7 +15,8 @@
 			'ngCookies',
 			'angular-loading-bar',
 			'ngMessages',
-			'ui.codemirror'
+			'ui.codemirror',
+			'nvd3'
 		]);
 
 })();

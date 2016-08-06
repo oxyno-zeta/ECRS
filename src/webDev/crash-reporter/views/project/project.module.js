@@ -8,7 +8,8 @@
 
 	angular
 		.module('crash-reporter.views.project', [
-			'crash-reporter.views.project.details'
+			'crash-reporter.views.project.details',
+			'crash-reporter.views.project.statistics'
 		]);
 
 })();
