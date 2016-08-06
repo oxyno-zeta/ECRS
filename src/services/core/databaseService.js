@@ -42,17 +42,19 @@ function initDatabase() {
 		mongoose.Promise = Promise;
 
 		var options = {};
-		if ("" !== configurationService.database.getLogin())
+		if ("" !== configurationService.database.getLogin()) {
 			options.user = configurationService.database.getLogin();
+		}
 
-		if ("" !== configurationService.database.getPassword())
+		if ("" !== configurationService.database.getPassword()) {
 			options.pass = configurationService.database.getPassword();
+		}
 
 		mongoose.connect(configurationService.database.getUrl(), options);
 
 		mongoose.connection.on('connected', function () {
 			logger.debug('Mongoose connection open to ' + configurationService.database.getUrl());
-			userService.initialize().then(function (result) {
+			userService.initialize().then(function () {
 				logger.debug('End initialize database');
 				resolve();
 			}, reject);
