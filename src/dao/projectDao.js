@@ -178,7 +178,7 @@ function statisticsNumberByVersion(project) {
 			});
 
 			resolve(statistics);
-		}, reject);
+		}).catch(reject);
 	});
 }
 
@@ -220,16 +220,7 @@ function findByIds(ids) {
  * @returns {Promise}
  */
 function findById(id) {
-	return new Promise(function (resolve, reject) {
-		Project.findById(id, (err, project) => {
-			if (err) {
-				reject(err);
-			}
-			else {
-				resolve(project);
-			}
-		});
-	});
+	return Project.findById(id);
 }
 
 /**
@@ -238,14 +229,5 @@ function findById(id) {
  * @returns {Promise} Promise
  */
 function save(projectObject) {
-	return new Promise(function (resolve, reject) {
-		projectObject.save((err, project) => {
-			if (err) {
-				reject(err);
-			}
-			else {
-				resolve(project);
-			}
-		});
-	});
+	return projectObject.save();
 }

@@ -99,16 +99,7 @@ function findByIds(idList) {
  * @returns {Promise} Promise
  */
 function findById(id) {
-	return new Promise(function (resolve, reject) {
-		CrashLog.findById(id, (err, crashLogObject) => {
-			if (err) {
-				reject(err);
-			}
-			else {
-				resolve(crashLogObject);
-			}
-		});
-	});
+	return CrashLog.findById(id);
 }
 
 /**
@@ -117,14 +108,5 @@ function findById(id) {
  * @returns {Promise} Promise
  */
 function save(crashLogObject) {
-	return new Promise(function (resolve, reject) {
-		crashLogObject.save((err, crashLog) => {
-			if (err) {
-				reject(err);
-			}
-			else {
-				resolve(crashLog);
-			}
-		})
-	});
+	return crashLogObject.save();
 }
