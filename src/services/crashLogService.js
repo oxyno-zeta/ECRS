@@ -73,7 +73,7 @@ function saveNewCrashLog(crashLogApiData, projectObject) {
 		promises.push(projectDao.save(projectObject));
 		Promise.all(promises).then(function ([crashLogSaved]) {
 			resolve(crashLogSaved);
-		}, function (err) {
+		}).catch(function (err) {
 			logger.error(err);
 			reject(err);
 		});

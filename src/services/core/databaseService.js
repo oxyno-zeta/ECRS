@@ -57,7 +57,7 @@ function initDatabase() {
 			userService.initialize().then(function () {
 				logger.debug('End initialize database');
 				resolve();
-			}, reject);
+			}).catch(reject);
 		});
 
 		// If the connection throws an error

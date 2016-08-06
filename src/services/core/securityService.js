@@ -78,7 +78,8 @@ function generateSaltSync() {
  */
 function generateHash(text, salt) {
 	return new Promise(function (resolve, reject) {
-		genHashPrivate(text, salt, iterations, keylen, digest).then(result => resolve(result.toString('hex')), reject);
+		genHashPrivate(text, salt, iterations, keylen, digest)
+			.then(result => resolve(result.toString('hex'))).catch(reject);
 	})
 }
 
@@ -91,7 +92,7 @@ function generateHash(text, salt) {
  */
 function compare(text, hash, salt) {
 	return new Promise(function (resolve, reject) {
-		generateHash(text, salt).then(hash2 => resolve(_.isEqual(hash, hash2)), reject);
+		generateHash(text, salt).then(hash2 => resolve(_.isEqual(hash, hash2))).catch(reject);
 	});
 }
 

@@ -74,6 +74,6 @@ function run() {
 		promises.push(databaseService.initDatabase());
 		promises.push(apiAuth.initAuth());
 
-		Promise.all(promises).then(resolve, reject);
+		Promise.all(promises).then(resolve).catch(reject);
 	});
 }

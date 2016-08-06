@@ -56,8 +56,8 @@ function createForLocal(userData) {
 			};
 
 			let user = userMapper.build(userDataForBuild);
-			userDao.save(user).then(resolve, reject);
-		}, reject);
+			userDao.save(user).then(resolve).catch(reject);
+		}).catch(reject);
 	});
 }
 
@@ -90,8 +90,8 @@ function localLogin(username, password) {
 				else {
 					resolve(null);
 				}
-			}, reject)
-		}, reject);
+			}).catch(reject);
+		}).catch(reject);
 	});
 }
 
@@ -140,9 +140,9 @@ function initialize() {
 					.then(function (result) {
 						logger.debug('End initialize...');
 						resolve(result);
-					}, reject);
-			}, reject);
-		}, reject);
+					}).catch(reject);
+			}).catch(reject);
+		}).catch(reject);
 	});
 }
 
@@ -207,7 +207,7 @@ function saveOrUpdateFromGithub(userData) {
 			}
 
 			// Save it in database
-			userDao.save(result).then(resolve, reject);
-		}, reject);
+			userDao.save(result).then(resolve).catch(reject);
+		}).catch(reject);
 	});
 }
