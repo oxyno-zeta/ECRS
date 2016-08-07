@@ -56,11 +56,11 @@ function populateUser() {
 			// Next
 			req.userDb = user;
 			next();
-		}, function (err) {
+		}).catch(function (err) {
 			logger.error(err);
 			APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 		});
-	}
+	};
 }
 
 /**

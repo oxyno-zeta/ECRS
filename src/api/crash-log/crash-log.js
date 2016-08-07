@@ -90,7 +90,7 @@ function postCrashLog(req, res) {
 		function go() {
 			crashLogService.saveNewCrashLog(requestBody, project).then(function (crashLog) {
 				APIResponse.sendTextResponse(res, crashLog._id, APICodes.SUCCESS.CREATED);
-			}, function (err) {
+			}).catch(function (err) {
 				logger.error(err);
 				APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 			});
@@ -127,7 +127,7 @@ function postCrashLog(req, res) {
 		else {
 			go();
 		}
-	}, function (err) {
+	}).catch(function (err) {
 		logger.error(err);
 		// Send response
 		APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);

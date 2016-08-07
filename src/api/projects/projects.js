@@ -133,7 +133,7 @@ function getProject(req, res) {
 		}
 
 		APIResponse.sendResponse(res, projectMapper.formatToApi(result), APICodes.SUCCESS.OK);
-	}, function (err) {
+	}).catch(function (err) {
 		logger.error(err);
 		APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 	});
@@ -172,11 +172,11 @@ function statisticsNumberByVersion(req, res) {
 
 		projectService.statisticsNumberByVersion(project).then(function (statistics) {
 			APIResponse.sendResponse(res, statistics, APICodes.SUCCESS.OK);
-		}, function (err) {
+		}).catch(function (err) {
 			logger.error(err);
 			APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 		});
-	}, function (err) {
+	}).catch(function (err) {
 		logger.error(err);
 		APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 	});
@@ -215,11 +215,11 @@ function getAllVersions(req, res) {
 
 		projectService.getAllVersions(projectId).then(function (versions) {
 			APIResponse.sendArrayResponse(res, versions, APICodes.SUCCESS.OK);
-		}, function (err) {
+		}).catch(function (err) {
 			logger.error(err);
 			APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 		});
-	}, function (err) {
+	}).catch(function (err) {
 		logger.error(err);
 		APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 	});
@@ -272,11 +272,11 @@ function statisticsNumberByDate(req, res) {
 
 		projectService.statisticsNumberByDate(projectId, startDate).then(function (statistics) {
 			APIResponse.sendResponse(res, statistics, APICodes.SUCCESS.OK);
-		}, function (err) {
+		}).catch(function (err) {
 			logger.error(err);
 			APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 		});
-	}, function (err) {
+	}).catch(function (err) {
 		logger.error(err);
 		APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 	});
@@ -349,11 +349,11 @@ function statisticsNumberByVersionByDate(req, res) {
 
 		promise.then(function (statistics) {
 			APIResponse.sendResponse(res, statistics, APICodes.SUCCESS.OK);
-		}, function (err) {
+		}).catch(function (err) {
 			logger.error(err);
 			APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 		});
-	}, function (err) {
+	}).catch(function (err) {
 		logger.error(err);
 		APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 	});

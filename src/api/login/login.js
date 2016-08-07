@@ -79,15 +79,15 @@ function login(req, res) {
 					expiresIn: '2 days'
 				}),
 				{
-					expires: ((new Date).getTime() + time2daysInMs),
+					expires: ((new Date()).getTime() + time2daysInMs),
 					maxAge: time2daysInMs
 				});
 			APIResponse.sendResponse(res, userMapper.formatToApi(user), APICodes.SUCCESS.OK);
-		}, function (err) {
+		}).catch(function (err) {
 			logger.error(err);
 			APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 		});
-	}, function (err) {
+	}).catch(function (err) {
 		logger.error(err);
 		APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 	});

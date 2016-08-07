@@ -112,7 +112,7 @@ function initAuth() {
 						accessToken: accessToken
 					};
 					userService.saveOrUpdateFromGithub(userData).then(function (result) {
-						done(null, result)
+						done(null, result);
 					}, function (err) {
 						done(err);
 					});
