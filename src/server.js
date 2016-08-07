@@ -95,7 +95,7 @@ function prepare() {
 			app.use(apiError.middleware.errorCleaner());
 
 			resolve();
-		}, function (err) {
+		}).catch(function (err) {
 			logger.error(err);
 			reject();
 		});
