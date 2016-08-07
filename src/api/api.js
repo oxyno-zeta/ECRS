@@ -61,17 +61,13 @@ function getPathsWithoutSecurity() {
 	let pathsWithoutSecurity = [];
 	// Prepare
 	// Crash log api
-	let tmp1 = crashLog.pathsWithoutSecurity.map(mapFunction);
-	pathsWithoutSecurity = pathsWithoutSecurity.concat(tmp1);
+	pathsWithoutSecurity = pathsWithoutSecurity.concat(crashLog.pathsWithoutSecurity.map(mapFunction));
 	// Auth api
-	let tmp2 = apiAuth.pathsWithoutSecurity.map(mapFunction);
-	pathsWithoutSecurity = pathsWithoutSecurity.concat(tmp2);
+	pathsWithoutSecurity = pathsWithoutSecurity.concat(apiAuth.pathsWithoutSecurity.map(mapFunction));
 	// Login api
-	let tmp3 = login.pathsWithoutSecurity.map(mapFunction);
-	pathsWithoutSecurity = pathsWithoutSecurity.concat(tmp3);
+	pathsWithoutSecurity = pathsWithoutSecurity.concat(login.pathsWithoutSecurity.map(mapFunction));
 	// Configuration api
-	let tmp4 = configuration.pathsWithoutSecurity.map(mapFunction);
-	pathsWithoutSecurity = pathsWithoutSecurity.concat(tmp4);
+	pathsWithoutSecurity = pathsWithoutSecurity.concat(configuration.pathsWithoutSecurity.map(mapFunction));
 
 	// Result
 	return pathsWithoutSecurity;
