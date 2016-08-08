@@ -7,6 +7,7 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
+const _ = require('lodash');
 const {CrashLog} = require('../models/crashLogModel');
 
 /* ************************************* */
@@ -20,6 +21,7 @@ module.exports = {
 	findAllByProjectIdAndStartDate: findAllByProjectIdAndStartDate,
 	findAllByProjectIdAndVersions: findAllByProjectIdAndVersions,
 	findAllByProjectIdAndVersionsAndStartDate: findAllByProjectIdAndVersionsAndStartDate,
+	findByIdsWithPagination: findByIdsWithPagination,
 	findByProjectId: findByProjectId
 };
 
@@ -31,6 +33,36 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Find by ids with pagination.
+ * @param ids {Array} ids
+ * @param limit {Integer} limit
+ * @param skip {Integer} skip
+ * @param sort {Object} sort object
+ * @returns {*}
+ */
+function findByIdsWithPagination(ids, limit, skip, sort) {
+	let promise = CrashLog.find({
+		_id: {
+			$in: ids
+		}
+	});
+
+	if (!_.isUndefined(limit)) {
+		promise.limit(limit);
+	}
+
+	if (!_.isUndefined(skip)) {
+		promise.skip(skip);
+	}
+
+	if (!_.isUndefined(sort)) {
+		promise.sort(sort);
+	}
+
+	return promise;
+}
 
 /**
  * Find by project id.

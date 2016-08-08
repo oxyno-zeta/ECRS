@@ -11,7 +11,6 @@ const logger = require('../shared/logger')('[CrashLogService]');
 const crashLogMapper = require('../mappers/crashLogMapper');
 const crashLogDao = require('../dao/crashLogDao');
 const projectDao = require('../dao/projectDao');
-const configurationService = require('./core/configurationService');
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
@@ -20,7 +19,8 @@ const configurationService = require('./core/configurationService');
 module.exports = {
 	saveNewCrashLog: saveNewCrashLog,
 	save: save,
-	findById: findById
+	findById: findById,
+	findByIdsWithPagination: findByIdsWithPagination
 };
 
 /* ************************************* */
@@ -31,6 +31,18 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Find by ids with pagination.
+ * @param ids {Array} ids
+ * @param limit {Integer} limit
+ * @param skip {Integer} skip
+ * @param sort {Object} sort object
+ * @returns {*}
+ */
+function findByIdsWithPagination(ids, limit, skip, sort) {
+	return crashLogDao.findByIdsWithPagination(ids, limit, skip, sort);
+}
 
 /**
  * Find by id.

@@ -17,6 +17,8 @@ const projectService = require('../../services/projectService');
 const userService = require('../../services/userService');
 const rolesObj = userService.rolesObj;
 const projectMapper = require('../../mappers/projectMapper');
+const crashLogMapper = require('../../mappers/crashLogMapper');
+const crashLogService = require('../../services/crashLogService');
 
 /* ************************************* */
 /* ********       EXPORTS       ******** */
@@ -359,6 +361,81 @@ function statisticsNumberByVersionByDate(req, res) {
 	});
 }
 
+/**
+ * Get project crash logs.
+ * @param req
+ * @param res
+ */
+function getProjectCrashLogs(req, res) {
+	let body = APIResponse.getDefaultResponseBody();
+	// Get project id
+	let projectId = req.params.id;
+
+	let promise = null;
+	// Get user
+	let user = req.userDb;
+	// Check if user is administrator
+	if (_.isEqual(user.role, rolesObj.admin) || _.indexOf(user.projects, projectId) !== -1) {
+		promise = projectService.findById(projectId);
+	}
+
+	// Check if promise exist
+	if (_.isNull(promise)) {
+		APIResponse.sendResponse(req, body, APICodes.CLIENT_ERROR.FORBIDDEN);
+		return;
+	}
+
+	// Get pagination element
+	let limit = req.query.limit;
+	if (!_.isUndefined(limit)) {
+		if (_.isString(limit)) {
+			limit = _.parseInt(limit);
+		}
+	}
+	let skip = req.query.skip;
+	if (!_.isUndefined(skip)) {
+		if (_.isString(skip)) {
+			skip = _.parseInt(skip);
+		}
+	}
+	let sort = req.query.sort;
+	if (!_.isUndefined(sort)) {
+		if (_.isString(sort)) {
+			try {
+				sort = JSON.parse(sort);
+			}
+			catch (e) {
+				sort = {};
+			}
+		}
+		if (_.isObject(sort)) {
+			// Transform id key
+			if (sort.hasOwnProperty('id')) {
+				sort._id = sort.id;
+				delete sort.id;
+			}
+		}
+	}
+
+	promise.then(function (result) {
+		// Check if exists
+		if (_.isNull(result)) {
+			APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
+			return;
+		}
+
+		crashLogService.findByIdsWithPagination(result.crashLogList, limit, skip, sort).then(function (crashLogList) {
+			APIResponse.sendResponse(res, crashLogMapper.formatListToApi(crashLogList), APICodes.SUCCESS.OK);
+		}).catch(function (err) {
+			logger.error(err);
+			APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+		});
+	}).catch(function (err) {
+		logger.error(err);
+		APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+	});
+}
+
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
@@ -375,6 +452,7 @@ function expose() {
 	router.post('/projects', apiSecurity.middleware.populateUser(), create);
 	router.get('/projects/:id/versions', apiSecurity.middleware.populateUser(), getAllVersions);
 	router.get('/projects/:id', apiSecurity.middleware.populateUser(), getProject);
+	router.get('/projects/:id/crash-logs', apiSecurity.middleware.populateUser(), getProjectCrashLogs);
 	// Statistics
 	router.get('/projects/:id/statistics/number/version', apiSecurity.middleware.populateUser(),
 		statisticsNumberByVersion);
