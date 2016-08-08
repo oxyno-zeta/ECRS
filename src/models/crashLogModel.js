@@ -1,5 +1,5 @@
 /*
- * Author: Alexandre Havrileck (Oxyno-zeta) 
+ * Author: Alexandre Havrileck (Oxyno-zeta)
  * Date: 08/07/16
  * Licence: See Readme
  */
@@ -19,9 +19,9 @@ const crashLogSchema = new Schema({
 	prod: String,
 	_companyName: String,
 	upload_file_minidump: String,
-	extra: {},
+	extra: Schema.Types.Mixed,
 	project: Schema.Types.ObjectId,
-	date: { type: Date, default: Date.now }
+	date: {type: Date, default: Date.now}
 });
 const CrashLog = mongoose.model('CrashLog', crashLogSchema);
 
