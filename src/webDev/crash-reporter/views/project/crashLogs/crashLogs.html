@@ -1,0 +1,79 @@
+<md-table-container>
+    <table md-table md-row-select>
+        <thead md-head md-order="crashLogsCtrl.query.order" md-on-reorder="crashLogsCtrl.getElements">
+        <tr md-row>
+            <th md-column md-order-by="date">Date</th>
+            <th md-column md-order-by="_companyName">Company Name</th>
+            <th md-column md-order-by="_productName">Product Name</th>
+            <th md-column md-order-by="process_type">Process Type</th>
+            <th md-column md-order-by="_version">App version</th>
+            <th md-column md-order-by="ver">Electron version</th>
+            <th md-column md-order-by="platform">Platform</th>
+            <th md-column md-order-by="guid">GUID</th>
+            <th md-column>Extra</th>
+            <th md-column>Report</th>
+        </tr>
+        </thead>
+        <tbody md-body>
+        <tr md-row md-select="item" md-select-id="id" md-auto-select
+            ng-repeat="item in crashLogsCtrl.data.items track by item.id">
+            <td md-cell ng-bind="item.date"></td>
+            <td md-cell ng-bind="item._companyName"></td>
+            <td md-cell ng-bind="item._productName"></td>
+            <td md-cell ng-bind="item.process_type"></td>
+            <td md-cell ng-bind="item._version"></td>
+            <td md-cell ng-bind="item.ver"></td>
+            <td md-cell ng-bind="item.platform"></td>
+            <td md-cell ng-bind="item.guid"></td>
+            <td md-cell>
+                <div ng-repeat="(value, key) in item.extra" layout="row">{{key}}:{{value}}</div>
+            </td>
+            <td md-cell>
+                <md-button class="md-icon-button md-primary" aria-label="Download">
+                    <md-icon class="fa fa-cloud-download big-icons"></md-icon>
+                </md-button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</md-table-container>
+
+<div class="pagination" layout="row" layout-align="center center">
+    <div layout="column" flex></div>
+    <div layout="column">Page:</div>
+    <div layout="column" class="divider"></div>
+    <md-select class="md-table-select select"
+               ng-model="crashLogsCtrl.query.page"
+               ng-change="crashLogsCtrl.getElements()"
+               layout="column" aria-label="Page">
+        <md-option ng-repeat="item in crashLogsCtrl.query.pages" value="{{item}}" ng-bind="item"></md-option>
+    </md-select>
+    <div layout="column" class="divider"></div>
+    <div layout="column">Row per page:</div>
+    <div layout="column" class="divider"></div>
+    <md-select class="md-table-select select"
+               ng-model="crashLogsCtrl.query.limit"
+               ng-change="crashLogsCtrl.changeRowPage()"
+               layout="column" aria-label="Row per page">
+        <md-option ng-repeat="row in crashLogsCtrl.query.rowsPerPage" value="{{row}}" ng-bind="row"></md-option>
+    </md-select>
+    <div layout="column" class="divider"></div>
+    <div layout="column">
+        <div layout="row">
+            <p><span ng-bind="crashLogsCtrl.query.items.min"></span> - <span
+                    ng-bind="crashLogsCtrl.query.items.max"></span>
+                of <span ng-bind="crashLogsCtrl.data.total"></span></p>
+        </div>
+    </div>
+    <div layout="column" class="divider"></div>
+    <md-button ng-disabled="crashLogsCtrl.query.page === 1"
+               ng-click="crashLogsCtrl.previousPage()"
+               layout="column" class="md-icon-button" aria-label="Previous">
+        <md-icon class="fa fa-angle-left big-icons"></md-icon>
+    </md-button>
+    <md-button ng-disabled="crashLogsCtrl.query.page === crashLogsCtrl.query.pages.length"
+               ng-click="crashLogsCtrl.nextPage()"
+               layout="column" class="md-icon-button" aria-label="Next">
+        <md-icon class="fa fa-angle-right big-icons"></md-icon>
+    </md-button>
+</div>

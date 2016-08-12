@@ -16,7 +16,8 @@
 			'angular-loading-bar',
 			'ngMessages',
 			'ui.codemirror',
-			'nvd3'
+			'nvd3',
+			'md.data.table'
 		]);
 
 })();

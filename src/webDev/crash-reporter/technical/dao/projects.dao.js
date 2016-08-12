@@ -19,7 +19,8 @@
 			statisticsNumberByVersion: statisticsNumberByVersion,
 			statisticsNumberByDate: statisticsNumberByDate,
 			getAllVersions: getAllVersions,
-			statisticsNumberByVersionByDate: statisticsNumberByVersionByDate
+			statisticsNumberByVersionByDate: statisticsNumberByVersionByDate,
+			getProjectCrashLogs: getProjectCrashLogs
 		};
 
 		/* ************************************* */
@@ -42,6 +43,39 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Get project crash logs.
+		 * @param project {Object} project
+		 * @param limit {Integer} limit
+		 * @param skip {Integer} skip
+		 * @param sort {Object} sort
+		 * @returns {*}
+		 */
+		function getProjectCrashLogs(project, limit, skip, sort) {
+			var deferred = $q.defer();
+			var params = {
+				id: project.id,
+				verb1: 'crash-logs'
+			};
+
+			if (limit) {
+				params.limit = limit;
+			}
+
+			if (skip) {
+				params.skip = skip;
+			}
+
+			if (sort) {
+				params.sort = sort;
+			}
+
+			projectResource.get(params, function (result) {
+				deferred.resolve(result.toJSON());
+			}, deferred.reject);
+			return deferred.promise;
+		}
 
 		/**
 		 * Statistics Number by version by date.

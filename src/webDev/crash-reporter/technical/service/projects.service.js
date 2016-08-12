@@ -19,7 +19,8 @@
 			statisticsNumberByVersion: statisticsNumberByVersion,
 			statisticsNumberByDate: statisticsNumberByDate,
 			getAllVersions: getAllVersions,
-			statisticsNumberByVersionByDate: statisticsNumberByVersionByDate
+			statisticsNumberByVersionByDate: statisticsNumberByVersionByDate,
+			getProjectCrashLogs: getProjectCrashLogs
 		};
 		return service;
 
@@ -32,6 +33,18 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Get project crash logs.
+		 * @param project {Object} project
+		 * @param limit {Integer} limit
+		 * @param skip {Integer} skip
+		 * @param sort {Object} sort
+		 * @returns {*}
+		 */
+		function getProjectCrashLogs(project, limit, skip, sort) {
+			return projectsDao.getProjectCrashLogs(project, limit, skip, sort);
+		}
 
 		/**
 		 * Statistics Number by version by date.

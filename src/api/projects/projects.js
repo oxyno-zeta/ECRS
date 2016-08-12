@@ -425,7 +425,10 @@ function getProjectCrashLogs(req, res) {
 		}
 
 		crashLogService.findByIdsWithPagination(result.crashLogList, limit, skip, sort).then(function (crashLogList) {
-			APIResponse.sendResponse(res, crashLogMapper.formatListToApi(crashLogList), APICodes.SUCCESS.OK);
+			APIResponse.sendResponse(res, {
+				total: result.crashLogList.length,
+				items: crashLogMapper.formatListToApi(crashLogList)
+			}, APICodes.SUCCESS.OK);
 		}).catch(function (err) {
 			logger.error(err);
 			APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
