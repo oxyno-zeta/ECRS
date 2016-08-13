@@ -17,7 +17,12 @@
         <tbody md-body>
         <tr md-row md-select="item" md-select-id="id" md-auto-select
             ng-repeat="item in crashLogsCtrl.data.items track by item.id">
-            <td md-cell ng-bind="item.date"></td>
+            <td md-cell class="displayDate">
+                <md-tooltip md-direction="down">
+                    <span ng-bind="item.notificationDate"></span>
+                </md-tooltip>
+                <span ng-bind="item.displayDate"></span>
+            </td>
             <td md-cell ng-bind="item._companyName"></td>
             <td md-cell ng-bind="item._productName"></td>
             <td md-cell ng-bind="item.process_type"></td>

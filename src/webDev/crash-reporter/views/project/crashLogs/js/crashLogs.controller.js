@@ -63,6 +63,12 @@
 			projectsService
 				.getProjectCrashLogs(project, vm.query.limit, vm.query.limit * (vm.query.page - 1), sort)
 				.then(function (data) {
+					// Change date
+					data.items.forEach(function (item) {
+						item.displayDate = moment(item.date).format('MMM-DD-YYYY');
+						item.notificationDate = moment(item.date).format('MMM-DD-YYYY HH:mm');
+					});
+					// Put data in
 					vm.data = data;
 					// Update items
 					vm.query.items.min = vm.query.limit * (vm.query.page - 1) + 1;
