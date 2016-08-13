@@ -147,7 +147,7 @@ function expose() {
 	var router = express.Router();
 
 	// Post crash log
-	router.post('/crash-logs/:projectId', upload.single('upload_file_minidump'), postCrashLog);
+	router.post('/crash-logs/projects/:projectId', upload.single('upload_file_minidump'), postCrashLog);
 
 	return router;
 }

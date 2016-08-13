@@ -38,7 +38,7 @@
 			configurationDao.getConfiguration().then(function (config) {
 				var url = config.backendUrl;
 				url += CONFIG.URL.PREFIX;
-				url += '/crash-logs/';
+				url += '/crash-logs/project/';
 				url += projectId;
 				deferred.resolve(url);
 			}, deferred.reject);
