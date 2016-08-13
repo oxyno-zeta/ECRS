@@ -12,13 +12,13 @@ const path = require('path');
 const express = require('express');
 const multer = require('multer');
 const _ = require('lodash');
+const serveStatic = require('serve-static');
 const logger = require('../../shared/logger')('[CrashLog API]');
 const APIResponse = require('../core/APIResponse');
 const APICodes = require('../core/APICodes');
 const configurationService = require('../../services/core/configurationService');
 const crashLogService = require('../../services/crashLogService');
 const projectService = require('../../services/projectService');
-const crashLogMapper = require('../../mappers/crashLogMapper');
 const upload = multer({
 	dest: configurationService.getLogUploadDirectory(),
 	limits: {
@@ -148,6 +148,10 @@ function expose() {
 
 	// Post crash log
 	router.post('/crash-logs/projects/:projectId', upload.single('upload_file_minidump'), postCrashLog);
+	// Download crash log (with upload_file_dump id)
+	router.use('/crash-logs/downloads/', serveStatic(configurationService.getAppCrashLogDirectory(), {
+		fallthrough: false
+	}));
 
 	return router;
 }
