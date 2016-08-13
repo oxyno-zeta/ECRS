@@ -14,7 +14,8 @@
 	function configurationService($q, configurationDao, CONFIG) {
 		var service = {
 			getConfiguration: getConfiguration,
-			getCrashLogsPostUrl: getCrashLogsPostUrl
+			getCrashLogsPostUrl: getCrashLogsPostUrl,
+			getBaseCrashLogsDownloadUrl: getBaseCrashLogsDownloadUrl
 		};
 		return service;
 
@@ -27,6 +28,16 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Get base Crash logs Download url.
+		 * @returns {*}
+		 */
+		function getBaseCrashLogsDownloadUrl() {
+			var url = CONFIG.URL.PREFIX;
+			url += '/crash-logs/downloads/';
+			return url;
+		}
 
 		/**
 		 * Get crash logs post url.

@@ -34,7 +34,9 @@
                 <div ng-repeat="(value, key) in item.extra" layout="row">{{key}}:{{value}}</div>
             </td>
             <td md-cell>
-                <md-button class="md-icon-button md-primary" aria-label="Download">
+                <md-button ng-disabled="!item.upload_file_minidump"
+                           ng-href="{{crashLogsCtrl.getCrashLogsDownloadUrl(item.upload_file_minidump)}}"
+                           class="md-icon-button md-primary" aria-label="Download">
                     <md-icon class="fa fa-cloud-download big-icons"></md-icon>
                 </md-button>
             </td>

@@ -11,8 +11,10 @@
 		.controller('CrashLogsController', CrashLogsController);
 
 	/** @ngInject */
-	function CrashLogsController(projectsService, project) {
+	function CrashLogsController(projectsService, configurationService, project) {
 		var vm = this;
+		// Variables
+		var baseCrashLogsDownloadUrl = configurationService.getBaseCrashLogsDownloadUrl();
 		vm.query = {
 			order: '-date', // '-' => desc / '' => asc
 			limit: 5,
@@ -28,26 +30,70 @@
 			total: 0,
 			items: []
 		};
+		// Functions
 		vm.getElements = getElements;
 		vm.nextPage = nextPage;
 		vm.previousPage = previousPage;
 		vm.changeRowPage = changeRowPage;
+		vm.getCrashLogsDownloadUrl = getCrashLogsDownloadUrl;
 
+		// Activate
+		activate();
+
+		////////////////
+
+
+		/* ************************************* */
+		/* ********  PRIVATE FUNCTIONS  ******** */
+		/* ************************************* */
+
+		/**
+		 * Activate.
+		 */
+		function activate() {
+			vm.getElements();
+		}
+
+		/* ************************************* */
+		/* ********   PUBLIC FUNCTIONS  ******** */
+		/* ************************************* */
+
+		/**
+		 * Get Crash Logs Download Url.
+		 * @param uploadFileMinidumpId
+		 * @returns {*}
+		 */
+		function getCrashLogsDownloadUrl(uploadFileMinidumpId) {
+			return baseCrashLogsDownloadUrl + uploadFileMinidumpId;
+		}
+
+		/**
+		 * Change Row page.
+		 */
 		function changeRowPage() {
 			vm.query.page = 1;
 			getElements();
 		}
 
+		/**
+		 * Previous page.
+		 */
 		function previousPage() {
 			vm.query.page--;
 			getElements();
 		}
 
+		/**
+		 * Next page.
+		 */
 		function nextPage() {
 			vm.query.page++;
 			getElements();
 		}
 
+		/**
+		 * Get Elements.
+		 */
 		function getElements() {
 			var sort = {};
 			// Create sort object
@@ -83,19 +129,6 @@
 					vm.query.pages = pages;
 				});
 		}
-
-		vm.getElements();
-
-		////////////////
-
-
-		/* ************************************* */
-		/* ********  PRIVATE FUNCTIONS  ******** */
-		/* ************************************* */
-
-		/* ************************************* */
-		/* ********   PUBLIC FUNCTIONS  ******** */
-		/* ************************************* */
 
 	}
 
