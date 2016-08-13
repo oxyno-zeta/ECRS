@@ -7,7 +7,11 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
+const fs = require('fs');
+const path = require('path');
+const _ = require('lodash');
 const logger = require('../shared/logger')('[CrashLogService]');
+const configurationService = require('./core/configurationService');
 const crashLogMapper = require('../mappers/crashLogMapper');
 const crashLogDao = require('../dao/crashLogDao');
 const projectDao = require('../dao/projectDao');
@@ -70,24 +74,61 @@ function save(crashLogObject) {
  */
 function saveNewCrashLog(crashLogApiData, projectObject) {
 	return new Promise(function (resolve, reject) {
-		// Build CrashLog object
-		let crashLog = crashLogMapper.build(crashLogApiData);
 
-		logger.debug(`Build database object : ${crashLog.toString()}`);
+		// Continue function
+		function go() {
+			// Build CrashLog object
+			let crashLog = crashLogMapper.build(crashLogApiData);
 
-		// Add project to crash log object and other way
-		crashLog.project = projectObject._id;
-		projectObject.crashLogList.push(crashLog._id);
+			logger.debug(`Build database object : ${crashLog.toString()}`);
 
-		// Save and update
-		let promises = [];
-		promises.push(crashLogDao.save(crashLog));
-		promises.push(projectDao.save(projectObject));
-		Promise.all(promises).then(function ([crashLogSaved]) {
-			resolve(crashLogSaved);
-		}).catch(function (err) {
-			logger.error(err);
-			reject(err);
-		});
+			// Add project to crash log object and other way
+			crashLog.project = projectObject._id;
+			projectObject.crashLogList.push(crashLog._id);
+
+			// Save and update
+			let promises = [];
+			promises.push(crashLogDao.save(crashLog));
+			promises.push(projectDao.save(projectObject));
+			Promise.all(promises).then(function ([crashLogSaved]) {
+				resolve(crashLogSaved);
+			}).catch(function (err) {
+				logger.error(err);
+				reject(err);
+			});
+		}
+
+		if (!_.isUndefined(crashLogApiData.upload_file_minidump) && !_.isNull(crashLogApiData.upload_file_minidump)) {
+
+			let uploadFilePath = path.join(configurationService.getLogUploadDirectory(), crashLogApiData.upload_file_minidump);
+			let newFilePath = path.join(configurationService.getAppCrashLogDirectory(), crashLogApiData.upload_file_minidump);
+
+			// Check if file exist
+			fs.exists(uploadFilePath, function (isExist) {
+
+				// Move file if exists
+				if (isExist) {
+					logger.debug('File exist => move it');
+
+					fs.rename(uploadFilePath, newFilePath, function (err) {
+						if (err) {
+							reject(err);
+						}
+						else {
+							logger.debug('File moved => Continue');
+							go();
+						}
+					});
+				}
+				else {
+					logger.debug('No file => Continue');
+					go();
+				}
+			});
+		}
+		else {
+			logger.debug('No dump detected => Continue');
+			go();
+		}
 	});
 }

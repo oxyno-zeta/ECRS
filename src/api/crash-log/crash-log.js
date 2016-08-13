@@ -86,47 +86,12 @@ function postCrashLog(req, res) {
 		logger.debug(`File : ${JSON.stringify(file)}`);
 		logger.debug(`Body : ${JSON.stringify(requestBody)}`);
 
-		// Continue function
-		function go() {
-			crashLogService.saveNewCrashLog(requestBody, project).then(function (crashLog) {
-				APIResponse.sendTextResponse(res, crashLog._id, APICodes.SUCCESS.CREATED);
-			}).catch(function (err) {
-				logger.error(err);
-				APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
-			});
-		}
-
-		if (!_.isUndefined(requestBody.upload_file_minidump) && !_.isNull(requestBody.upload_file_minidump)) {
-
-			let uploadFilePath = path.join(configurationService.getLogUploadDirectory(), requestBody.upload_file_minidump);
-			let newFilePath = path.join(configurationService.getAppCrashLogDirectory(), requestBody.upload_file_minidump);
-
-			// Check if file exist
-			fs.exists(uploadFilePath, function (isExist) {
-
-				// Move file if exists
-				if (isExist) {
-					logger.debug('File exist => move it');
-
-					fs.rename(uploadFilePath, newFilePath, function (err) {
-						if (err) {
-							APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
-						}
-						else {
-							logger.debug('File moved => Continue');
-							go();
-						}
-					});
-				}
-				else {
-					logger.debug('No file => Continue');
-					go();
-				}
-			});
-		}
-		else {
-			go();
-		}
+		crashLogService.saveNewCrashLog(requestBody, project).then(function (crashLog) {
+			APIResponse.sendTextResponse(res, crashLog._id, APICodes.SUCCESS.CREATED);
+		}).catch(function (err) {
+			logger.error(err);
+			APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+		});
 	}).catch(function (err) {
 		logger.error(err);
 		// Send response
