@@ -20,7 +20,8 @@
 			statisticsNumberByDate: statisticsNumberByDate,
 			getAllVersions: getAllVersions,
 			statisticsNumberByVersionByDate: statisticsNumberByVersionByDate,
-			getProjectCrashLogs: getProjectCrashLogs
+			getProjectCrashLogs: getProjectCrashLogs,
+			remove: remove
 		};
 		return service;
 
@@ -33,6 +34,15 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Delete project
+		 * @param id {String} id
+		 * @returns {*}
+		 */
+		function remove(id) {
+			return projectsDao.remove(id);
+		}
 
 		/**
 		 * Get project crash logs.
