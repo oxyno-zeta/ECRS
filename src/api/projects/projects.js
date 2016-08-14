@@ -439,6 +439,49 @@ function getProjectCrashLogs(req, res) {
 	});
 }
 
+/**
+ * Delete Project.
+ * @param req
+ * @param res
+ */
+function deleteProject(req, res) {
+	let body = APIResponse.getDefaultResponseBody();
+	// Get project id
+	let projectId = req.params.id;
+
+	let promise = null;
+	// Get user
+	let user = req.userDb;
+	// Check if user is administrator
+	if (_.isEqual(user.role, rolesObj.admin) || _.indexOf(user.projects, projectId) !== -1) {
+		promise = projectService.findById(projectId);
+	}
+
+	// Check if promise exist
+	if (_.isNull(promise)) {
+		APIResponse.sendResponse(req, body, APICodes.CLIENT_ERROR.FORBIDDEN);
+		return;
+	}
+
+	promise.then(function (result) {
+		// Check if exists
+		if (_.isNull(result)) {
+			APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
+			return;
+		}
+
+		projectService.deleteRecursivelyById(projectId).then(function () {
+			APIResponse.sendResponse(res, null, APICodes.SUCCESS.NO_CONTENT);
+		}).catch(function (err) {
+			logger.error(err);
+			APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+		});
+	}).catch(function (err) {
+		logger.error(err);
+		APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+	});
+}
+
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
@@ -455,6 +498,7 @@ function expose() {
 	router.post('/projects', apiSecurity.middleware.populateUser(), create);
 	router.get('/projects/:id/versions', apiSecurity.middleware.populateUser(), getAllVersions);
 	router.get('/projects/:id', apiSecurity.middleware.populateUser(), getProject);
+	router.delete('/projects/:id', apiSecurity.middleware.populateUser(), deleteProject);
 	router.get('/projects/:id/crash-logs', apiSecurity.middleware.populateUser(), getProjectCrashLogs);
 	// Statistics
 	router.get('/projects/:id/statistics/number/version', apiSecurity.middleware.populateUser(),

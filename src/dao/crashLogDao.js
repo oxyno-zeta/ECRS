@@ -22,7 +22,8 @@ module.exports = {
 	findAllByProjectIdAndVersions: findAllByProjectIdAndVersions,
 	findAllByProjectIdAndVersionsAndStartDate: findAllByProjectIdAndVersionsAndStartDate,
 	findByIdsWithPagination: findByIdsWithPagination,
-	findByProjectId: findByProjectId
+	findByProjectId: findByProjectId,
+	deleteById: deleteById
 };
 
 /* ************************************* */
@@ -33,6 +34,15 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Delete by id.
+ * @param id {String} id
+ * @returns {*}
+ */
+function deleteById(id) {
+	return CrashLog.findByIdAndRemove(id);
+}
 
 /**
  * Find by ids with pagination.

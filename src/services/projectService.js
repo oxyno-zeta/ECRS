@@ -7,8 +7,10 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
+const _ = require('lodash');
 const projectDao = require('../dao/projectDao');
 const projectMapper = require('../mappers/projectMapper');
+const crashLogService = require('./crashLogService');
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
@@ -24,7 +26,8 @@ module.exports = {
 	statisticsNumberByDate: statisticsNumberByDate,
 	statisticsNumberByVersionByDate: statisticsNumberByVersionByDate,
 	statisticsNumberByVersionByDateAndStartDate: statisticsNumberByVersionByDateAndStartDate,
-	getAllVersions: getAllVersions
+	getAllVersions: getAllVersions,
+	deleteRecursivelyById: deleteRecursivelyById
 };
 
 /* ************************************* */
@@ -35,6 +38,48 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Delete recursively by id.
+ * @param id {String} id
+ * @returns {*}
+ */
+function deleteRecursivelyById(id) {
+	return new Promise((resolve, reject) => {
+		projectDao.findById(id).then(function (project) {
+			let promises = [];
+			// Add promises
+			project.crashLogList.forEach(function (id) {
+				promises.push(new Promise((resolve, reject) => {
+
+					function removeFromArray() {
+						_.remove(project.crashLogList, function (id2) {
+							return _.isEqual(id, id2);
+						});
+					}
+
+					crashLogService.deleteById(id).then(function () {
+						// Success => Remove from array
+						removeFromArray();
+						resolve();
+					}).catch(reject);
+				}));
+			});
+
+			Promise.all(promises).then(function () {
+				// Remove all crash logs done
+				// Remove project now
+				projectDao.deleteById(id).then(resolve).catch(reject);
+			}).catch(function (err) {
+				// Save updated project
+				projectDao.save(project).finally(function () {
+					// Saved
+					reject(err);
+				});
+			});
+		}).catch(reject);
+	});
+}
 
 /**
  * Get all versions for project.

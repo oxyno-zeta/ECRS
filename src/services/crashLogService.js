@@ -24,7 +24,8 @@ module.exports = {
 	saveNewCrashLog: saveNewCrashLog,
 	save: save,
 	findById: findById,
-	findByIdsWithPagination: findByIdsWithPagination
+	findByIdsWithPagination: findByIdsWithPagination,
+	deleteById: deleteById
 };
 
 /* ************************************* */
@@ -35,6 +36,34 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Delete by id.
+ * @param id {String} id
+ * @returns {*}
+ */
+function deleteById(id) {
+	return new Promise((resolve, reject) => {
+		findById(id).then(function (crashLog) {
+			if (_.isNull(crashLog)) {
+				reject(crashLog);
+				return;
+			}
+
+			// Delete file => Not important to know if it failed
+			if (crashLog.upload_file_minidump) {
+				let filePath = path.join(configurationService.getAppCrashLogDirectory(), crashLog.upload_file_minidump);
+				fs.unlink(filePath, function (err) {
+					if (err) {
+						logger.error(err);
+					}
+				});
+			}
+			// Delete data
+			crashLogDao.deleteById(id).then(resolve).catch(reject);
+		}).catch(reject);
+	});
+}
 
 /**
  * Find by ids with pagination.

@@ -26,7 +26,8 @@ module.exports = {
 	statisticsNumberByDate: statisticsNumberByDate,
 	statisticsNumberByVersionByDate: statisticsNumberByVersionByDate,
 	statisticsNumberByVersionByDateAndStartDate: statisticsNumberByVersionByDateAndStartDate,
-	getAllVersions: getAllVersions
+	getAllVersions: getAllVersions,
+	deleteById: deleteById
 };
 
 /* ************************************* */
@@ -68,6 +69,15 @@ function formatStatisticsForNumberByVersionByDate(results) {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Delete by id.
+ * @param id {String} id
+ * @returns {*}
+ */
+function deleteById(id) {
+	return Project.findByIdAndRemove(id);
+}
 
 /**
  * Get all versions for project.
