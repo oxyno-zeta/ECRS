@@ -23,7 +23,8 @@ module.exports = {
 	saveOrUpdateFromGithub: saveOrUpdateFromGithub,
 	findByUsernameForLocal: findByUsernameForLocal,
 	localLogin: localLogin,
-	findById: findById
+	findById: findById,
+	saveForInstance: saveForInstance
 };
 
 /* ************************************* */
@@ -64,6 +65,15 @@ function createForLocal(userData) {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Save for instance.
+ * @param userInstance {Object} user instance
+ * @returns {*|Promise}
+ */
+function saveForInstance(userInstance) {
+	return userDao.save(userInstance);
+}
 
 /**
  * Find by id.

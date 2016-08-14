@@ -53,7 +53,7 @@ function getAllProjects(req, res) {
 		APIResponse.sendResponse(res, projectMapper.formatListToApi(results), APICodes.SUCCESS.OK);
 	}, function (err) {
 		logger.error(err);
-		APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+		APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 	});
 }
 
@@ -82,6 +82,9 @@ function create(req, res) {
 		projectUrl: req.body.projectUrl
 	};
 
+	// Get user
+	let user = req.userDb;
+
 	// Check if project name already exist in database
 	projectService.findByName(data.name).then(function (result) {
 		if (!_.isNull(result)) {
@@ -91,7 +94,7 @@ function create(req, res) {
 		}
 
 		// Create in database
-		projectService.create(data).then(function (result) {
+		projectService.create(data, user).then(function (result) {
 			APIResponse.sendResponse(res, projectMapper.formatToApi(result), APICodes.SUCCESS.CREATED);
 		}, function (err) {
 			logger.error(err);
@@ -117,13 +120,13 @@ function getProject(req, res) {
 	// Get user
 	let user = req.userDb;
 	// Check if user is administrator
-	if (_.isEqual(user.role, rolesObj.admin) || _.indexOf(user.projects, projectId) !== -1) {
+	if (_.isEqual(user.role, rolesObj.admin) || user.projects.indexOf(projectId) !== -1) {
 		promise = projectService.findById(projectId);
 	}
 
 	// Check if promise exist
 	if (_.isNull(promise)) {
-		APIResponse.sendResponse(req, body, APICodes.CLIENT_ERROR.FORBIDDEN);
+		APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.FORBIDDEN);
 		return;
 	}
 
@@ -137,7 +140,7 @@ function getProject(req, res) {
 		APIResponse.sendResponse(res, projectMapper.formatToApi(result), APICodes.SUCCESS.OK);
 	}).catch(function (err) {
 		logger.error(err);
-		APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+		APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 	});
 }
 
@@ -155,13 +158,13 @@ function statisticsNumberByVersion(req, res) {
 	// Get user
 	let user = req.userDb;
 	// Check if user is administrator
-	if (_.isEqual(user.role, rolesObj.admin) || _.indexOf(user.projects, projectId) !== -1) {
+	if (_.isEqual(user.role, rolesObj.admin) || user.projects.indexOf(projectId) !== -1) {
 		promise = projectService.findById(projectId);
 	}
 
 	// Check if promise exist
 	if (_.isNull(promise)) {
-		APIResponse.sendResponse(req, body, APICodes.CLIENT_ERROR.FORBIDDEN);
+		APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.FORBIDDEN);
 		return;
 	}
 
@@ -176,11 +179,11 @@ function statisticsNumberByVersion(req, res) {
 			APIResponse.sendResponse(res, statistics, APICodes.SUCCESS.OK);
 		}).catch(function (err) {
 			logger.error(err);
-			APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+			APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 		});
 	}).catch(function (err) {
 		logger.error(err);
-		APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+		APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 	});
 }
 
@@ -198,13 +201,13 @@ function getAllVersions(req, res) {
 	// Get user
 	let user = req.userDb;
 	// Check if user is administrator
-	if (_.isEqual(user.role, rolesObj.admin) || _.indexOf(user.projects, projectId) !== -1) {
+	if (_.isEqual(user.role, rolesObj.admin) || user.projects.indexOf(projectId) !== -1) {
 		promise = projectService.findById(projectId);
 	}
 
 	// Check if promise exist
 	if (_.isNull(promise)) {
-		APIResponse.sendResponse(req, body, APICodes.CLIENT_ERROR.FORBIDDEN);
+		APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.FORBIDDEN);
 		return;
 	}
 
@@ -219,11 +222,11 @@ function getAllVersions(req, res) {
 			APIResponse.sendArrayResponse(res, versions, APICodes.SUCCESS.OK);
 		}).catch(function (err) {
 			logger.error(err);
-			APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+			APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 		});
 	}).catch(function (err) {
 		logger.error(err);
-		APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+		APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 	});
 }
 
@@ -255,13 +258,13 @@ function statisticsNumberByDate(req, res) {
 	// Get user
 	let user = req.userDb;
 	// Check if user is administrator
-	if (_.isEqual(user.role, rolesObj.admin) || _.indexOf(user.projects, projectId) !== -1) {
+	if (_.isEqual(user.role, rolesObj.admin) || user.projects.indexOf(projectId) !== -1) {
 		promise = projectService.findById(projectId);
 	}
 
 	// Check if promise exist
 	if (_.isNull(promise)) {
-		APIResponse.sendResponse(req, body, APICodes.CLIENT_ERROR.FORBIDDEN);
+		APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.FORBIDDEN);
 		return;
 	}
 
@@ -276,11 +279,11 @@ function statisticsNumberByDate(req, res) {
 			APIResponse.sendResponse(res, statistics, APICodes.SUCCESS.OK);
 		}).catch(function (err) {
 			logger.error(err);
-			APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+			APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 		});
 	}).catch(function (err) {
 		logger.error(err);
-		APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+		APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 	});
 }
 
@@ -325,13 +328,13 @@ function statisticsNumberByVersionByDate(req, res) {
 	// Get user
 	let user = req.userDb;
 	// Check if user is administrator
-	if (_.isEqual(user.role, rolesObj.admin) || _.indexOf(user.projects, projectId) !== -1) {
+	if (_.isEqual(user.role, rolesObj.admin) || user.projects.indexOf(projectId) !== -1) {
 		promise = projectService.findById(projectId);
 	}
 
 	// Check if promise exist
 	if (_.isNull(promise)) {
-		APIResponse.sendResponse(req, body, APICodes.CLIENT_ERROR.FORBIDDEN);
+		APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.FORBIDDEN);
 		return;
 	}
 
@@ -353,11 +356,11 @@ function statisticsNumberByVersionByDate(req, res) {
 			APIResponse.sendResponse(res, statistics, APICodes.SUCCESS.OK);
 		}).catch(function (err) {
 			logger.error(err);
-			APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+			APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 		});
 	}).catch(function (err) {
 		logger.error(err);
-		APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+		APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 	});
 }
 
@@ -375,13 +378,13 @@ function getProjectCrashLogs(req, res) {
 	// Get user
 	let user = req.userDb;
 	// Check if user is administrator
-	if (_.isEqual(user.role, rolesObj.admin) || _.indexOf(user.projects, projectId) !== -1) {
+	if (_.isEqual(user.role, rolesObj.admin) || user.projects.indexOf(projectId) !== -1) {
 		promise = projectService.findById(projectId);
 	}
 
 	// Check if promise exist
 	if (_.isNull(promise)) {
-		APIResponse.sendResponse(req, body, APICodes.CLIENT_ERROR.FORBIDDEN);
+		APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.FORBIDDEN);
 		return;
 	}
 
@@ -431,11 +434,11 @@ function getProjectCrashLogs(req, res) {
 			}, APICodes.SUCCESS.OK);
 		}).catch(function (err) {
 			logger.error(err);
-			APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+			APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 		});
 	}).catch(function (err) {
 		logger.error(err);
-		APIResponse.sendResponse(req, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+		APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
 	});
 }
 
@@ -453,13 +456,13 @@ function deleteProject(req, res) {
 	// Get user
 	let user = req.userDb;
 	// Check if user is administrator
-	if (_.isEqual(user.role, rolesObj.admin) || _.indexOf(user.projects, projectId) !== -1) {
+	if (_.isEqual(user.role, rolesObj.admin) || user.projects.indexOf(projectId) !== -1) {
 		promise = projectService.findById(projectId);
 	}
 
 	// Check if promise exist
 	if (_.isNull(promise)) {
-		APIResponse.sendResponse(req, body, APICodes.CLIENT_ERROR.FORBIDDEN);
+		APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.FORBIDDEN);
 		return;
 	}
 

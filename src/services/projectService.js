@@ -11,6 +11,7 @@ const _ = require('lodash');
 const projectDao = require('../dao/projectDao');
 const projectMapper = require('../mappers/projectMapper');
 const crashLogService = require('./crashLogService');
+const userService = require('./userService');
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
@@ -133,13 +134,26 @@ function statisticsNumberByVersion(project) {
 /**
  * Create project.
  * @param data {Object} project data
+ * @param userInstance {Object} user instance
  * @returns {Promise}
  */
-function create(data) {
-	// Create project instance
-	let project = projectMapper.build(data);
+function create(data, userInstance) {
+	return new Promise((resolve, reject) => {
+		// Create project instance
+		let project = projectMapper.build(data);
 
-	return projectDao.save(project);
+		projectDao.save(project).then(function () {
+			// Project added in database
+			userInstance.projects.push(project._id);
+			userService.saveForInstance(userInstance).then(function () {
+				resolve(project);
+			}).catch(function (err) {
+				// Need to try to delete project
+				projectDao.deleteById(project._id);
+				reject(err);
+			});
+		}).catch(reject);
+	});
 }
 
 /**
