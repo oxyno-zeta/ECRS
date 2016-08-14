@@ -11,7 +11,7 @@
 		.controller('ProjectCreateController', ProjectCreateController);
 
 	/** @ngInject */
-	function ProjectCreateController($mdToast, projectsService) {
+	function ProjectCreateController($state, $mdToast, projectsService) {
 		var vm = this;
 		// Variables
 		vm.project = {
@@ -41,7 +41,7 @@
 
 			// Send
 			projectsService.create(vm.project).then(function (result) {
-				console.log(result);
+				$state.go('header.project', {projectId: result.id});
 			}, function (err) {
 				var text = (err.statusText || 'Internal Error') + ' !';
 				// Error
