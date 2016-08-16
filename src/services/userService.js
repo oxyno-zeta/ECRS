@@ -24,7 +24,8 @@ module.exports = {
 	findByUsernameForLocal: findByUsernameForLocal,
 	localLogin: localLogin,
 	findById: findById,
-	saveForInstance: saveForInstance
+	saveForInstance: saveForInstance,
+	changePassword: changePassword
 };
 
 /* ************************************* */
@@ -65,6 +66,36 @@ function createForLocal(userData) {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Change password for a user.
+ * @param user {Object} User
+ * @param oldPassword {String} old password
+ * @param newPassword {String} new password
+ * @returns {Promise}
+ */
+function changePassword(user, oldPassword, newPassword) {
+	return new Promise((resolve, reject) => {
+		securityService.compare(oldPassword, user.local.hash, user.local.salt).then(function (isOk) {
+			if (!isOk) {
+				throw new Error('Wrong old password');
+			}
+
+			// Save new password
+
+			// Create new salt
+			let newSalt = securityService.generateSaltSync();
+			// Generate Hash
+			securityService.generateHash(newPassword, newSalt).then(function (newHash) {
+				user.local.salt = newSalt;
+				user.local.hash = newHash;
+
+				// Save new user data
+				userDao.save(user).then(resolve).catch(reject);
+			}).catch(reject);
+		}).catch(reject);
+	});
+}
 
 /**
  * Save for instance.

@@ -80,7 +80,7 @@ function generateHash(text, salt) {
 	return new Promise(function (resolve, reject) {
 		genHashPrivate(text, salt, iterations, keylen, digest)
 			.then(result => resolve(result.toString('hex'))).catch(reject);
-	})
+	});
 }
 
 /**
