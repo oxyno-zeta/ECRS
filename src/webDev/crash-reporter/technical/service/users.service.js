@@ -13,7 +13,8 @@
 	/** @ngInject */
 	function usersService(usersDao) {
 		var service = {
-			getCurrent: getCurrent
+			getCurrent: getCurrent,
+			changeCurrentPassword: changeCurrentPassword
 		};
 		return service;
 
@@ -26,6 +27,16 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Change Current Password.
+		 * @param oldPassword {String} old password
+		 * @param newPassword {String} new password
+		 * @returns {*}
+		 */
+		function changeCurrentPassword(oldPassword, newPassword) {
+			return usersDao.changeCurrentPassword(oldPassword, newPassword);
+		}
 
 		/**
 		 * Get current user.

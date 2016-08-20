@@ -11,7 +11,8 @@
 			'crash-reporter.views.header',
 			'crash-reporter.views.projects',
 			'crash-reporter.views.login',
-			'crash-reporter.views.project'
+			'crash-reporter.views.project',
+			'crash-reporter.views.profile'
 		]);
 
 })();

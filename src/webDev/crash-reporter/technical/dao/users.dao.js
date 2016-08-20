@@ -13,14 +13,15 @@
 	/** @ngInject */
 	function usersDao($q, $resource, CONFIG) {
 		var service = {
-			getCurrent: getCurrent
+			getCurrent: getCurrent,
+			changeCurrentPassword: changeCurrentPassword
 		};
 
 		/* ************************************* */
 		/* ********  PRIVATE VARIABLES  ******** */
 		/* ************************************* */
 
-		var userResource = $resource(CONFIG.URL.PREFIX + '/users/:id', {}, {});
+		var userResource = $resource(CONFIG.URL.PREFIX + '/users/:id/:verb1', {}, {});
 
 
 		return service;
@@ -34,6 +35,22 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Change Current Password.
+		 * @param oldPassword {String} old password
+		 * @param newPassword {String} new password
+		 * @returns {*}
+		 */
+		function changeCurrentPassword(oldPassword, newPassword) {
+			var body = {
+				oldPassword: oldPassword,
+				newPassword: newPassword
+			};
+			var deferred = $q.defer();
+			userResource.save({id: 'current', verb1: 'password'}, body, deferred.resolve, deferred.reject);
+			return deferred.promise;
+		}
 
 		/**
 		 * Get current user.
