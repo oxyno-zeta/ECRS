@@ -34,6 +34,9 @@
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
 
+		/**
+		 * Change password for current user.
+		 */
 		function changePassword() {
 			usersService.changeCurrentPassword(vm.oldPassword, vm.newPassword).then(function () {
 				// OK

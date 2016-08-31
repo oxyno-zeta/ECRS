@@ -14,7 +14,9 @@
 	function usersService(usersDao) {
 		var service = {
 			getCurrent: getCurrent,
-			changeCurrentPassword: changeCurrentPassword
+			changeCurrentPassword: changeCurrentPassword,
+			changePasswordForUser: changePasswordForUser,
+			getAll: getAll
 		};
 		return service;
 
@@ -27,6 +29,26 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Change password for user.
+		 * @param user {Object} user
+		 * @param newPassword {String} new password
+		 * @returns {*}
+		 */
+		function changePasswordForUser(user, newPassword) {
+			return usersDao.changePasswordForUser(user.id, newPassword);
+		}
+
+		/**
+		 * Get all.
+		 * @param limit {Integer} limit
+		 * @param skip {Integer} skip
+		 * @param sort {Object} sort
+		 */
+		function getAll(limit, skip, sort) {
+			return usersDao.getAll(limit, skip, sort);
+		}
 
 		/**
 		 * Change Current Password.

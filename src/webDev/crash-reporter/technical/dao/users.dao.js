@@ -14,14 +14,20 @@
 	function usersDao($q, $resource, CONFIG) {
 		var service = {
 			getCurrent: getCurrent,
-			changeCurrentPassword: changeCurrentPassword
+			changeCurrentPassword: changeCurrentPassword,
+			changePasswordForUser: changePasswordForUser,
+			getAll: getAll
 		};
 
 		/* ************************************* */
 		/* ********  PRIVATE VARIABLES  ******** */
 		/* ************************************* */
 
-		var userResource = $resource(CONFIG.URL.PREFIX + '/users/:id/:verb1', {}, {});
+		var userResource = $resource(CONFIG.URL.PREFIX + '/users/:id/:verb1', {}, {
+			put: {
+				method: 'PUT'
+			}
+		});
 
 
 		return service;
@@ -37,6 +43,51 @@
 		/* ************************************* */
 
 		/**
+		 * Change password for user.
+		 * @param userId {String} user id
+		 * @param newPassword {String} new password
+		 * @returns {*}
+		 */
+		function changePasswordForUser(userId, newPassword) {
+			var deferred = $q.defer();
+			var body = {
+				newPassword: newPassword
+			};
+			userResource.put({id: userId, verb1: 'password'}, body, function (result) {
+				deferred.resolve(result.toJSON());
+			}, deferred.reject);
+			return deferred.promise;
+		}
+
+		/**
+		 * Get all.
+		 * @param limit {Integer} limit
+		 * @param skip {Integer} skip
+		 * @param sort {Object} sort
+		 */
+		function getAll(limit, skip, sort) {
+			var deferred = $q.defer();
+			var params = {};
+
+			if (limit) {
+				params.limit = limit;
+			}
+
+			if (skip) {
+				params.skip = skip;
+			}
+
+			if (sort) {
+				params.sort = sort;
+			}
+
+			userResource.get(params, function (result) {
+				deferred.resolve(result.toJSON());
+			}, deferred.reject);
+			return deferred.promise;
+		}
+
+		/**
 		 * Change Current Password.
 		 * @param oldPassword {String} old password
 		 * @param newPassword {String} new password
@@ -48,7 +99,7 @@
 				newPassword: newPassword
 			};
 			var deferred = $q.defer();
-			userResource.save({id: 'current', verb1: 'password'}, body, deferred.resolve, deferred.reject);
+			userResource.put({id: 'current', verb1: 'password'}, body, deferred.resolve, deferred.reject);
 			return deferred.promise;
 		}
 

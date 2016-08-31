@@ -1,0 +1,71 @@
+<md-table-container>
+    <table md-table md-row-select>
+        <thead md-head md-order="adminUsersCtrl.query.order" md-on-reorder="adminUsersCtrl.getElements">
+        <tr md-row>
+            <th md-column md-order-by="username">Username</th>
+            <th md-column md-order-by="role">Grade</th>
+            <th md-column md-order-by="email">Email</th>
+            <th md-column>Account Type</th>
+            <th md-column class="spacing-left-th">Password</th>
+        </tr>
+        </thead>
+        <tbody md-body>
+        <tr md-row md-select="item" md-select-id="id" md-auto-select
+            ng-repeat="item in adminUsersCtrl.data.items track by item.id">
+            <td md-cell ng-bind="item.username"></td>
+            <td md-cell ng-bind="adminUsersCtrl.getRoleName(item)"></td>
+            <td md-cell>
+                <p ng-if="item.email" ng-bind="item.email"></p>
+                <p ng-if="!item.email">No Email</p>
+            </td>
+            <td md-cell ng-bind="adminUsersCtrl.getAccountType(item)"></td>
+            <td md-cell>
+                <p class="spacing-left-th" ng-if="item.github.id">Not possible</p>
+                <md-button class="md-raised" ng-if="!item.github.id" ng-click="adminUsersCtrl.changePassword(item)">
+                    Change
+                </md-button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</md-table-container>
+
+<div class="pagination" layout="row" layout-align="center center">
+    <div layout="column" flex></div>
+    <div layout="column">Page:</div>
+    <div layout="column" class="divider"></div>
+    <md-select class="md-table-select select"
+               ng-model="adminUsersCtrl.query.page"
+               ng-change="adminUsersCtrl.getElements()"
+               layout="column" aria-label="Page">
+        <md-option ng-repeat="item in adminUsersCtrl.query.pages" value="{{item}}" ng-bind="item"></md-option>
+    </md-select>
+    <div layout="column" class="divider"></div>
+    <div layout="column">Row per page:</div>
+    <div layout="column" class="divider"></div>
+    <md-select class="md-table-select select"
+               ng-model="adminUsersCtrl.query.limit"
+               ng-change="adminUsersCtrl.changeRowPage()"
+               layout="column" aria-label="Row per page">
+        <md-option ng-repeat="row in adminUsersCtrl.query.rowsPerPage" value="{{row}}" ng-bind="row"></md-option>
+    </md-select>
+    <div layout="column" class="divider"></div>
+    <div layout="column">
+        <div layout="row">
+            <p><span ng-bind="adminUsersCtrl.query.items.min"></span> - <span
+                    ng-bind="adminUsersCtrl.query.items.max"></span>
+                of <span ng-bind="adminUsersCtrl.data.total"></span></p>
+        </div>
+    </div>
+    <div layout="column" class="divider"></div>
+    <md-button ng-disabled="adminUsersCtrl.query.page === 1"
+               ng-click="adminUsersCtrl.previousPage()"
+               layout="column" class="md-icon-button" aria-label="Previous">
+        <md-icon class="fa fa-angle-left big-icons"></md-icon>
+    </md-button>
+    <md-button ng-disabled="adminUsersCtrl.query.page === adminUsersCtrl.query.pages.length"
+               ng-click="adminUsersCtrl.nextPage()"
+               layout="column" class="md-icon-button" aria-label="Next">
+        <md-icon class="fa fa-angle-right big-icons"></md-icon>
+    </md-button>
+</div>
