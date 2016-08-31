@@ -14,6 +14,7 @@ const {User} = require('../models/userModel');
 /* ************************************* */
 module.exports = {
 	formatToApi: formatToApi,
+	formatListToApi: formatListToApi,
 	build: build
 };
 
@@ -26,6 +27,15 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Format list to api.
+ * @param list {Array} list
+ * @returns {*}
+ */
+function formatListToApi(list) {
+	return list.map(formatToApi);
+}
 
 /**
  * Build.

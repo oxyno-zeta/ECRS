@@ -7,6 +7,7 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
+const _ = require('lodash');
 const {User} = require('../models/userModel');
 
 /* ************************************* */
@@ -17,7 +18,9 @@ module.exports = {
 	findByGithubId: findByGithubId,
 	findByUsernameWithLocalHashNotNull: findByUsernameWithLocalHashNotNull,
 	findAllByRole: findAllByRole,
-	findById: findById
+	findById: findById,
+	findAllWithPagination: findAllWithPagination,
+	countAll: countAll
 };
 
 /* ************************************* */
@@ -29,6 +32,39 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Count all users.
+ * @returns {*}
+ */
+function countAll() {
+	return User.find().count();
+}
+
+/**
+ * Find all with pagination.
+ * @param limit {Integer} limit
+ * @param skip {Integer} skip
+ * @param sort {Object} sort object
+ * @returns {*}
+ */
+function findAllWithPagination(limit, skip, sort) {
+	let promise = User.find();
+
+	if (!_.isUndefined(limit)) {
+		promise.limit(limit);
+	}
+
+	if (!_.isUndefined(skip)) {
+		promise.skip(skip);
+	}
+
+	if (!_.isUndefined(sort)) {
+		promise.sort(sort);
+	}
+
+	return promise;
+}
 
 /**
  * Find by id.

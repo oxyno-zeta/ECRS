@@ -14,6 +14,7 @@ const APIResponse = require('./APIResponse');
 const APICodes = require('./APICodes');
 const configurationService = require('../../services/core/configurationService');
 const userService = require('../../services/userService');
+const rolesObj = userService.rolesObj;
 const logger = require('../../shared/logger')('[API Security]');
 
 /* ************************************* */
@@ -22,7 +23,8 @@ const logger = require('../../shared/logger')('[API Security]');
 module.exports = {
 	middleware: {
 		securityToken: securityToken,
-		populateUser: populateUser
+		populateUser: populateUser,
+		onlyAdministrator: onlyAdministrator
 	},
 	encode: encode
 };
@@ -36,6 +38,34 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Only administrator middleware.
+ * @returns {Function}
+ */
+function onlyAdministrator() {
+	return function (req, res, next) {
+		let body = APIResponse.getDefaultResponseBody();
+		// Get user
+		let user = req.userDb;
+
+		// Check if user exists
+		if (_.isUndefined(user) || _.isNull(user)) {
+			// User not found
+			APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.UNAUTHORIZED);
+			return;
+		}
+
+		// Check if user is administrator
+		if (!_.isEqual(user.role, rolesObj.admin)) {
+			APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.FORBIDDEN);
+			return;
+		}
+
+		// Next
+		next();
+	}
+}
 
 /**
  * Populate user middleware (Must be placed after token middleware).

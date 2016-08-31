@@ -24,8 +24,11 @@ module.exports = {
 	findByUsernameForLocal: findByUsernameForLocal,
 	localLogin: localLogin,
 	findById: findById,
+	findAllWithPagination: findAllWithPagination,
 	saveForInstance: saveForInstance,
-	changePassword: changePassword
+	checkOldPasswordAndChangePassword: checkOldPasswordAndChangePassword,
+	changePassword: changePassword,
+	countAll: countAll
 };
 
 /* ************************************* */
@@ -68,13 +71,51 @@ function createForLocal(userData) {
 /* ************************************* */
 
 /**
+ * Count all users.
+ * @returns {*}
+ */
+function countAll() {
+	return userDao.countAll();
+}
+
+/**
+ * Find all with pagination.
+ * @param limit {Integer} limit
+ * @param skip {Integer} skip
+ * @param sort {Object} sort object
+ * @returns {*}
+ */
+function findAllWithPagination(limit, skip, sort) {
+	return userDao.findAllWithPagination(limit, skip, sort);
+}
+
+/**
  * Change password for a user.
+ * @param user {Object} User
+ * @param newPassword {String} new password
+ * @returns {Promise}
+ */
+function changePassword(user, newPassword) {
+	// Create new salt
+	let newSalt = securityService.generateSaltSync();
+	// Generate Hash
+	return securityService.generateHash(newPassword, newSalt).then(function (newHash) {
+		user.local.salt = newSalt;
+		user.local.hash = newHash;
+
+		// Save new user data
+		return userDao.save(user);
+	});
+}
+
+/**
+ * Check old password and change password for a user.
  * @param user {Object} User
  * @param oldPassword {String} old password
  * @param newPassword {String} new password
  * @returns {Promise}
  */
-function changePassword(user, oldPassword, newPassword) {
+function checkOldPasswordAndChangePassword(user, oldPassword, newPassword) {
 	return new Promise((resolve, reject) => {
 		securityService.compare(oldPassword, user.local.hash, user.local.salt).then(function (isOk) {
 			if (!isOk) {
@@ -82,17 +123,7 @@ function changePassword(user, oldPassword, newPassword) {
 			}
 
 			// Save new password
-
-			// Create new salt
-			let newSalt = securityService.generateSaltSync();
-			// Generate Hash
-			securityService.generateHash(newPassword, newSalt).then(function (newHash) {
-				user.local.salt = newSalt;
-				user.local.hash = newHash;
-
-				// Save new user data
-				userDao.save(user).then(resolve).catch(reject);
-			}).catch(reject);
+			changePassword(user, newPassword).then(resolve).catch(reject);
 		}).catch(reject);
 	});
 }
