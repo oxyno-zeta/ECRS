@@ -15,6 +15,7 @@ const APICodes = require('../core/APICodes');
 const apiSecurity = require('../core/apiSecurity');
 const userService = require('../../services/userService');
 const userMapper = require('../../mappers/userMapper');
+const projectService = require('../../services/projectService');
 const rolesObj = userService.rolesObj;
 
 /* ************************************* */
@@ -194,6 +195,67 @@ function changePassword(req, res) {
 	});
 }
 
+/**
+ * Remove user.
+ * @param req
+ * @param res
+ */
+function removeUser(req, res) {
+	let body = APIResponse.getDefaultResponseBody();
+
+	// Get user id
+	let userId = req.params.id;
+	// Get user from database
+	userService.findById(userId).then(function (user) {
+		// Check if user exists
+		if (_.isNull(user)) {
+			// User not found in database
+			APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
+			return;
+		}
+
+		// Continue function
+		function go() {
+			// Delete all user project
+			projectService.deleteRecursivelyByIds(user.projects).then(function () {
+				// All removed => delete user
+				userService.removeById(user._id).then(function () {
+					APIResponse.sendResponse(res, null, APICodes.SUCCESS.NO_CONTENT);
+				}).catch(function (err) {
+					logger.error(err);
+					APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+				});
+			}).catch(function (err) {
+				logger.error(err);
+				APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+			});
+		}
+
+		// Check that user is not last administrator only if user is administrator
+		if (_.isEqual(rolesObj.admin, user.role)) {
+			userService.checkIsUserLastAdministrator(user).then((isLastAdmin) => {
+				if (isLastAdmin) {
+					logger.error('Try to remove last administrator');
+					APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.FORBIDDEN);
+					return;
+				}
+
+				// Ok for removing
+				go();
+			}).catch(function (err) {
+				logger.error(err);
+				APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+			});
+		}
+		else {
+			go();
+		}
+	}).catch(function (err) {
+		logger.error(err);
+		APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+	});
+}
+
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
@@ -211,6 +273,8 @@ function expose() {
 	router.put('/users/current/password', apiSecurity.middleware.populateUser(), changeCurrentPassword);
 	router.put('/users/:id/password', apiSecurity.middleware.populateUser(),
 		apiSecurity.middleware.onlyAdministrator(), changePassword);
+	router.delete('/users/:id', apiSecurity.middleware.populateUser(),
+		apiSecurity.middleware.onlyAdministrator(), removeUser);
 
 	return router;
 }

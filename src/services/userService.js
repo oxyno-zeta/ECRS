@@ -28,7 +28,9 @@ module.exports = {
 	saveForInstance: saveForInstance,
 	checkOldPasswordAndChangePassword: checkOldPasswordAndChangePassword,
 	changePassword: changePassword,
-	countAll: countAll
+	countAll: countAll,
+	removeById: removeById,
+	checkIsUserLastAdministrator: checkIsUserLastAdministrator
 };
 
 /* ************************************* */
@@ -69,6 +71,28 @@ function createForLocal(userData) {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Check is user last administrator
+ * @param user {Object} user
+ * @returns {Promise}
+ */
+function checkIsUserLastAdministrator(user) {
+	return new Promise((resolve, reject) => {
+		userDao.findOtherAdministrator(user).then((otherAdmin) => {
+			resolve(_.isNull(otherAdmin));
+		}).catch(reject);
+	});
+}
+
+/**
+ * Remove by id.
+ * @param id {String} User id
+ * @returns {*}
+ */
+function removeById(id) {
+	return userDao.removeById(id);
+}
 
 /**
  * Count all users.

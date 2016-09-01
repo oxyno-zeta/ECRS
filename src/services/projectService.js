@@ -28,7 +28,8 @@ module.exports = {
 	statisticsNumberByVersionByDate: statisticsNumberByVersionByDate,
 	statisticsNumberByVersionByDateAndStartDate: statisticsNumberByVersionByDateAndStartDate,
 	getAllVersions: getAllVersions,
-	deleteRecursivelyById: deleteRecursivelyById
+	deleteRecursivelyById: deleteRecursivelyById,
+	deleteRecursivelyByIds: deleteRecursivelyByIds
 };
 
 /* ************************************* */
@@ -39,6 +40,15 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Delete recursively by ids.
+ * @param ids {Array} project ids
+ * @returns {Promise}
+ */
+function deleteRecursivelyByIds(ids) {
+	return Promise.all(ids.map(deleteRecursivelyById));
+}
 
 /**
  * Delete recursively by id.

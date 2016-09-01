@@ -8,7 +8,7 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 const _ = require('lodash');
-const {User} = require('../models/userModel');
+const {User, rolesObj} = require('../models/userModel');
 
 /* ************************************* */
 /* ********       EXPORTS       ******** */
@@ -20,7 +20,9 @@ module.exports = {
 	findAllByRole: findAllByRole,
 	findById: findById,
 	findAllWithPagination: findAllWithPagination,
-	countAll: countAll
+	countAll: countAll,
+	removeById: removeById,
+	findOtherAdministrator: findOtherAdministrator
 };
 
 /* ************************************* */
@@ -32,6 +34,24 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * find Other Administrator.
+ * @param user {Object} user
+ * @returns {*}
+ */
+function findOtherAdministrator(user) {
+	return User.findOne({_id: {$ne: user._id}, role: rolesObj.admin});
+}
+
+/**
+ * Remove by id.
+ * @param id {String} User id
+ * @returns {*}
+ */
+function removeById(id) {
+	return User.findByIdAndRemove(id);
+}
 
 /**
  * Count all users.
