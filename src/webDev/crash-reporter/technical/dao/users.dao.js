@@ -16,7 +16,8 @@
 			getCurrent: getCurrent,
 			changeCurrentPassword: changeCurrentPassword,
 			changePasswordForUser: changePasswordForUser,
-			getAll: getAll
+			getAll: getAll,
+			remove: remove
 		};
 
 		/* ************************************* */
@@ -41,6 +42,19 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Remove user from id.
+		 * @param userId {String} user id
+		 * @returns {*}
+		 */
+		function remove(userId) {
+			var deferred = $q.defer();
+			userResource.delete({id: userId}, function () {
+				deferred.resolve();
+			}, deferred.reject);
+			return deferred.promise;
+		}
 
 		/**
 		 * Change password for user.

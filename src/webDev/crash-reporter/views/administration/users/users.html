@@ -7,6 +7,7 @@
             <th md-column md-order-by="email">Email</th>
             <th md-column>Account Type</th>
             <th md-column class="spacing-left-th">Password</th>
+            <th md-column>Action</th>
         </tr>
         </thead>
         <tbody md-body>
@@ -23,6 +24,11 @@
                 <p class="spacing-left-th" ng-if="item.github.id">Not possible</p>
                 <md-button class="md-raised" ng-if="!item.github.id" ng-click="adminUsersCtrl.changePassword(item)">
                     Change
+                </md-button>
+            </td>
+            <td md-cell>
+                <md-button class="md-icon-button opened" aria-label="Delete" ng-click="adminUsersCtrl.deleteUser(item)">
+                    <md-icon class="fa fa-trash big-icons delete-user"></md-icon>
                 </md-button>
             </td>
         </tr>

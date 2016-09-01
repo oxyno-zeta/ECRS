@@ -11,7 +11,7 @@
 		.controller('AdministrationUsersController', AdministrationUsersController);
 
 	/** @ngInject */
-	function AdministrationUsersController($state, $mdDialog, usersService, user, CONFIG) {
+	function AdministrationUsersController($state, $mdDialog, $mdToast, usersService, user, CONFIG) {
 		var vm = this;
 		// Variables
 		vm.query = {
@@ -37,6 +37,7 @@
 		vm.getAccountType = getAccountType;
 		vm.getRoleName = getRoleName;
 		vm.changePassword = changePassword;
+		vm.deleteUser = deleteUser;
 
 		// Activate
 		activate();
@@ -65,6 +66,43 @@
 			}
 		}
 
+		/**
+		 * Delete user.
+		 * @param user {Object} user
+		 */
+		function deleteUser(user) {
+			var confirm = $mdDialog.confirm()
+				.title('Delete User')
+				.textContent('Are you sure you want to remove this user ("' + user.username + '") ?')
+				.ariaLabel('Delete User')
+				.ok('Ok')
+				.cancel('Cancel');
+			$mdDialog.show(confirm).then(function () {
+				usersService.remove(user.id).then(function () {
+					var toast = $mdToast.simple()
+						.textContent('Delete user succeed !')
+						.position('top right')
+						.hideDelay(1000);
+					// Show toast
+					$mdToast.show(toast).finally(function () {
+						$state.go('header.administration.users', {}, {reload: true});
+					});
+				}, function () {
+					// Error
+					var toast = $mdToast.simple()
+						.textContent('Delete user failed !')
+						.position('top right')
+						.hideDelay(3000);
+					// Show toast
+					$mdToast.show(toast);
+				});
+			});
+		}
+
+		/**
+		 * Change password
+		 * @param user {Object} user
+		 */
 		function changePassword(user) {
 			$mdDialog.show({
 				controller: 'AdminUserChangePasswordController',
