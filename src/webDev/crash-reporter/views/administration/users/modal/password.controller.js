@@ -31,6 +31,9 @@
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
 
+		/**
+		 * Change password.
+		 */
 		function changePassword() {
 			usersService.changePasswordForUser(user, vm.newPassword)
 				.then($mdDialog.hide, function () {

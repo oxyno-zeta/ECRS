@@ -24,6 +24,9 @@
 			resolve: {
 				user: function (usersService) {
 					return usersService.getCurrent();
+				},
+				roles: function (usersService) {
+					return usersService.getRoles();
 				}
 			}
 		});

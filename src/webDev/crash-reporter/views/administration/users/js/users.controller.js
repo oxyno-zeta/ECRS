@@ -11,7 +11,7 @@
 		.controller('AdministrationUsersController', AdministrationUsersController);
 
 	/** @ngInject */
-	function AdministrationUsersController($state, $mdDialog, $mdToast, usersService, user, CONFIG) {
+	function AdministrationUsersController($timeout, $state, $mdDialog, $mdToast, usersService, user, roles, CONFIG) {
 		var vm = this;
 		// Variables
 		vm.query = {
@@ -38,6 +38,7 @@
 		vm.getRoleName = getRoleName;
 		vm.changePassword = changePassword;
 		vm.deleteUser = deleteUser;
+		vm.addUserModal = addUserModal;
 
 		// Activate
 		activate();
@@ -64,6 +65,25 @@
 			else {
 				vm.getElements();
 			}
+		}
+
+		/**
+		 * Add user modal.
+		 */
+		function addUserModal() {
+			$mdDialog.show({
+				templateUrl: 'crash-reporter/views/administration/users/modal/addUser.html',
+				controller: 'AdminAddNewUserController',
+				controllerAs: 'adminAddNewUserCtrl',
+				clickOutsideToClose: true,
+				clickEscapeToClose: true,
+				locals: {
+					roles: roles
+				},
+				bindToController: true
+			}).then(function () {
+				$state.go($state.current, {}, {reload: true});
+			});
 		}
 
 		/**

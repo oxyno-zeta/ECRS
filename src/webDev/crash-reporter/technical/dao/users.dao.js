@@ -17,7 +17,9 @@
 			changeCurrentPassword: changeCurrentPassword,
 			changePasswordForUser: changePasswordForUser,
 			getAll: getAll,
-			remove: remove
+			remove: remove,
+			createUser: createUser,
+			getRoles: getRoles
 		};
 
 		/* ************************************* */
@@ -42,6 +44,31 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Get roles.
+		 * @returns {*}
+		 */
+		function getRoles() {
+			var deferred = $q.defer();
+			userResource.query({id: 'roles'}, function (result) {
+				deferred.resolve(result);
+			}, deferred.reject);
+			return deferred.promise;
+		}
+
+		/**
+		 * Create User.
+		 * @param userData {Object} user data
+		 * @returns {*}
+		 */
+		function createUser(userData) {
+			var deferred = $q.defer();
+			userResource.save({}, userData, function (result) {
+				deferred.resolve(result.toJSON());
+			}, deferred.reject);
+			return deferred.promise;
+		}
 
 		/**
 		 * Remove user from id.

@@ -17,7 +17,9 @@
 			changeCurrentPassword: changeCurrentPassword,
 			changePasswordForUser: changePasswordForUser,
 			getAll: getAll,
-			remove: remove
+			remove: remove,
+			createUser: createUser,
+			getRoles: getRoles
 		};
 		return service;
 
@@ -30,6 +32,24 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Get roles.
+		 * @returns {*}
+		 */
+		function getRoles() {
+			return usersDao.getRoles();
+		}
+
+		/**
+		 * Create User.
+		 * @param userData {Object} user data
+		 * @returns {*}
+		 */
+		function createUser(userData) {
+			return usersDao.createUser(userData);
+		}
+
 		/**
 		 * Remove user from id.
 		 * @param userId {String} user id
