@@ -58,7 +58,7 @@ function githubCallback(req, res) {
 			expiresIn: '2 days'
 		}),
 		{
-			expires: ((new Date).getTime() + time2daysInMs),
+			expires: ((new Date()).getTime() + time2daysInMs),
 			maxAge: time2daysInMs
 		});
 	res.redirect('/');
