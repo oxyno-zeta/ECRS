@@ -364,13 +364,37 @@ function updateUser(req, res) {
 			return;
 		}
 
-		// Ok can be updated
-		userService.updateUser(userDb, userData).then((user) => {
-			APIResponse.sendResponse(res, userMapper.formatToApi(user), APICodes.SUCCESS.OK);
-		}).catch(function (err) {
-			logger.error(err);
-			APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
-		});
+		// Continue function
+		function go() {
+			// Ok can be updated
+			userService.updateUser(userDb, userData).then((user) => {
+				APIResponse.sendResponse(res, userMapper.formatToApi(user), APICodes.SUCCESS.OK);
+			}).catch(function (err) {
+				logger.error(err);
+				APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+			});
+		}
+
+		// Check if user is not last administrator and being erased
+		if (_.isEqual(userDb.role, rolesObj.admin) && !_.isEqual(userDb.role, userData.role)) {
+			userService.checkIsUserLastAdministrator(userDb).then((isLastAdmin) => {
+				if (isLastAdmin) {
+					APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.BAD_REQUEST);
+					return;
+				}
+
+				// Continue
+				go();
+			}).catch(function (err) {
+				logger.error(err);
+				APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+			});
+		}
+		else {
+			// Continue
+			go();
+		}
+		
 	}).catch(function (err) {
 		logger.error(err);
 		APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
