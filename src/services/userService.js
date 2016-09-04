@@ -9,7 +9,7 @@
 /* ************************************* */
 const _ = require('lodash');
 const userMapper = require('../mappers/userMapper');
-const {rolesObj} = require('../models/userModel');
+const {rolesObj, roles} = require('../models/userModel');
 const userDao = require('../dao/userDao');
 const logger = require('../shared/logger')('[UserService]');
 const securityService = require('./core/securityService');
@@ -19,6 +19,7 @@ const securityService = require('./core/securityService');
 /* ************************************* */
 module.exports = {
 	rolesObj: rolesObj,
+	roles: roles,
 	initialize: initialize,
 	saveOrUpdateFromGithub: saveOrUpdateFromGithub,
 	findByUsernameForLocal: findByUsernameForLocal,
@@ -30,7 +31,8 @@ module.exports = {
 	changePassword: changePassword,
 	countAll: countAll,
 	removeById: removeById,
-	checkIsUserLastAdministrator: checkIsUserLastAdministrator
+	checkIsUserLastAdministrator: checkIsUserLastAdministrator,
+	createNewUser: createNewUser
 };
 
 /* ************************************* */
@@ -71,6 +73,15 @@ function createForLocal(userData) {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Create new user.
+ * @param userData {Object} user data
+ * @returns {Promise}
+ */
+function createNewUser(userData) {
+	return createForLocal(userData);
+}
 
 /**
  * Check is user last administrator

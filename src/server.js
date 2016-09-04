@@ -76,7 +76,8 @@ function prepare() {
 			app.use(expressValidator({
 				customValidators: {
 					isUrl: inputValidatorWrapper.isUrlSync,
-					isArray: inputValidatorWrapper.isArraySync
+					isArray: inputValidatorWrapper.isArraySync,
+					isEmail: inputValidatorWrapper.isEmailSync
 				}
 			}));
 

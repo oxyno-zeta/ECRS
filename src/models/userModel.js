@@ -43,6 +43,7 @@ const User = mongoose.model('User', UserSchema);
 /* ************************************* */
 module.exports = {
 	rolesObj: rolesObj,
+	roles: roles,
 	User: User
 };
 
