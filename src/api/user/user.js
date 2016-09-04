@@ -322,6 +322,61 @@ function getRoles(req, res) {
 	APIResponse.sendArrayResponse(res, roles, APICodes.SUCCESS.OK);
 }
 
+/**
+ * Update user.
+ * @param req
+ * @param res
+ */
+function updateUser(req, res) {
+	let body = APIResponse.getDefaultResponseBody();
+
+	// Validation
+	req.checkBody('role', 'Invalid Role').notEmpty();
+	req.checkBody('email', 'Invalid Email').isEmail(false);
+
+	let errors = req.validationErrors();
+	// Check if validation failed
+	if (errors) {
+		body.errors = errors;
+		APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.BAD_REQUEST);
+		return;
+	}
+
+	//
+	let userData = {
+		email: req.body.email,
+		role: req.body.role
+	};
+
+	// Check that role exists
+	if (_.isUndefined(rolesObj[userData.role])) {
+		APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.BAD_REQUEST);
+		return;
+	}
+
+	// User id
+	let userId = req.params.id;
+
+	// Find user
+	userService.findById(userId).then(function (userDb) {
+		if (_.isNull(userDb)) {
+			APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
+			return;
+		}
+
+		// Ok can be updated
+		userService.updateUser(userDb, userData).then((user) => {
+			APIResponse.sendResponse(res, userMapper.formatToApi(user), APICodes.SUCCESS.OK);
+		}).catch(function (err) {
+			logger.error(err);
+			APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+		});
+	}).catch(function (err) {
+		logger.error(err);
+		APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+	});
+}
+
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
@@ -342,6 +397,8 @@ function expose() {
 		apiSecurity.middleware.onlyAdministrator(), changePassword);
 	router.delete('/users/:id', apiSecurity.middleware.populateUser(),
 		apiSecurity.middleware.onlyAdministrator(), removeUser);
+	router.put('/users/:id', apiSecurity.middleware.populateUser(),
+		apiSecurity.middleware.onlyAdministrator(), updateUser);
 	router.post('/users', apiSecurity.middleware.populateUser(),
 		apiSecurity.middleware.onlyAdministrator(), createUserAdministrator);
 

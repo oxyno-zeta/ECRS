@@ -32,7 +32,8 @@ module.exports = {
 	countAll: countAll,
 	removeById: removeById,
 	checkIsUserLastAdministrator: checkIsUserLastAdministrator,
-	createNewUser: createNewUser
+	createNewUser: createNewUser,
+	updateUser: updateUser
 };
 
 /* ************************************* */
@@ -73,6 +74,25 @@ function createForLocal(userData) {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Update user.
+ * @param userInstance {Object} user instance
+ * @param userData {Object} user data
+ * @returns {*|Promise}
+ */
+function updateUser(userInstance, userData) {
+	// Apply update
+	if (!_.isNull(userData.email) || !_.isUndefined(userData.email)) {
+		userInstance.email = userData.email;
+	}
+
+	if (!_.isNull(userData.role) || !_.isUndefined(userData.role)) {
+		userInstance.role = userData.role;
+	}
+
+	return userDao.save(userInstance);
+}
 
 /**
  * Create new user.
