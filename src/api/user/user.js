@@ -283,6 +283,7 @@ function createUserAdministrator(req, res) {
 	let userData = {
 		username: req.body.username,
 		password: req.body.password,
+		email: req.body.email,
 		role: req.body.role
 	};
 
