@@ -19,7 +19,8 @@
 			getAll: getAll,
 			remove: remove,
 			createUser: createUser,
-			getRoles: getRoles
+			getRoles: getRoles,
+			updateUser: updateUser
 		};
 		return service;
 
@@ -32,6 +33,16 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Update user.
+		 * @param id {String} id
+		 * @param data {Object} user data
+		 * @returns {*}
+		 */
+		function updateUser(id, data) {
+			return usersDao.updateUser(id, data);
+		}
 
 		/**
 		 * Get roles.

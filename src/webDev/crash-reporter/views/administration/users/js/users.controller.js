@@ -39,6 +39,7 @@
 		vm.changePassword = changePassword;
 		vm.deleteUser = deleteUser;
 		vm.addUserModal = addUserModal;
+		vm.updateUserModal = updateUserModal;
 
 		// Activate
 		activate();
@@ -65,6 +66,27 @@
 			else {
 				vm.getElements();
 			}
+		}
+
+		/**
+		 * Update user modal.
+		 * @param user {Object} user
+		 */
+		function updateUserModal(user) {
+			$mdDialog.show({
+				templateUrl: 'crash-reporter/views/administration/users/modal/updateUser.html',
+				controller: 'AdminUpdateUserController',
+				controllerAs: 'adminUpdateUserCtrl',
+				clickOutsideToClose: true,
+				clickEscapeToClose: true,
+				locals: {
+					roles: roles,
+					user: _.cloneDeep(user)
+				},
+				bindToController: true
+			}).then(function () {
+				$state.go($state.current, {}, {reload: true});
+			});
 		}
 
 		/**

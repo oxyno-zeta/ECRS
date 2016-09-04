@@ -19,7 +19,8 @@
 			getAll: getAll,
 			remove: remove,
 			createUser: createUser,
-			getRoles: getRoles
+			getRoles: getRoles,
+			updateUser: updateUser
 		};
 
 		/* ************************************* */
@@ -46,14 +47,26 @@
 		/* ************************************* */
 
 		/**
+		 * Update user.
+		 * @param id {String} id
+		 * @param data {Object} user data
+		 * @returns {*}
+		 */
+		function updateUser(id, data) {
+			var deferred = $q.defer();
+			userResource.put({id: id}, data, function (result) {
+				deferred.resolve(result.toJSON());
+			}, deferred.reject);
+			return deferred.promise;
+		}
+
+		/**
 		 * Get roles.
 		 * @returns {*}
 		 */
 		function getRoles() {
 			var deferred = $q.defer();
-			userResource.query({id: 'roles'}, function (result) {
-				deferred.resolve(result);
-			}, deferred.reject);
+			userResource.query({id: 'roles'}, deferred.resolve, deferred.reject);
 			return deferred.promise;
 		}
 

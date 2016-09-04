@@ -1,0 +1,41 @@
+<md-dialog aria-label="Update local user">
+    <form name="addUser">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Update local user</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="adminUpdateUserCtrl.close()">
+                    <md-icon class="fa fa-close big-icons" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <div class="modal-margin">
+                <md-input-container class="max-width">
+                    <label>Role</label>
+                    <md-select name="role" ng-model="adminUpdateUserCtrl.user.role" required>
+                        <md-option ng-repeat="role in adminUpdateUserCtrl.roles" ng-value="role"
+                                   ng-bind="role.toUpperCase()"></md-option>
+                    </md-select>
+                    <div ng-messages="addUser.role.$error">
+                        <div ng-message="required">This is required.</div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="max-width">
+                    <label>Email</label>
+                    <input ng-model="adminUpdateUserCtrl.user.email" name="email" type="email">
+                    <div ng-messages="addUser.email.$error">
+                        <div ng-message="email">Not an email.</div>
+                    </div>
+                </md-input-container>
+                <div layout="row">
+                    <div layout="column" flex></div>
+                    <md-button ng-disabled="addUser.$invalid" layout="column"
+                               ng-click="adminUpdateUserCtrl.update()"
+                               class="md-raised md-primary">Save
+                    </md-button>
+                </div>
+            </div>
+        </md-dialog-content>
+    </form>
+</md-dialog>
