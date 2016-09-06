@@ -17,6 +17,7 @@ const login = require('./login/login');
 const user = require('./user/user');
 const projects = require('./projects/projects');
 const configuration = require('./configuration/configuration');
+const register = require('./register/register');
 const prefix = '/api/v1/';
 
 /* ************************************* */
@@ -68,6 +69,8 @@ function getPathsWithoutSecurity() {
 	pathsWithoutSecurity = pathsWithoutSecurity.concat(login.pathsWithoutSecurity.map(mapFunction));
 	// Configuration api
 	pathsWithoutSecurity = pathsWithoutSecurity.concat(configuration.pathsWithoutSecurity.map(mapFunction));
+	// Register api
+	pathsWithoutSecurity = pathsWithoutSecurity.concat(register.pathsWithoutSecurity.map(mapFunction));
 
 	// Result
 	return pathsWithoutSecurity;
@@ -90,6 +93,9 @@ function expose() {
 
 	// Api login
 	router.use(prefix, login.expose());
+
+	// Api register
+	router.use(prefix, register.expose());
 
 	// Api configuration
 	router.use(prefix, configuration.expose());

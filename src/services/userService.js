@@ -33,7 +33,8 @@ module.exports = {
 	removeById: removeById,
 	checkIsUserLastAdministrator: checkIsUserLastAdministrator,
 	createNewUser: createNewUser,
-	updateUser: updateUser
+	updateUser: updateUser,
+	register: register
 };
 
 /* ************************************* */
@@ -74,6 +75,18 @@ function createForLocal(userData) {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Register.
+ * @param userData {Object} user data
+ * @returns {Promise}
+ */
+function register(userData) {
+	// Give normal role
+	userData.role = rolesObj.normal;
+	// Save in database
+	return createForLocal(userData);
+}
 
 /**
  * Update user.
