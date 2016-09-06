@@ -15,6 +15,7 @@ const APICodes = require('../core/APICodes');
 const userService = require('../../services/userService');
 const userMapper = require('../../mappers/userMapper');
 const apiSecurity = require('../core/apiSecurity');
+const configurationService = require('../../services/core/configurationService');
 const pathsWithoutSecurity = [
 	{
 		url: '/login',
@@ -102,10 +103,12 @@ function login(req, res) {
  * @returns {*} Express Router
  */
 function expose() {
-	logger.debug('Putting user API...');
+	logger.debug('Putting Login API...');
 	var router = express.Router();
 
-	router.post('/login', login);
+	if (configurationService.auth.local.isEnabled()) {
+		router.post('/login', login);
+	}
 
 	return router;
 }
