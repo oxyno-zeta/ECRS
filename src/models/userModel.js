@@ -16,13 +16,28 @@ const rolesObj = {
 	admin: 'admin',
 	normal: 'normal'
 };
+const validation = {
+	username: {
+		minLength: 5
+	},
+	localPassword: {
+		minLength: 5
+	}
+};
 const UserSchema = new Schema({
-	username: String,
+	username: {
+		type: String,
+		unique: true,
+		lowercase: true,
+		trim: true,
+		required: true
+	},
 	email: String,
 	photo: String,
 	role: {
 		type: String,
-		enum: roles
+		enum: roles,
+		required: true
 	},
 	projects: [Schema.Types.ObjectId], // Project ids
 	local: {
@@ -44,7 +59,8 @@ const User = mongoose.model('User', UserSchema);
 module.exports = {
 	rolesObj: rolesObj,
 	roles: roles,
-	User: User
+	User: User,
+	validation: validation
 };
 
 /* ************************************* */

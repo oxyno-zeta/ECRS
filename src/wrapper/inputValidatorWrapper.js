@@ -17,7 +17,8 @@ const _ = require('lodash');
 module.exports = {
 	isUrlSync: isUrlSync,
 	isArraySync: _.isArray,
-	isEmailSync: isEmailSync
+	isEmailSync: isEmailSync,
+	stringHasMinLength: stringHasMinLength
 };
 
 /* ************************************* */
@@ -29,6 +30,24 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * String has minimum length.
+ * @param value {String}
+ * @param minLength {Number} Minimum length
+ * @returns {boolean}
+ */
+function stringHasMinLength(value, minLength) {
+	if (_.isUndefined(value) || _.isNull(value)) {
+		return false;
+	}
+
+	if (!_.isString(value)) {
+		return false;
+	}
+
+	return _.isEqual(value.trim().length, minLength);
+}
 
 /**
  * Is email sync.

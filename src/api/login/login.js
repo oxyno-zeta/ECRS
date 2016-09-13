@@ -47,6 +47,10 @@ function login(req, res) {
 	// Check body
 	req.checkBody('username', 'Invalid Username').notEmpty();
 	req.checkBody('password', 'Invalid Password').notEmpty();
+	req.checkBody('username', 'Invalid Username (Minimum size error)')
+		.stringHasMinLength(userService.userValidation.username.minLength);
+	req.checkBody('password', 'Invalid Password (Minimum size error)')
+		.stringHasMinLength(userService.userValidation.localPassword.minLength);
 	let errors = req.validationErrors();
 	// Check if validation failed
 	if (errors) {

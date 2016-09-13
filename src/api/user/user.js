@@ -62,6 +62,10 @@ function changeCurrentPassword(req, res, next) {
 	// Check body
 	req.checkBody('oldPassword', 'Invalid Old password').notEmpty();
 	req.checkBody('newPassword', 'Invalid new password').notEmpty();
+	req.checkBody('oldPassword', 'Invalid Old Password (Minimum size error)')
+		.stringHasMinLength(userService.userValidation.localPassword.minLength);
+	req.checkBody('newPassword', 'Invalid New Password (Minimum size error)')
+		.stringHasMinLength(userService.userValidation.localPassword.minLength);
 
 	let errors = req.validationErrors();
 	// Check if validation failed
@@ -154,6 +158,8 @@ function changePassword(req, res) {
 
 	// Validation
 	req.checkBody('newPassword', 'Invalid new password').notEmpty();
+	req.checkBody('newPassword', 'Invalid New Password (Minimum size error)')
+		.stringHasMinLength(userService.userValidation.localPassword.minLength);
 
 	let errors = req.validationErrors();
 	// Check if validation failed
@@ -270,6 +276,10 @@ function createUserAdministrator(req, res) {
 	req.checkBody('password', 'Invalid Password').notEmpty();
 	req.checkBody('role', 'Invalid Role').notEmpty();
 	req.checkBody('email', 'Invalid Email').isEmail(false);
+	req.checkBody('username', 'Invalid Username (Minimum size error)')
+		.stringHasMinLength(userService.userValidation.username.minLength);
+	req.checkBody('password', 'Invalid Password (Minimum size error)')
+		.stringHasMinLength(userService.userValidation.localPassword.minLength);
 
 	let errors = req.validationErrors();
 	// Check if validation failed
@@ -394,7 +404,7 @@ function updateUser(req, res) {
 			// Continue
 			go();
 		}
-		
+
 	}).catch(function (err) {
 		logger.error(err);
 		APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);

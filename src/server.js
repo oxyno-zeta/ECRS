@@ -77,7 +77,8 @@ function prepare() {
 				customValidators: {
 					isUrl: inputValidatorWrapper.isUrlSync,
 					isArray: inputValidatorWrapper.isArraySync,
-					isEmail: inputValidatorWrapper.isEmailSync
+					isEmail: inputValidatorWrapper.isEmailSync,
+					stringHasMinLength: inputValidatorWrapper.stringHasMinLength
 				}
 			}));
 
