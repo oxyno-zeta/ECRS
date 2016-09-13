@@ -30,6 +30,10 @@
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
 
+		/**
+		 * Stop loading.
+		 * @param rearm {Boolean} rearm loading system
+		 */
 		function stopLoading(rearm) {
 			if (rearm) {
 				stopCount = 0;
@@ -43,6 +47,9 @@
 			}
 		}
 
+		/**
+		 * Start loading.
+		 */
 		function startLoading() {
 			// Reset stop count
 			stopCount = 0;
