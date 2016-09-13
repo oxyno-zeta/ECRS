@@ -13,7 +13,7 @@
             <div class="modal-margin">
                 <md-input-container class="max-width">
                     <label>Role</label>
-                    <md-select name="role" ng-model="adminUpdateUserCtrl.user.role" required>
+                    <md-select name="role" ng-model="adminUpdateUserCtrl.user.role" required md-no-asterisk>
                         <md-option ng-repeat="role in adminUpdateUserCtrl.roles" ng-value="role"
                                    ng-bind="role.toUpperCase()"></md-option>
                     </md-select>

@@ -42,24 +42,33 @@
             </p>
         </md-content>
         <md-content class="md-padding" layout="column" ng-if="loginCtrl.localLoginSelected">
-            <md-input-container>
-                <label>Username</label>
-                <md-icon class="fa fa-user big-icon"></md-icon>
-                <input ng-change="loginCtrl.activateSubmit()" ng-model="loginCtrl.username" type="text" required>
-            </md-input-container>
-            <md-input-container>
-                <label>Password</label>
-                <md-icon class="fa fa-lock big-icon"></md-icon>
-                <input ng-change="loginCtrl.activateSubmit()" ng-model="loginCtrl.password" type="password"
-                       required>
-            </md-input-container>
-            <div layout="row" layout-align="center center">
-                <md-button class="md-raised md-primary"
-                           ng-disabled="loginCtrl.submitDisabled"
-                           ng-click="loginCtrl.login()">
-                    Submit
-                </md-button>
-            </div>
+            <form name="loginForm">
+                <md-input-container class="md-block">
+                    <label>Username</label>
+                    <md-icon class="fa fa-user big-icon"></md-icon>
+                    <input ng-model="loginCtrl.username" name="username" type="text" required md-no-asterisk
+                           minlength="5">
+                    <div ng-messages="loginForm.username.$error">
+                        <div ng-message="required">This is required.</div>
+                        <div ng-message="minlength">Field is too short (Minimum is 5).</div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="md-block">
+                    <label>Password</label>
+                    <md-icon class="fa fa-lock big-icon"></md-icon>
+                    <input ng-model="loginCtrl.password" name="password" type="password" required md-no-asterisk
+                           minlength="5">
+                    <div ng-messages="loginForm.password.$error">
+                        <div ng-message="required">This is required.</div>
+                        <div ng-message="minlength">Field is too short (Minimum is 5).</div>
+                    </div>
+                </md-input-container>
+                <div layout="row" layout-align="center center">
+                    <md-button class="md-raised md-primary" ng-click="loginCtrl.login()">
+                        Submit
+                    </md-button>
+                </div>
+            </form>
         </md-content>
     </md-whiteframe>
 </div>

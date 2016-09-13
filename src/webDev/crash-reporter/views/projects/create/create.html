@@ -9,8 +9,8 @@
     <form name="projectCreateForm">
         <div layout="row" class="padding-right-left">
             <md-input-container class="md-block" flex>
-                <label>Name *</label>
-                <input type="text" required name="name" ng-model="projectCreateCtrl.project.name">
+                <label>Name</label>
+                <input type="text" required md-no-asterisk name="name" ng-model="projectCreateCtrl.project.name">
                 <div ng-messages="projectCreateForm.name.$error">
                     <div ng-message="required">This is required.</div>
                 </div>

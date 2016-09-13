@@ -13,15 +13,16 @@
             <div class="modal-margin">
                 <md-input-container class="max-width">
                     <label>Username</label>
-                    <input ng-model="adminAddNewUserCtrl.username" name="username" type="text"
-                           required>
+                    <input ng-model="adminAddNewUserCtrl.username" md-no-asterisk minlength="5" name="username"
+                           type="text" required>
                     <div ng-messages="addUser.username.$error">
                         <div ng-message="required">This is required.</div>
+                        <div ng-message="minlength">Field is too short (Minimum is 5).</div>
                     </div>
                 </md-input-container>
                 <md-input-container class="max-width">
                     <label>Role</label>
-                    <md-select name="role" ng-model="adminAddNewUserCtrl.role" required>
+                    <md-select name="role" ng-model="adminAddNewUserCtrl.role" required md-no-asterisk>
                         <md-option ng-repeat="role in adminAddNewUserCtrl.roles" ng-value="role"
                                    ng-bind="role.toUpperCase()"></md-option>
                     </md-select>
@@ -32,18 +33,20 @@
                 <div layout="row">
                     <md-input-container>
                         <label>Password</label>
-                        <input ng-model="adminAddNewUserCtrl.password" name="password" type="password"
-                               required>
+                        <input ng-model="adminAddNewUserCtrl.password" name="password" type="password" md-no-asterisk
+                               minlength="5" required>
                         <div ng-messages="addUser.password.$error">
                             <div ng-message="required">This is required.</div>
+                            <div ng-message="minlength">Field is too short (Minimum is 5).</div>
                         </div>
                     </md-input-container>
                     <md-input-container>
                         <label>Confirm Password</label>
-                        <input ng-model="adminAddNewUserCtrl.confirmPassword" name="confirmPassword"
-                               ng-pattern="{{adminAddNewUserCtrl.password}}" type="password" required>
+                        <input ng-model="adminAddNewUserCtrl.confirmPassword" name="confirmPassword" md-no-asterisk
+                               minlength="5" ng-pattern="{{adminAddNewUserCtrl.password}}" type="password" required>
                         <div ng-messages="addUser.confirmPassword.$error">
                             <div ng-message="required">This is required.</div>
+                            <div ng-message="minlength">Field is too short (Minimum is 5).</div>
                             <div ng-message="pattern">Not same as password.</div>
                         </div>
                     </md-input-container>

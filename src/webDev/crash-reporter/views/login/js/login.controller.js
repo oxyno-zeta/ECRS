@@ -16,14 +16,12 @@
 		// Variables
 		vm.username = null;
 		vm.password = null;
-		vm.submitDisabled = true;
 		vm.localLoginSelected = false;
 		vm.configuration = configuration;
 		vm.urls = loginService.urls;
 		// Functions
 		vm.selectLocalLogin = selectLocalLogin;
 		vm.login = login;
-		vm.activateSubmit = activateSubmit;
 		vm.resetChoices = resetChoices;
 
 		////////////////
@@ -49,23 +47,6 @@
 		 */
 		function selectLocalLogin() {
 			vm.localLoginSelected = true;
-		}
-
-		/**
-		 * Activate submit ?
-		 */
-		function activateSubmit() {
-			if (_.isNull(vm.username) || _.isEmpty(vm.username)) {
-				vm.submitDisabled = true;
-				return;
-			}
-
-			if (_.isNull(vm.password) || _.isEmpty(vm.password)) {
-				vm.submitDisabled = true;
-				return;
-			}
-
-			vm.submitDisabled = false;
 		}
 
 		/**

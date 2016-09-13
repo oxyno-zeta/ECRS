@@ -34,6 +34,9 @@
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
 
+		/**
+		 * Register.
+		 */
 		function register() {
 			registerService.register(vm.user).then(function () {
 				var toast = $mdToast.simple()
