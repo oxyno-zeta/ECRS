@@ -6,11 +6,15 @@
                            ng-click="loginCtrl.resetChoices()" aria-label="Reset choices">
                     <md-icon class="fa fa-angle-left big-icon"></md-icon>
                 </md-button>
-                <h2 class="md-toolbar-tools">
+                <h2>
                     <span ng-if="!loginCtrl.localLoginSelected">Login</span>
                     <span ng-if="loginCtrl.localLoginSelected">Local Login</span>
                 </h2>
                 <span flex></span>
+                <md-button ui-sref="header.register" ng-if="loginCtrl.configuration.isLocalRegisterEnabled"
+                           aria-label="Register">
+                    Register
+                </md-button>
             </div>
         </md-toolbar>
         <md-content class="md-padding" layout="column" layout-align="center center"
@@ -55,8 +59,6 @@
                            ng-click="loginCtrl.login()">
                     Submit
                 </md-button>
-                <!--<div flex></div>
-                <md-button class="md-warn">test</md-button>-->
             </div>
         </md-content>
     </md-whiteframe>

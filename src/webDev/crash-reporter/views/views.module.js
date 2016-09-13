@@ -13,7 +13,8 @@
 			'crash-reporter.views.login',
 			'crash-reporter.views.project',
 			'crash-reporter.views.profile',
-			'crash-reporter.views.administration'
+			'crash-reporter.views.administration',
+			'crash-reporter.views.register'
 		]);
 
 })();

@@ -13,12 +13,14 @@
 	/** @ngInject */
 	function runRoute($rootScope, $state, loginService) {
 		$rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
-			if (!loginService.isLoggedIn() && !_.isEqual(toState.url, '/login')) {
+			if (!loginService.isLoggedIn() && !(_.isEqual(toState.url, '/login') ||
+				_.isEqual(toState.url, '/register'))) {
 				event.preventDefault();
 				$state.go('header.login');
 			}
 
-			if (loginService.isLoggedIn() && _.isEqual(toState.url, '/login')) {
+			if (loginService.isLoggedIn() &&
+				(_.isEqual(toState.url, '/login') || _.isEqual(toState.url, '/register'))) {
 				event.preventDefault();
 				$state.go('header.projects.list');
 			}

@@ -20,6 +20,11 @@
 					controller: 'HeaderController',
 					controllerAs: 'headerCtrl'
 				}
+			},
+			resolve: {
+				configuration: function (configurationService) {
+					return configurationService.getConfiguration();
+				}
 			}
 		});
 	}
