@@ -119,12 +119,18 @@ gulp.task('web:fonts', function () {
 		.pipe(gulp.dest(path.join(conf.sources.web.dist, 'fonts')));
 });
 
+gulp.task('web:img', function () {
+	return gulp.src([
+		path.join(conf.sources.web.dir, '/**/*.{svg,jpg,jpeg,gif,png}')
+	]).pipe(gulp.dest(conf.sources.web.dist));
+});
+
 gulp.task('web:clean', function () {
 	return del(conf.sources.web.dist);
 });
 
 gulp.task('web:dev', function (cb) {
-	return runSequence('web:clean', ['web:partials', 'web:sass', 'web:js', 'web:fonts'], 'web:inject', cb);
+	return runSequence('web:clean', ['web:partials', 'web:sass', 'web:js', 'web:img', 'web:fonts'], 'web:inject', cb);
 });
 
 gulp.task('web:watch', ['web:dev'], function () {
