@@ -58,9 +58,9 @@ function register(req, res) {
 
 	//
 	let userData = {
-		username: req.body.username,
+		username: req.body.username.toLowerCase(),
 		password: req.body.password,
-		email: req.body.email
+		email: req.body.email.toLowerCase()
 	};
 
 	// Check if username already exists

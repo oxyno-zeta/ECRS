@@ -32,7 +32,11 @@ const UserSchema = new Schema({
 		trim: true,
 		required: true
 	},
-	email: String,
+	email: {
+		type: String,
+		lowercase: true,
+		trim: true
+	},
 	photo: String,
 	role: {
 		type: String,
@@ -41,12 +45,21 @@ const UserSchema = new Schema({
 	},
 	projects: [Schema.Types.ObjectId], // Project ids
 	local: {
-		hash: String,
-		salt: String
+		hash: {
+			type: String,
+			unique: true
+		},
+		salt: {
+			type: String,
+			unique: true
+		}
 	},
 	github: {
 		accessToken: String,
-		id: String,
+		id: {
+			type: String,
+			unique: true
+		},
 		profileUrl: String
 	}
 });
