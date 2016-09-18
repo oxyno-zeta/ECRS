@@ -36,7 +36,6 @@
 		 */
 		function update() {
 			usersService.updateUser(vm.user.id, vm.user).then(function (data) {
-				console.log(data);
 				$mdDialog.hide(data);
 			}, function () {
 				// Error

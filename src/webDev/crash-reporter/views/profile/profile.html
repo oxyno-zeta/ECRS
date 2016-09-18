@@ -30,6 +30,15 @@
                     <p ng-bind="profileCtrl.getRoleName()"></p>
                 </div>
             </div>
+            <div layout="row">
+                <div layout="column" class="text-bold">
+                    <p>Email : </p>
+                </div>
+                <div layout="column">
+                    <p ng-bind="profileCtrl.user.email"></p>
+                    <p ng-if="!profileCtrl.user.email">No email !</p>
+                </div>
+            </div>
             <div layout="row" ng-if="profileCtrl.user.github.profileUrl">
                 <div layout="column" class="text-bold">
                     <p>Github Profile : </p>
@@ -42,6 +51,33 @@
                     </p>
                 </div>
             </div>
+        </md-card-content>
+    </md-card>
+
+    <md-card>
+        <md-card-title class="bottom-line">
+            <md-card-title-text>
+                <span class="md-headline">Change Email</span>
+            </md-card-title-text>
+        </md-card-title>
+        <md-card-content class="margin-top" layout="column">
+            <form name="changeEmailForm">
+                <md-input-container class="max-width">
+                    <label>Email</label>
+                    <input ng-model="profileCtrl.newEmail" name="newEmail" type="email" required md-no-asterisk>
+                    <div ng-messages="changeEmailForm.newEmail.$error">
+                        <div ng-message="required">This is required.</div>
+                        <div ng-message="email">Not an email.</div>
+                    </div>
+                </md-input-container>
+                <div layout="row">
+                    <div layout="column" flex></div>
+                    <md-button ng-disabled="changeEmailForm.$invalid" layout="column"
+                               ng-click="profileCtrl.changeEmail()"
+                               class="md-raised md-primary">Save
+                    </md-button>
+                </div>
+            </form>
         </md-card-content>
     </md-card>
 

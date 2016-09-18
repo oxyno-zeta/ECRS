@@ -20,7 +20,8 @@
 			remove: remove,
 			createUser: createUser,
 			getRoles: getRoles,
-			updateUser: updateUser
+			updateUser: updateUser,
+			updateCurrentEmail: updateCurrentEmail
 		};
 
 		/* ************************************* */
@@ -45,6 +46,17 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Update current email.
+		 * @param email {String} email
+		 * @returns {*}
+		 */
+		function updateCurrentEmail(email) {
+			var deferred = $q.defer();
+			userResource.put({id: 'current', verb1: 'email'}, {email: email}, deferred.resolve, deferred.reject);
+			return deferred.promise;
+		}
 
 		/**
 		 * Update user.

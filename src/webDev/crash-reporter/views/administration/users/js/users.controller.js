@@ -11,7 +11,7 @@
 		.controller('AdministrationUsersController', AdministrationUsersController);
 
 	/** @ngInject */
-	function AdministrationUsersController($timeout, $state, $mdDialog, $mdToast, usersService, user, roles, CONFIG) {
+	function AdministrationUsersController($state, $mdDialog, $mdToast, usersService, user, roles, CONFIG) {
 		var vm = this;
 		// Variables
 		vm.query = {
@@ -70,9 +70,10 @@
 
 		/**
 		 * Update user modal.
+		 * @param index {Integer} index
 		 * @param user {Object} user
 		 */
-		function updateUserModal(user) {
+		function updateUserModal(index, user) {
 			$mdDialog.show({
 				templateUrl: 'crash-reporter/views/administration/users/modal/updateUser.html',
 				controller: 'AdminUpdateUserController',
@@ -85,6 +86,8 @@
 				},
 				bindToController: true
 			}).then(function () {
+				$state.go($state.current, {}, {reload: true});
+			}, function () {
 				$state.go($state.current, {}, {reload: true});
 			});
 		}
@@ -104,6 +107,8 @@
 				},
 				bindToController: true
 			}).then(function () {
+				$state.go($state.current, {}, {reload: true});
+			}, function () {
 				$state.go($state.current, {}, {reload: true});
 			});
 		}

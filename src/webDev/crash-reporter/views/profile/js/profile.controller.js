@@ -18,10 +18,12 @@
 		vm.oldPassword = '';
 		vm.newPassword = '';
 		vm.confirmPassword = '';
+		vm.newEmail = '';
 		// Functions
 		vm.getRoleName = getRoleName;
 		vm.getAccountType = getAccountType;
 		vm.changePassword = changePassword;
+		vm.changeEmail = changeEmail;
 
 		////////////////
 
@@ -30,9 +32,46 @@
 		/* ********  PRIVATE FUNCTIONS  ******** */
 		/* ************************************* */
 
+		/**
+		 * Clear Data.
+		 */
+		function clearData() {
+			vm.oldPassword = '';
+			vm.newPassword = '';
+			vm.confirmPassword = '';
+			vm.newEmail = '';
+		}
+
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Change email.
+		 */
+		function changeEmail() {
+			usersService.updateCurrentEmail(vm.newEmail).then(function (userData) {
+				// OK
+				var toast = $mdToast.simple()
+					.textContent('Change Email Succeed !')
+					.position('top right')
+					.hideDelay(3000);
+				// Show toast
+				$mdToast.show(toast);
+				// Reload data
+				vm.user = userData;
+				// Clear data
+				clearData();
+			}, function () {
+				// Error
+				var toast = $mdToast.simple()
+					.textContent('Change Email failed !')
+					.position('top right')
+					.hideDelay(3000);
+				// Show toast
+				$mdToast.show(toast);
+			});
+		}
 
 		/**
 		 * Change password for current user.
@@ -46,6 +85,8 @@
 					.hideDelay(3000);
 				// Show toast
 				$mdToast.show(toast);
+				// Clear data
+				clearData();
 			}, function () {
 				// Error
 				var toast = $mdToast.simple()

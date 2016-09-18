@@ -20,7 +20,8 @@
 			remove: remove,
 			createUser: createUser,
 			getRoles: getRoles,
-			updateUser: updateUser
+			updateUser: updateUser,
+			updateCurrentEmail: updateCurrentEmail
 		};
 		return service;
 
@@ -33,6 +34,15 @@
 		/* ************************************* */
 		/* ********   PUBLIC FUNCTIONS  ******** */
 		/* ************************************* */
+
+		/**
+		 * Update current email.
+		 * @param email {String} email
+		 * @returns {*}
+		 */
+		function updateCurrentEmail(email) {
+			return usersDao.updateCurrentEmail(email);
+		}
 
 		/**
 		 * Update user.
