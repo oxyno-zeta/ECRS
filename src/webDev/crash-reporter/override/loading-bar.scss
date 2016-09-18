@@ -1,0 +1,13 @@
+$color: rgb(221, 44, 0);
+#loading-bar .bar {
+  background: $color;
+}
+
+#loading-bar-spinner .spinner-icon {
+  border-top-color: $color;
+  border-left-color: $color;
+}
+
+#loading-bar .peg {
+  box-shadow: $color 1px 0 6px 1px;
+}

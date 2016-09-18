@@ -1,0 +1,62 @@
+<div class="login" layout="row" layout-padding layout-wrap layout-align="center center" layout-fill>
+    <md-whiteframe class="login-box md-whiteframe-1dp" layout="column">
+        <md-toolbar class="toolbar md-primary md-hue-2">
+            <div class="md-toolbar-tools">
+                <md-button class="md-icon-button" ui-sref="header.login" aria-label="Go to Login">
+                    <md-icon class="fa fa-angle-left big-icon"></md-icon>
+                </md-button>
+                <h2>Register</h2>
+            </div>
+        </md-toolbar>
+        <md-content class="md-padding">
+            <form name="registerForm">
+                <md-input-container class="md-block">
+                    <label>Username</label>
+                    <md-icon class="fa fa-user big-icon"></md-icon>
+                    <input required ng-model="registerCtrl.user.username" md-no-asterisk minlength="5" name="username"
+                           type="text">
+                    <div ng-messages="registerForm.username.$error">
+                        <div ng-message="required">This is required.</div>
+                        <div ng-message="minlength">Field is too short (Minimum is 5).</div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="md-block">
+                    <label>Password</label>
+                    <md-icon class="fa fa-lock big-icon"></md-icon>
+                    <input required ng-model="registerCtrl.user.password" md-no-asterisk minlength="5" name="password"
+                           type="password">
+                    <div ng-messages="registerForm.password.$error">
+                        <div ng-message="required">This is required.</div>
+                        <div ng-message="minlength">Field is too short (Minimum is 5).</div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="md-block">
+                    <label>Confirm Password</label>
+                    <md-icon class="fa fa-lock big-icon"></md-icon>
+                    <input required ng-model="registerCtrl.confirmPassword" ng-pattern="{{registerCtrl.user.password}}"
+                           md-no-asterisk minlength="5" name="confirmPassword" type="password">
+                    <div ng-messages="registerForm.confirmPassword.$error">
+                        <div ng-message="required">This is required.</div>
+                        <div ng-message="minlength">Field is too short (Minimum is 5).</div>
+                        <div ng-message="pattern">Not same as password.</div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="md-block">
+                    <label>Email</label>
+                    <md-icon class="fa fa-envelope big-icon"></md-icon>
+                    <input ng-model="registerCtrl.user.email" name="email" type="email">
+                    <div ng-messages="registerForm.email.$error">
+                        <div ng-message="email">Not an email.</div>
+                    </div>
+                </md-input-container>
+                <div layout="row" layout-align="center center">
+                    <md-button class="md-raised md-primary"
+                               ng-disabled="registerForm.$invalid"
+                               ng-click="registerCtrl.register()">
+                        Submit
+                    </md-button>
+                </div>
+            </form>
+        </md-content>
+    </md-whiteframe>
+</div>

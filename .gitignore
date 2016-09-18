@@ -244,3 +244,8 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Project
+upload-logs/
+app-crash-logs/
+src/bower_components/
+src/views/

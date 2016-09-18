@@ -1,0 +1,30 @@
+<md-content class="projects" layout="column" layout-padding layout-wrap>
+    <div layout="row" layout-align="center center">
+        <h3 class="md-title">Projects</h3>
+        <span flex></span>
+        <md-button class="md-icon-button" aria-label="Add Project" ui-sref="header.projects.create">
+            <md-icon class="fa fa-plus big-icons"></md-icon>
+        </md-button>
+    </div>
+
+    <div class="line-separator" layout="row"></div>
+
+    <md-grid-list layout="row" class="grid-list"
+                  md-cols-xs="1" md-cols-sm="3" md-cols-md="6" md-cols-gt-md="8"
+                  md-row-height="2:2"
+                  md-gutter="12px" md-gutter-gt-sm="8px">
+        <md-grid-tile class="gray"
+                      md-colspan="2" md-colspan-sm="1" md-colspan-xs="1"
+                      ng-repeat="project in projectsCtrl.projectList"
+                      ui-sref="header.project({projectId: project.id})">
+            <h3 ng-bind="project.name"></h3>
+            <md-grid-tile-footer>
+                <span flex></span>
+                <md-button ng-if="project.projectUrl" ng-href="{{project.projectUrl}}" target="_blank">Open link
+                </md-button>
+                <span flex></span>
+            </md-grid-tile-footer>
+        </md-grid-tile>
+    </md-grid-list>
+
+</md-content>

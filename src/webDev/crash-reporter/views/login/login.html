@@ -1,0 +1,74 @@
+<div class="login" layout="row" layout-padding layout-wrap layout-align="center center" layout-fill>
+    <md-whiteframe class="login-box md-whiteframe-1dp" layout="column">
+        <md-toolbar class="toolbar md-primary md-hue-2">
+            <div class="md-toolbar-tools">
+                <md-button class="md-icon-button" ng-if="loginCtrl.localLoginSelected"
+                           ng-click="loginCtrl.resetChoices()" aria-label="Reset choices">
+                    <md-icon class="fa fa-angle-left big-icon"></md-icon>
+                </md-button>
+                <h2>
+                    <span ng-if="!loginCtrl.localLoginSelected">Login</span>
+                    <span ng-if="loginCtrl.localLoginSelected">Local Login</span>
+                </h2>
+                <span flex></span>
+                <md-button ui-sref="header.register" ng-if="loginCtrl.configuration.isLocalRegisterEnabled"
+                           aria-label="Register">
+                    Register
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-content class="md-padding" layout="column" layout-align="center center"
+                    ng-if="!loginCtrl.localLoginSelected">
+            <md-button class="md-raised md-primary button-200" layout="row"
+                       ng-if="loginCtrl.configuration.auth.isLocalEnabled"
+                       ng-click="loginCtrl.selectLocalLogin()" aria-label="Local login">
+                <span flex></span>
+                <md-icon class="fa fa-sign-in big-icon-button"></md-icon>
+                Local login
+                <span flex></span>
+            </md-button>
+            <md-button class="md-raised button-200" layout="row"
+                       ng-if="loginCtrl.configuration.auth.isGithubEnabled"
+                       ng-href="{{loginCtrl.urls.auth.github}}" aria-label="Github login">
+                <span flex></span>
+                <md-icon class="fa fa-github big-icon-button"></md-icon>
+                Github login
+                <span flex></span>
+            </md-button>
+            <p ng-if="!loginCtrl.configuration.auth.isGithubEnabled && !loginCtrl.configuration.auth.isLocalEnabled">
+                No login options.
+                <br>
+                Please contact your administrator to enabled them.
+            </p>
+        </md-content>
+        <md-content class="md-padding" layout="column" ng-if="loginCtrl.localLoginSelected">
+            <form name="loginForm">
+                <md-input-container class="md-block">
+                    <label>Username</label>
+                    <md-icon class="fa fa-user big-icon"></md-icon>
+                    <input ng-model="loginCtrl.username" name="username" type="text" required md-no-asterisk
+                           minlength="5">
+                    <div ng-messages="loginForm.username.$error">
+                        <div ng-message="required">This is required.</div>
+                        <div ng-message="minlength">Field is too short (Minimum is 5).</div>
+                    </div>
+                </md-input-container>
+                <md-input-container class="md-block">
+                    <label>Password</label>
+                    <md-icon class="fa fa-lock big-icon"></md-icon>
+                    <input ng-model="loginCtrl.password" name="password" type="password" required md-no-asterisk
+                           minlength="5">
+                    <div ng-messages="loginForm.password.$error">
+                        <div ng-message="required">This is required.</div>
+                        <div ng-message="minlength">Field is too short (Minimum is 5).</div>
+                    </div>
+                </md-input-container>
+                <div layout="row" layout-align="center center">
+                    <md-button class="md-raised md-primary" ng-click="loginCtrl.login()">
+                        Submit
+                    </md-button>
+                </div>
+            </form>
+        </md-content>
+    </md-whiteframe>
+</div>

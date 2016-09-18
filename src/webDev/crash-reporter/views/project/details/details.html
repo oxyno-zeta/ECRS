@@ -1,0 +1,58 @@
+<md-content class="project" layout="column" layout-padding layout-wrap>
+    <div layout="row" layout-align="center center">
+        <h3 class="md-title">Project Details</h3>
+        <span flex></span>
+        <md-button class="md-icon-button md-warn md-hue-2" ng-click="projectDetailsCtrl.deleteProject()"
+                   aria-label="Delete Project">
+            <md-icon class="fa fa-trash big-icons"></md-icon>
+        </md-button>
+    </div>
+
+    <div class="line-separator" layout="row"></div>
+
+    <div class="details" md-whiteframe="1" layout="column">
+        <div layout="row">
+            <div flex layout="column">
+                <p>
+                    Name: <span class="text-bold" ng-bind="projectDetailsCtrl.project.name"></span>
+                </p>
+            </div>
+            <div flex layout="column">
+                <p ng-if="!projectDetailsCtrl.project.projectUrl">
+                    Project URL: <span class="text-bold">No Project URL !</span>
+                </p>
+
+                <p ng-if="projectDetailsCtrl.project.projectUrl">
+                    Project URL: <a class="text-bold" ng-bind="projectDetailsCtrl.project.projectUrl"
+                                    ng-href="{{projectDetailsCtrl.project.projectUrl}}" target="_blank"></a>
+                </p>
+            </div>
+        </div>
+        <div layout="row">
+            <div flex layout="column">
+                <p>
+                    Crash Report Post URL: <span class="text-bold"
+                                                 ng-bind="projectDetailsCtrl.crashLogsPostUrl"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <md-tabs md-dynamic-height md-border-bottom>
+        <md-tab label="electron code" ui-sref="header.project" md-active="projectDetailsCtrl.isState('header.project')">
+            <md-content class="md-padding">
+                <div ui-codemirror="{lineNumbers: true, readOnly: true, lineWrapping : true, mode: 'javascript'}"
+                     ng-model="projectDetailsCtrl.electronCode"></div>
+            </md-content>
+        </md-tab>
+        <md-tab label="statistics" ui-sref="header.project.statistics"
+                md-active="projectDetailsCtrl.isState('header.project.statistics')">
+            <md-content class="md-padding" ui-view="content"></md-content>
+        </md-tab>
+        <md-tab label="crash reports" ui-sref="header.project.crashLogs"
+                md-active="projectDetailsCtrl.isState('header.project.crashLogs')">
+            <md-content class="md-padding" ui-view="content"></md-content>
+        </md-tab>
+    </md-tabs>
+
+</md-content>

@@ -1,0 +1,41 @@
+<md-content class="projects project-create" layout="column" layout-padding layout-wrap>
+    <div layout="row" layout-align="center center" class="title-size">
+        <h3 class="md-title">Create Projects</h3>
+        <span flex></span>
+    </div>
+
+    <div class="line-separator" layout="row"></div>
+
+    <form name="projectCreateForm">
+        <div layout="row" class="padding-right-left">
+            <md-input-container class="md-block" flex>
+                <label>Name</label>
+                <input type="text" required md-no-asterisk name="name" ng-model="projectCreateCtrl.project.name">
+                <div ng-messages="projectCreateForm.name.$error">
+                    <div ng-message="required">This is required.</div>
+                </div>
+            </md-input-container>
+
+            <div class="separator"></div>
+
+            <md-input-container class="md-block" flex>
+                <label>Project Url</label>
+                <input type="url" name="projectUrl" ng-model="projectCreateCtrl.project.projectUrl">
+                <div ng-messages="projectCreateForm.projectUrl.$error">
+                    <div ng-message="url">This isn't a URL.</div>
+                </div>
+            </md-input-container>
+        </div>
+
+        <div layout="row">
+            <span flex></span>
+            <md-button class="md-raised" ui-sref="header.projects.list">Cancel</md-button>
+            <md-button class="md-raised md-primary"
+                       ng-disabled="!projectCreateForm.$valid"
+                       ng-click="projectCreateCtrl.create()">Save
+            </md-button>
+        </div>
+    </form>
+
+
+</md-content>

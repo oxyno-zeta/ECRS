@@ -1,0 +1,31 @@
+{
+  "name": "crash-reporter-electron",
+  "version": "0.0.1",
+  "description": "Electron Crash Reporter Server",
+  "author": "Oxyno-zeta",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "homepage": "https://github.com/oxyno-zeta/crash-reporter-electron#readme",
+  "dependencies": {
+    "angular": "^1.5.7",
+    "angular-ui-router": "^0.3.1",
+    "angular-material": "^1.1.1",
+    "angular-resource": "^1.5.7",
+    "font-awesome": "^4.6.3",
+    "angular-cookies": "^1.5.7",
+    "lodash": "^4.13.1",
+    "angular-loading-bar": "^0.9.0",
+    "angular-ui-codemirror": "^0.3.0",
+    "angular-nvd3": "^1.0.8",
+    "moment": "^2.14.1",
+    "angular-material-data-table": "^0.10.9"
+  },
+  "overrides": {
+    "codemirror": {
+      "main": [
+        "lib/codemirror.js",
+        "mode/javascript/javascript.js",
+        "lib/codemirror.css"
+      ]
+    }
+  }
+}

@@ -1,0 +1,29 @@
+tr {
+  .displayDate {
+    min-width: 80px;
+  }
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap-reverse;
+  box-sizing: border-box;
+  padding: 0;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.54);
+  border-top: 1px rgba(0, 0, 0, 0.12) solid;
+
+  .divider {
+    width: 20px;
+  }
+
+  .select {
+    min-width: 40px;
+  }
+
+  md-select {
+    min-width: 20px;
+  }
+}
