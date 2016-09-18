@@ -48,7 +48,16 @@ module.exports = {
 			files: '.tmp/**/*'
 		},
 		dist: {
-			main: 'dist/'
+			main: 'dist/',
+			raspberrypi: 'dist/raspberrypi/',
+			x64: 'dist/x64/'
 		}
+	},
+	docker: {
+		version: {
+			x64: 'node:latest',
+			raspberrypi: 'hypriot/rpi-node:latest'
+		},
+		file: 'Dockerfile'
 	}
 };
