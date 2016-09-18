@@ -7,7 +7,7 @@ ENV CRASH_REPORTER_PORT 2000
 ADD archive.tar.gz $WORKING_DIR
 
 RUN cd $WORKING_DIR && \
-    npm install --prune
+    npm install --production
 
 EXPOSE 2000
 
