@@ -107,7 +107,13 @@ gulp.task('web:inject', function () {
 	return gulp.src(path.join(conf.sources.web.dir, '/index.html'))
 		.pipe(inject(injectStyles, injectOptions))
 		.pipe(inject(injectScripts, injectOptions))
-		.pipe(wiredep({}, conf.other.wiredepConf)).on('error', console.error)
+		.pipe(wiredep({}, conf.other.wiredepConf)).on('error', function (err) {
+			console.error(err);
+			// Check if we are on TRAVIS-CI
+			if (process.env.TRAVIS) {
+				throw new Error(err);
+			}
+		})
 		.pipe(gulp.dest(conf.sources.web.dist));
 });
 
