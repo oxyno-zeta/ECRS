@@ -1,5 +1,5 @@
 {
-  "name": "crash-reporter-electron",
+  "name": "ECRS",
   "version": "0.0.1",
   "description": "Electron Crash Reporter Server",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/oxyno-zeta/crash-reporter-electron.git"
+    "url": "git+https://github.com/oxyno-zeta/ECRS.git"
   },
   "keywords": [
     "Electron",
@@ -19,9 +19,9 @@
   "author": "Oxyno-zeta",
   "license": "SEE LICENSE IN LICENSE.md",
   "bugs": {
-    "url": "https://github.com/oxyno-zeta/crash-reporter-electron/issues"
+    "url": "https://github.com/oxyno-zeta/ECRS/issues"
   },
-  "homepage": "https://github.com/oxyno-zeta/crash-reporter-electron#readme",
+  "homepage": "https://github.com/oxyno-zeta/ECRS#readme",
   "devDependencies": {
     "browser-sync": "^2.13.0",
     "del": "^2.2.1",
