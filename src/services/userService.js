@@ -37,7 +37,8 @@ module.exports = {
 	createNewUser: createNewUser,
 	updateUser: updateUser,
 	register: register,
-	findUserByProjectId: findUserByProjectId
+	findUserByProjectId: findUserByProjectId,
+	updateEmail: updateEmail
 };
 
 /* ************************************* */
@@ -78,6 +79,19 @@ function createForLocal(userData) {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Update email.
+ * @param userInstance {Object} user instance
+ * @param email {String} email
+ * @returns {*|Promise}
+ */
+function updateEmail(userInstance, email) {
+	// Update email
+	userInstance.email = email;
+	// Save update
+	return userDao.save(userInstance);
+}
 
 /**
  * Find user by project id.

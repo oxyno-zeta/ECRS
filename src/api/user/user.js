@@ -411,6 +411,38 @@ function updateUser(req, res) {
 	});
 }
 
+/**
+ * Change email for current user.
+ * @param req
+ * @param res
+ * @param next
+ */
+function changeCurrentEmail(req, res, next) {
+	// Get default body
+	let body = APIResponse.getDefaultResponseBody();
+	// Get user
+	let user = req.userDb;
+
+	// Check body
+	req.checkBody('email', 'Invalid Email').notEmpty();
+	req.checkBody('email', 'Invalid Email').isEmail(true);
+
+	let errors = req.validationErrors();
+	// Check if validation failed
+	if (errors) {
+		body.errors = errors;
+		APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.BAD_REQUEST);
+		return;
+	}
+
+	// Get data
+	let newEmail = req.body.email;
+
+	userService.updateEmail(user, newEmail).then(function (result) {
+		APIResponse.sendResponse(res, userMapper.formatToApi(result), APICodes.SUCCESS.OK);
+	}).catch(next);
+}
+
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
@@ -427,6 +459,7 @@ function expose() {
 	router.get('/users/roles', getRoles);
 	router.get('/users/current', apiSecurity.middleware.populateUser(), getCurrentUser);
 	router.put('/users/current/password', apiSecurity.middleware.populateUser(), changeCurrentPassword);
+	router.put('/users/current/email', apiSecurity.middleware.populateUser(), changeCurrentEmail);
 	router.put('/users/:id/password', apiSecurity.middleware.populateUser(),
 		apiSecurity.middleware.onlyAdministrator(), changePassword);
 	router.delete('/users/:id', apiSecurity.middleware.populateUser(),
