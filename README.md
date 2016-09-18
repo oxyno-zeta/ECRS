@@ -1,5 +1,7 @@
+<img src="https://github.com/oxyno-zeta/LibParsio/blob/master/.github/logo.svg" width="40"> 
 ECRS (Electron Crash Report Server)
 ===================================
+[![Build Status](https://travis-ci.org/oxyno-zeta/ECRS.svg?branch=master)](https://travis-ci.org/oxyno-zeta/ECRS)
 
 # Description
 Electron Crash Report Server to see crash report data, statistics and some others...
