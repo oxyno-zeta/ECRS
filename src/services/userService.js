@@ -8,11 +8,12 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 const _ = require('lodash');
+const logger = require('../shared/logger')('[UserService]');
 const userMapper = require('../mappers/userMapper');
 const {rolesObj, roles, validation} = require('../models/userModel');
 const userDao = require('../dao/userDao');
-const logger = require('../shared/logger')('[UserService]');
 const securityService = require('./core/securityService');
+const mailService = require('./mailService');
 
 /* ************************************* */
 /* ********       EXPORTS       ******** */
@@ -35,7 +36,8 @@ module.exports = {
 	checkIsUserLastAdministrator: checkIsUserLastAdministrator,
 	createNewUser: createNewUser,
 	updateUser: updateUser,
-	register: register
+	register: register,
+	findUserByProjectId: findUserByProjectId
 };
 
 /* ************************************* */
@@ -78,15 +80,35 @@ function createForLocal(userData) {
 /* ************************************* */
 
 /**
+ * Find user by project id.
+ * @param projectId {String} project id
+ * @returns {*}
+ */
+function findUserByProjectId(projectId) {
+	return userDao.findByProjectId(projectId);
+}
+
+/**
  * Register.
  * @param userData {Object} user data
  * @returns {Promise}
  */
 function register(userData) {
-	// Give normal role
-	userData.role = rolesObj.normal;
-	// Save in database
-	return createForLocal(userData);
+	return new Promise((resolve, reject) => {
+		// Give normal role
+		userData.role = rolesObj.normal;
+		// Save in database
+		createForLocal(userData).then((userInstance) => {
+			// Resolve
+			resolve(userInstance);
+
+			// Send email if user has email
+			// Don't need to wait email sending (backend task)
+			if (userInstance.email && !_.isEqual(userInstance.email, '')) {
+				mailService.sendRegisterEmail(userInstance.email).then(logger.debug).catch(logger.error);
+			}
+		}).catch(reject);
+	});
 }
 
 /**

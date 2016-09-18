@@ -9,6 +9,7 @@
 /* ************************************* */
 const _ = require('lodash');
 const {User, rolesObj} = require('../models/userModel');
+const {Project} = require('../models/projectModel');
 
 /* ************************************* */
 /* ********       EXPORTS       ******** */
@@ -22,7 +23,8 @@ module.exports = {
 	findAllWithPagination: findAllWithPagination,
 	countAll: countAll,
 	removeById: removeById,
-	findOtherAdministrator: findOtherAdministrator
+	findOtherAdministrator: findOtherAdministrator,
+	findByProjectId: findByProjectId
 };
 
 /* ************************************* */
@@ -34,6 +36,17 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Find by project id.
+ * @param projectId {String} Project id
+ * @returns {*}
+ */
+function findByProjectId(projectId) {
+	return User.findOne({
+		'projects': projectId
+	});
+}
 
 /**
  * find Other Administrator.

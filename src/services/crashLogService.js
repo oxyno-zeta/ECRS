@@ -15,6 +15,8 @@ const configurationService = require('./core/configurationService');
 const crashLogMapper = require('../mappers/crashLogMapper');
 const crashLogDao = require('../dao/crashLogDao');
 const projectDao = require('../dao/projectDao');
+const userService = require('./userService');
+const mailService = require('./mailService');
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
@@ -112,7 +114,8 @@ function saveNewCrashLog(crashLogApiData, projectObject) {
 			logger.debug(`Build database object : ${crashLog.toString()}`);
 
 			// Add project to crash log object and other way
-			crashLog.project = projectObject._id;
+			let projectId = projectObject._id;
+			crashLog.project = projectId;
 			projectObject.crashLogList.push(crashLog._id);
 
 			// Save and update
@@ -121,6 +124,15 @@ function saveNewCrashLog(crashLogApiData, projectObject) {
 			promises.push(projectDao.save(projectObject));
 			Promise.all(promises).then(function ([crashLogSaved]) {
 				resolve(crashLogSaved);
+
+				// Find user from project
+				userService.findUserByProjectId(projectId).then((userInstance) => {
+					// Send email to user if email exists
+					if (userInstance.email && !_.isEqual(userInstance.email, '')) {
+						mailService.sendNewCrashLogEmail(userInstance.email, projectObject)
+							.then(logger.debug).catch(logger.error);
+					}
+				}).catch(logger.error);
 			}).catch(function (err) {
 				logger.error(err);
 				reject(err);

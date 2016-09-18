@@ -37,7 +37,18 @@ module.exports = {
 		}
 	},
 	isLocalRegisterEnabled: isLocalRegisterEnabled,
-	getBackendUrl: getBackendUrl
+	getBackendUrl: getBackendUrl,
+	mail: {
+		isPool: isMailPool,
+		getHost: getMailHost,
+		getPort: getMailPort,
+		isSecure: isMailSecure,
+		auth: {
+			getUser: getMailAuthUser,
+			getPass: getMailAuthPass
+		},
+		getMailFrom: getMailFrom
+	}
 };
 
 /* ************************************* */
@@ -49,6 +60,62 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Is mail pool.
+ * @returns {*}
+ */
+function isMailPool() {
+	return configuration[CONSTANTS.MAIL_POOL];
+}
+
+/**
+ * Get mail host.
+ * @returns {*}
+ */
+function getMailHost() {
+	return configuration[CONSTANTS.MAIL_HOST];
+}
+
+/**
+ * Get mail port.
+ * @returns {*}
+ */
+function getMailPort() {
+	return configuration[CONSTANTS.MAIL_PORT];
+}
+
+/**
+ * Is mail secure.
+ * @returns {*}
+ */
+function isMailSecure() {
+	return configuration[CONSTANTS.MAIL_SECURE];
+}
+
+/**
+ * Get mail auth user.
+ * @returns {*}
+ */
+function getMailAuthUser() {
+	return configuration[CONSTANTS.MAIL_AUTH_USER];
+}
+
+/**
+ * Get mail auth pass.
+ * @returns {*}
+ */
+function getMailAuthPass() {
+	return configuration[CONSTANTS.MAIL_AUTH_PASS];
+}
+
+/**
+ * Get mail from.
+ * @returns {*}
+ */
+function getMailFrom() {
+	return configuration[CONSTANTS.MAIL_FROM];
+}
 
 /**
  * Get Backend URL.

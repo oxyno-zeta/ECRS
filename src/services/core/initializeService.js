@@ -11,6 +11,7 @@ const fs = require('fs');
 const configurationService = require('./configurationService');
 const logger = require('../../shared/logger')('[InitializeService]');
 const databaseService = require('./databaseService');
+const mailCoreService = require('./mailCoreService');
 const apiAuth = require('../../api/core/apiAuth');
 
 /* ************************************* */
@@ -73,6 +74,7 @@ function run() {
 		promises.push(createDirectory(configurationService.getLogUploadDirectory()));
 		promises.push(databaseService.initDatabase());
 		promises.push(apiAuth.initAuth());
+		promises.push(mailCoreService.initialize());
 
 		Promise.all(promises).then(resolve).catch(reject);
 	});

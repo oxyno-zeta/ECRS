@@ -1,5 +1,5 @@
 /*
- * Author: Alexandre Havrileck (Oxyno-zeta) 
+ * Author: Alexandre Havrileck (Oxyno-zeta)
  * Date: 03/07/16
  * Licence: See Readme
  */
@@ -14,7 +14,7 @@ const server = require('./server');
 /* ************************************* */
 
 // Prepare server
-server.prepare().then(function(){
+server.prepare().then(function () {
 	// Listen server
 	server.listenSync();
 });
