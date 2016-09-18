@@ -1,0 +1,17 @@
+sudo: false
+
+language: node_js
+
+node_js:
+  - 6
+
+branches:
+  only:
+    - master
+
+before_script:
+  - npm install -g gulp
+  - npm install
+
+script: gulp release
+
