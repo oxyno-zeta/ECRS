@@ -17,6 +17,8 @@ Electron Crash Report Server to see crash report data, statistics and some other
 | Login | Administration | All Projects  |
 |:-------------:|:-------:|:-------:|
 |![Login](https://github.com/oxyno-zeta/ECRS/blob/master/.github/login.png)|![Administration](https://github.com/oxyno-zeta/ECRS/blob/master/.github/admin-users.png)|![All Projects](https://github.com/oxyno-zeta/ECRS/blob/master/.github/all-projects.png)|
+
+
 | Crash Reports  | Statistics | 
 |:-------------:|:-------:|
 |![Crash Reports](https://github.com/oxyno-zeta/ECRS/blob/master/.github/crash-reports.png)|![Statistics](https://github.com/oxyno-zeta/ECRS/blob/master/.github/statistics.png)|
@@ -27,13 +29,16 @@ Electron Crash Report Server to see crash report data, statistics and some other
 * CRASH_REPORTER_PORT: Server port
 * CRASH_REPORTER_LOG_LEVEL: Log level (Possible values: debug|info|error|warn)
 * CRASH_REPORTER_URL: Server url for mails or code example (Ex: 'http://your-domain.com')
+
 ### Crash Reports
 * CRASH_REPORTER_LOG_UPLOAD_DIR: Upload directory path when report is post (temporary)
 * CRASH_REPORTER_LOG_APP_CRASH_DIR: Directory where are saved reports
+
 ### Database
-* CRASH_REPORTER_DATABASE_URL: Database URL (Ex: mongodb://localhost:27017/crash-db)
+* CRASH_REPORTER_DATABASE_URL: Database URL (Ex: mongodb://mongo:27017/crash-db)
 * CRASH_REPORTER_DATABASE_LOGIN: Database login
 * CRASH_REPORTER_DATABASE_PASSWORD: Database password
+
 ### Auth
 * CRASH_REPORTER_AUTH_GITHUB_OAUTH_ENABLED: Enable Github authentication
 * CRASH_REPORTER_AUTH_GITHUB_CLIENT_ID: Github Client id
@@ -41,6 +46,7 @@ Electron Crash Report Server to see crash report data, statistics and some other
 * CRASH_REPORTER_AUTH_JWT_SECRET: JWT Secret (Ex: Random "aqnzr0pD2c0yv1o*0{C6!99^aQ*1fk<4|*][4Jh2X*jK4)N2sXIY8Wxj/1YWGr>")
 * CRASH_REPORTER_AUTH_LOCAL_AUTH_ENABLED: Enable Local Authentication
 * CRASH_REPORTER_LOCAL_REGISTER_ENABLED: Enable Local Register
+
 ### Mail
 * CRASH_REPORTER_MAIL_HOST: Mail Server host
 * CRASH_REPORTER_MAIL_POOL: Enable Mail pool
