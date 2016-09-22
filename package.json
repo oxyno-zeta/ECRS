@@ -1,6 +1,6 @@
 {
-  "name": "crash-reporter-electron",
-  "version": "0.0.1",
+  "name": "ECRS",
+  "version": "1.0.0",
   "description": "Electron Crash Reporter Server",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/oxyno-zeta/crash-reporter-electron.git"
+    "url": "git+https://github.com/oxyno-zeta/ECRS.git"
   },
   "keywords": [
     "Electron",
@@ -19,9 +19,9 @@
   "author": "Oxyno-zeta",
   "license": "SEE LICENSE IN LICENSE.md",
   "bugs": {
-    "url": "https://github.com/oxyno-zeta/crash-reporter-electron/issues"
+    "url": "https://github.com/oxyno-zeta/ECRS/issues"
   },
-  "homepage": "https://github.com/oxyno-zeta/crash-reporter-electron#readme",
+  "homepage": "https://github.com/oxyno-zeta/ECRS#readme",
   "devDependencies": {
     "browser-sync": "^2.13.0",
     "del": "^2.2.1",
@@ -41,6 +41,7 @@
     "gulp-sass": "^2.3.2",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-tar": "^1.9.0",
+    "gulp-template": "^4.0.0",
     "gulp-uglify": "^1.5.4",
     "gulp-useref": "^3.1.0",
     "run-sequence": "^1.2.2",

@@ -41,7 +41,8 @@ function onlyDirs(es) {
 /* ************************************* */
 
 gulp.task('release', function (cb) {
-	runSequence('clean:release:tmp', ['prepare:sources', 'web:release'], 'tar', cb);
+	runSequence('clean:release:tmp', 'prepare:sources', 'web:release',
+		['tar-raspberrypi', 'tar-x64'], ['docker:raspberrypi', 'docker:x64'], cb);
 });
 
 gulp.task('prepare:sources', function () {
@@ -50,9 +51,16 @@ gulp.task('prepare:sources', function () {
 		.pipe(gulp.dest(conf.release.tmp.main));
 });
 
-gulp.task('tar', function () {
+gulp.task('tar-raspberrypi', function () {
 	return gulp.src(conf.release.tmp.files)
 		.pipe(tar('archive.tar'))
 		.pipe(gzip())
-		.pipe(gulp.dest(path.join(conf.release.dist.main, packageJSON.version)));
+		.pipe(gulp.dest(path.join(conf.release.dist.raspberrypi, packageJSON.version)));
+});
+
+gulp.task('tar-x64', function () {
+	return gulp.src(conf.release.tmp.files)
+		.pipe(tar('archive.tar'))
+		.pipe(gzip())
+		.pipe(gulp.dest(path.join(conf.release.dist.x64, packageJSON.version)));
 });

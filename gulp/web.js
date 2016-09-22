@@ -107,15 +107,18 @@ gulp.task('web:inject', function () {
 	return gulp.src(path.join(conf.sources.web.dir, '/index.html'))
 		.pipe(inject(injectStyles, injectOptions))
 		.pipe(inject(injectScripts, injectOptions))
-		.pipe(wiredep({}, conf.other.wiredepConf)).on('error', console.error)
+		.pipe(wiredep({}, conf.other.wiredepConf)).on('error', function (err) {
+			console.error(err);
+			// Check if we are on TRAVIS-CI
+			if (process.env.TRAVIS) {
+				throw new Error(err);
+			}
+		})
 		.pipe(gulp.dest(conf.sources.web.dist));
 });
 
 gulp.task('web:fonts', function () {
-	var paths = [];
-	paths = paths.concat(conf.sources.other.fonts);
-
-	return gulp.src(paths)
+	return gulp.src(conf.sources.other.fonts)
 		.pipe(gulp.dest(path.join(conf.sources.web.dist, 'fonts')));
 });
 
@@ -164,8 +167,23 @@ gulp.task('web:release:clean', function () {
 	return del(conf.release.tmp.web);
 });
 
+gulp.task('web:release:resources', function (done) {
+	runSequence('web:release:resources:fonts', 'web:release:resources:img', done);
+});
+
+gulp.task('web:release:resources:fonts', function () {
+	return gulp.src(conf.sources.other.fonts)
+		.pipe(gulp.dest(path.join(conf.release.tmp.web, 'styles', 'fonts')));
+});
+
+gulp.task('web:release:resources:img', function () {
+	return gulp.src([
+		path.join(conf.sources.web.dir, '/**/*.{svg,jpg,jpeg,gif,png}')
+	]).pipe(gulp.dest(conf.release.tmp.web));
+});
+
 gulp.task('web:release', function (cb) {
-	return runSequence('web:release:clean', 'web:release:build', cb);
+	return runSequence('web:release:clean', 'web:release:build', 'web:release:resources', cb);
 });
 
 
