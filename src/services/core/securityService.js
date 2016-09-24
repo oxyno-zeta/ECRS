@@ -7,21 +7,21 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
-var crypto = require('crypto');
-var _ = require('lodash');
+const crypto = require('crypto');
+const _ = require('lodash');
 // Variables
-var lengthRandomBytes = 50;
-var iterations = 15000;
-var keylen = 50;
-var digest = 'sha512';
+const LENGTH_RANDOM_BYTES = 50;
+const ITERATIONS = 15000;
+const KEYLEN = 50;
+const DIGEST = 'sha512';
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
 /* ************************************* */
 module.exports = {
-	generateSaltSync: generateSaltSync,
-	generateHash: generateHash,
-	compare: compare
+    generateSaltSync,
+    generateHash,
+    compare,
 };
 
 /* ************************************* */
@@ -33,7 +33,7 @@ module.exports = {
  * @returns {*}
  */
 function randomBytes() {
-	return crypto.randomBytes(lengthRandomBytes);
+    return crypto.randomBytes(LENGTH_RANDOM_BYTES);
 }
 
 /**
@@ -46,16 +46,16 @@ function randomBytes() {
  * @returns {Promise}
  */
 function genHashPrivate(text, salt, iterations, keylen, digest) {
-	return new Promise(function (resolve, reject) {
-		crypto.pbkdf2(text, salt, iterations, keylen, digest, function (err, hash) {
-			if (err) {
-				reject(err);
-				return;
-			}
+    return new Promise((resolve, reject) => {
+        crypto.pbkdf2(text, salt, iterations, keylen, digest, (err, hash) => {
+            if (err) {
+                reject(err);
+                return;
+            }
 
-			resolve(hash);
-		});
-	});
+            resolve(hash);
+        });
+    });
 }
 
 /* ************************************* */
@@ -67,7 +67,7 @@ function genHashPrivate(text, salt, iterations, keylen, digest) {
  * @returns {*}
  */
 function generateSaltSync() {
-	return randomBytes().toString('hex');
+    return randomBytes().toString('hex');
 }
 
 /**
@@ -77,10 +77,10 @@ function generateSaltSync() {
  * @returns {Promise}
  */
 function generateHash(text, salt) {
-	return new Promise(function (resolve, reject) {
-		genHashPrivate(text, salt, iterations, keylen, digest)
-			.then(result => resolve(result.toString('hex'))).catch(reject);
-	});
+    return new Promise((resolve, reject) => (
+        genHashPrivate(text, salt, ITERATIONS, KEYLEN, DIGEST)
+            .then(result => resolve(result.toString('hex'))).catch(reject)
+    ));
 }
 
 /**
@@ -91,8 +91,8 @@ function generateHash(text, salt) {
  * @returns {Promise}
  */
 function compare(text, hash, salt) {
-	return new Promise(function (resolve, reject) {
-		generateHash(text, salt).then(hash2 => resolve(_.isEqual(hash, hash2))).catch(reject);
-	});
+    return new Promise((resolve, reject) => (
+        generateHash(text, salt).then(hash2 => resolve(_.isEqual(hash, hash2))).catch(reject)
+    ));
 }
 

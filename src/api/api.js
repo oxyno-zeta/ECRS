@@ -18,6 +18,7 @@ const user = require('./user/user');
 const projects = require('./projects/projects');
 const configuration = require('./configuration/configuration');
 const register = require('./register/register');
+
 const prefix = '/api/v1/';
 
 /* ************************************* */
@@ -25,8 +26,8 @@ const prefix = '/api/v1/';
 /* ************************************* */
 
 module.exports = {
-	getPathsWithoutSecurity: getPathsWithoutSecurity,
-	expose: expose
+    getPathsWithoutSecurity,
+    expose,
 };
 
 /* ************************************* */
@@ -39,15 +40,16 @@ module.exports = {
  * @returns {*}
  */
 function mapFunction(item) {
-	if (_.isString(item)) {
-		return urlJoin(prefix, item);
-	}
+    if (_.isString(item)) {
+        return urlJoin(prefix, item);
+    }
 
-	if (_.isObject(item) && _.isString(item.url)) {
-		item.url = urlJoin(prefix, item.url);
-	}
+    const itemUpdated = item;
+    if (_.isObject(item) && _.isString(item.url)) {
+        itemUpdated.url = urlJoin(prefix, item.url);
+    }
 
-	return item;
+    return itemUpdated;
 }
 
 /* ************************************* */
@@ -59,21 +61,21 @@ function mapFunction(item) {
  * @returns {Array}
  */
 function getPathsWithoutSecurity() {
-	let pathsWithoutSecurity = [];
-	// Prepare
-	// Crash log api
-	pathsWithoutSecurity = pathsWithoutSecurity.concat(crashLog.pathsWithoutSecurity.map(mapFunction));
-	// Auth api
-	pathsWithoutSecurity = pathsWithoutSecurity.concat(apiAuth.pathsWithoutSecurity.map(mapFunction));
-	// Login api
-	pathsWithoutSecurity = pathsWithoutSecurity.concat(login.pathsWithoutSecurity.map(mapFunction));
-	// Configuration api
-	pathsWithoutSecurity = pathsWithoutSecurity.concat(configuration.pathsWithoutSecurity.map(mapFunction));
-	// Register api
-	pathsWithoutSecurity = pathsWithoutSecurity.concat(register.pathsWithoutSecurity.map(mapFunction));
+    let pathsWithoutSecurity = [];
+    // Prepare
+    // Crash log api
+    pathsWithoutSecurity = pathsWithoutSecurity.concat(crashLog.pathsWithoutSecurity.map(mapFunction));
+    // Auth api
+    pathsWithoutSecurity = pathsWithoutSecurity.concat(apiAuth.pathsWithoutSecurity.map(mapFunction));
+    // Login api
+    pathsWithoutSecurity = pathsWithoutSecurity.concat(login.pathsWithoutSecurity.map(mapFunction));
+    // Configuration api
+    pathsWithoutSecurity = pathsWithoutSecurity.concat(configuration.pathsWithoutSecurity.map(mapFunction));
+    // Register api
+    pathsWithoutSecurity = pathsWithoutSecurity.concat(register.pathsWithoutSecurity.map(mapFunction));
 
-	// Result
-	return pathsWithoutSecurity;
+    // Result
+    return pathsWithoutSecurity;
 }
 
 /**
@@ -81,30 +83,30 @@ function getPathsWithoutSecurity() {
  * @return {*} Express Router
  */
 function expose() {
-	logger.debug('Putting API in place...');
+    logger.debug('Putting API in place...');
 
-	var router = express.Router();
+    const router = express.Router();
 
-	// Add auth
-	router.use(prefix, apiAuth.getRouter());
+    // Add auth
+    router.use(prefix, apiAuth.getRouter());
 
-	// Api Crash log
-	router.use(prefix, crashLog.expose());
+    // Api Crash log
+    router.use(prefix, crashLog.expose());
 
-	// Api login
-	router.use(prefix, login.expose());
+    // Api login
+    router.use(prefix, login.expose());
 
-	// Api register
-	router.use(prefix, register.expose());
+    // Api register
+    router.use(prefix, register.expose());
 
-	// Api configuration
-	router.use(prefix, configuration.expose());
+    // Api configuration
+    router.use(prefix, configuration.expose());
 
-	// Api User
-	router.use(prefix, user.expose());
+    // Api User
+    router.use(prefix, user.expose());
 
-	// Api Projects
-	router.use(prefix, projects.expose());
+    // Api Projects
+    router.use(prefix, projects.expose());
 
-	return router;
+    return router;
 }

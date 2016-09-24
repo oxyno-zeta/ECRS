@@ -7,23 +7,24 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
-const _ = require('lodash');
-const {CrashLog} = require('../models/crashLogModel');
+const {
+    CrashLog,
+    } = require('../models/crashLogModel');
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
 /* ************************************* */
 
 module.exports = {
-	save: save,
-	findById: findById,
-	findByIds: findByIds,
-	findAllByProjectIdAndStartDate: findAllByProjectIdAndStartDate,
-	findAllByProjectIdAndVersions: findAllByProjectIdAndVersions,
-	findAllByProjectIdAndVersionsAndStartDate: findAllByProjectIdAndVersionsAndStartDate,
-	findByIdsWithPagination: findByIdsWithPagination,
-	findByProjectId: findByProjectId,
-	deleteById: deleteById
+    save,
+    findById,
+    findByIds,
+    findAllByProjectIdAndStartDate,
+    findAllByProjectIdAndVersions,
+    findAllByProjectIdAndVersionsAndStartDate,
+    findByIdsWithPagination,
+    findByProjectId,
+    deleteById,
 };
 
 /* ************************************* */
@@ -41,7 +42,7 @@ module.exports = {
  * @returns {*}
  */
 function deleteById(id) {
-	return CrashLog.findByIdAndRemove(id);
+    return CrashLog.findByIdAndRemove(id);
 }
 
 /**
@@ -53,25 +54,25 @@ function deleteById(id) {
  * @returns {*}
  */
 function findByIdsWithPagination(ids, limit, skip, sort) {
-	let promise = CrashLog.find({
-		_id: {
-			$in: ids
-		}
-	});
+    const promise = CrashLog.find({
+        _id: {
+            $in: ids,
+        },
+    });
 
-	if (!_.isUndefined(limit)) {
-		promise.limit(limit);
-	}
+    if (limit) {
+        promise.limit(limit);
+    }
 
-	if (!_.isUndefined(skip)) {
-		promise.skip(skip);
-	}
+    if (skip) {
+        promise.skip(skip);
+    }
 
-	if (!_.isUndefined(sort)) {
-		promise.sort(sort);
-	}
+    if (sort) {
+        promise.sort(sort);
+    }
 
-	return promise;
+    return promise;
 }
 
 /**
@@ -80,9 +81,9 @@ function findByIdsWithPagination(ids, limit, skip, sort) {
  * @returns {*}
  */
 function findByProjectId(projectId) {
-	return CrashLog.find({
-		project: projectId
-	});
+    return CrashLog.find({
+        project: projectId,
+    });
 }
 
 /**
@@ -92,10 +93,12 @@ function findByProjectId(projectId) {
  * @returns {*}
  */
 function findAllByProjectIdAndVersions(projectId, versions) {
-	return CrashLog.find({
-		project: projectId,
-		_version: {$in: versions}
-	});
+    return CrashLog.find({
+        project: projectId,
+        _version: {
+            $in: versions,
+        },
+    });
 }
 
 /**
@@ -106,11 +109,15 @@ function findAllByProjectIdAndVersions(projectId, versions) {
  * @returns {*}
  */
 function findAllByProjectIdAndVersionsAndStartDate(projectId, versions, startDate) {
-	return CrashLog.find({
-		project: projectId,
-		_version: {$in: versions},
-		date: {$gt: startDate}
-	});
+    return CrashLog.find({
+        project: projectId,
+        _version: {
+            $in: versions,
+        },
+        date: {
+            $gt: startDate,
+        },
+    });
 }
 
 /**
@@ -120,10 +127,12 @@ function findAllByProjectIdAndVersionsAndStartDate(projectId, versions, startDat
  * @returns {*}
  */
 function findAllByProjectIdAndStartDate(projectId, startDate) {
-	return CrashLog.find({
-		project: projectId,
-		date: {$gt: startDate}
-	});
+    return CrashLog.find({
+        project: projectId,
+        date: {
+            $gt: startDate,
+        },
+    });
 }
 
 /**
@@ -132,7 +141,7 @@ function findAllByProjectIdAndStartDate(projectId, startDate) {
  * @returns {Promise}
  */
 function findByIds(idList) {
-	return Promise.all(idList.map(findById));
+    return Promise.all(idList.map(findById));
 }
 
 /**
@@ -141,7 +150,7 @@ function findByIds(idList) {
  * @returns {Promise} Promise
  */
 function findById(id) {
-	return CrashLog.findById(id);
+    return CrashLog.findById(id);
 }
 
 /**
@@ -150,5 +159,5 @@ function findById(id) {
  * @returns {Promise} Promise
  */
 function save(crashLogObject) {
-	return crashLogObject.save();
+    return crashLogObject.save();
 }

@@ -7,21 +7,22 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
-const {User} = require('../models/userModel');
+const {
+    User,
+    } = require('../models/userModel');
 
 /* ************************************* */
 /* ********       EXPORTS       ******** */
 /* ************************************* */
 module.exports = {
-	formatToApi: formatToApi,
-	formatListToApi: formatListToApi,
-	build: build
+    formatToApi,
+    formatListToApi,
+    build,
 };
 
 /* ************************************* */
 /* ********  PRIVATE FUNCTIONS  ******** */
 /* ************************************* */
-
 
 
 /* ************************************* */
@@ -34,7 +35,7 @@ module.exports = {
  * @returns {*}
  */
 function formatListToApi(list) {
-	return list.map(formatToApi);
+    return list.map(formatToApi);
 }
 
 /**
@@ -43,24 +44,24 @@ function formatListToApi(list) {
  * @returns {*}
  */
 function build(data) {
-	return new User(data);
+    return new User(data);
 }
 
 /**
  * Format to api.
  * @param userInstance
- * @returns {{id: *, username: (*|string), email: (*|Person.email|{type, required, index}), github: {id: *, profileUrl: *}}}
+ * @returns {{id: *, username: (*|string), email: (string), github: {id: *, profileUrl: *}}}
  */
 function formatToApi(userInstance) {
-	return {
-		id: userInstance._id,
-		username: userInstance.username,
-		email: userInstance.email,
-		role: userInstance.role,
-		github: {
-			id: userInstance.github.id,
-			profileUrl: userInstance.github.profileUrl
-		}
-	}
+    return {
+        id: userInstance._id,
+        username: userInstance.username,
+        email: userInstance.email,
+        role: userInstance.role,
+        github: {
+            id: userInstance.github.id,
+            profileUrl: userInstance.github.profileUrl,
+        },
+    };
 }
 

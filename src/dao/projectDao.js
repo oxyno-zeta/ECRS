@@ -9,7 +9,9 @@
 /* ************************************* */
 const _ = require('lodash');
 const moment = require('moment');
-const {Project} = require('../models/projectModel');
+const {
+    Project,
+    } = require('../models/projectModel');
 const crashLogDao = require('./crashLogDao');
 
 /* ************************************* */
@@ -17,17 +19,17 @@ const crashLogDao = require('./crashLogDao');
 /* ************************************* */
 
 module.exports = {
-	save: save,
-	findById: findById,
-	findByIds: findByIds,
-	findAll: findAll,
-	findByName: findByName,
-	statisticsNumberByVersion: statisticsNumberByVersion,
-	statisticsNumberByDate: statisticsNumberByDate,
-	statisticsNumberByVersionByDate: statisticsNumberByVersionByDate,
-	statisticsNumberByVersionByDateAndStartDate: statisticsNumberByVersionByDateAndStartDate,
-	getAllVersions: getAllVersions,
-	deleteById: deleteById
+    save,
+    findById,
+    findByIds,
+    findAll,
+    findByName,
+    statisticsNumberByVersion,
+    statisticsNumberByDate,
+    statisticsNumberByVersionByDate,
+    statisticsNumberByVersionByDateAndStartDate,
+    getAllVersions,
+    deleteById,
 };
 
 /* ************************************* */
@@ -40,30 +42,33 @@ module.exports = {
  * @returns {{}}
  */
 function formatStatisticsForNumberByVersionByDate(results) {
-	let statistics = {};
+    const statistics = {};
 
-	// All date to midnight
-	results = results.map((item) => {
-		// Update date
-		item.date = moment(item.date).millisecond(0).second(0).minute(0).hours(0).toDate();
-		return item;
-	});
+    results
+    // All date to midnight
+        .map((item) => {
+            const itemUpdated = item;
+            // Update date
+            itemUpdated.date = moment(item.date).millisecond(0).second(0).minute(0)
+                .hours(0)
+                .toDate();
+            return itemUpdated;
+        })
+        // Create statistics
+        .forEach((item) => {
+            const date = item.date.getTime();
+            const version = item._version;
+            if (statistics[version]) {
+                statistics[version] = {};
+            }
 
-	// Create statistics
-	results.forEach((item) => {
-		let date = item.date.getTime();
-		let version = item._version;
-		if (_.isUndefined(statistics[version])) {
-			statistics[version] = {};
-		}
+            if (statistics[version][date]) {
+                statistics[version][date] = 0;
+            }
+            statistics[version][date] += 1;
+        });
 
-		if (_.isUndefined(statistics[version][date])) {
-			statistics[version][date] = 0;
-		}
-		statistics[version][date]++;
-	});
-
-	return statistics;
+    return statistics;
 }
 
 /* ************************************* */
@@ -76,7 +81,7 @@ function formatStatisticsForNumberByVersionByDate(results) {
  * @returns {*}
  */
 function deleteById(id) {
-	return Project.findByIdAndRemove(id);
+    return Project.findByIdAndRemove(id);
 }
 
 /**
@@ -85,20 +90,20 @@ function deleteById(id) {
  * @returns {Promise}
  */
 function getAllVersions(projectId) {
-	return new Promise(function (resolve, reject) {
-		crashLogDao.findByProjectId(projectId).then(function (results) {
-			let versions = [];
-			// Add versions
-			results.forEach(function (item) {
-				// Check if exists in array
-				if (versions.indexOf(item._version) === -1) {
-					versions.push(item._version);
-				}
-			});
+    return new Promise((resolve, reject) => {
+        crashLogDao.findByProjectId(projectId).then((results) => {
+            const versions = [];
+            // Add versions
+            results.forEach((item) => {
+                // Check if exists in array
+                if (versions.indexOf(item._version) === -1) {
+                    versions.push(item._version);
+                }
+            });
 
-			resolve(versions);
-		}, reject);
-	});
+            resolve(versions);
+        }, reject);
+    });
 }
 
 /**
@@ -108,11 +113,11 @@ function getAllVersions(projectId) {
  * @returns {Promise}
  */
 function statisticsNumberByVersionByDate(projectId, versions) {
-	return new Promise(function (resolve, reject) {
-		crashLogDao.findAllByProjectIdAndVersions(projectId, versions).then(function (results) {
-			resolve(formatStatisticsForNumberByVersionByDate(results));
-		}, reject);
-	});
+    return new Promise((resolve, reject) => {
+        crashLogDao.findAllByProjectIdAndVersions(projectId, versions).then((results) => {
+            resolve(formatStatisticsForNumberByVersionByDate(results));
+        }, reject);
+    });
 }
 
 /**
@@ -123,11 +128,11 @@ function statisticsNumberByVersionByDate(projectId, versions) {
  * @returns {Promise}
  */
 function statisticsNumberByVersionByDateAndStartDate(projectId, versions, startDate) {
-	return new Promise(function (resolve, reject) {
-		crashLogDao.findAllByProjectIdAndVersionsAndStartDate(projectId, versions, startDate).then(function (results) {
-			resolve(formatStatisticsForNumberByVersionByDate(results));
-		}, reject);
-	});
+    return new Promise((resolve, reject) => {
+        crashLogDao.findAllByProjectIdAndVersionsAndStartDate(projectId, versions, startDate).then((results) => {
+            resolve(formatStatisticsForNumberByVersionByDate(results));
+        }, reject);
+    });
 }
 
 /**
@@ -137,29 +142,32 @@ function statisticsNumberByVersionByDateAndStartDate(projectId, versions, startD
  * @returns {Promise}
  */
 function statisticsNumberByDate(projectId, startDate) {
-	return new Promise(function (resolve, reject) {
-		crashLogDao.findAllByProjectIdAndStartDate(projectId, startDate).then(function (results) {
-			let statistics = {};
+    return new Promise((resolve, reject) => {
+        crashLogDao.findAllByProjectIdAndStartDate(projectId, startDate).then((results) => {
+            const statistics = {};
 
-			// All date to midnight
-			results = results.map((item) => {
-				// Update date
-				item.date = moment(item.date).millisecond(0).second(0).minute(0).hours(0).toDate();
-				return item;
-			});
+            results
+            // All date to midnight
+                .map((item) => {
+                    const itemUpdated = item;
+                    // Update date
+                    itemUpdated.date = moment(item.date).millisecond(0).second(0).minute(0)
+                        .hours(0)
+                        .toDate();
+                    return itemUpdated;
+                })
+                // Create statistics
+                .forEach((item) => {
+                    const date = item.date.getTime();
+                    if (statistics[date]) {
+                        statistics[date] = 0;
+                    }
+                    statistics[date] += 1;
+                });
 
-			// Create statistics
-			results.forEach((item) => {
-				let date = item.date.getTime();
-				if (_.isUndefined(statistics[date])) {
-					statistics[date] = 0;
-				}
-				statistics[date]++;
-			});
-
-			resolve(statistics);
-		}, reject);
-	});
+            resolve(statistics);
+        }, reject);
+    });
 }
 
 /**
@@ -168,28 +176,28 @@ function statisticsNumberByDate(projectId, startDate) {
  * @returns {Promise}
  */
 function statisticsNumberByVersion(project) {
-	return new Promise(function (resolve, reject) {
-		let statistics = {};
+    return new Promise((resolve, reject) => {
+        const statistics = {};
 
-		// Check if crashLog list exists or not empty
-		if (_.isNull(project.crashLogList) || project.crashLogList.length === 0) {
-			resolve(statistics);
-			return;
-		}
+        // Check if crashLog list exists or not empty
+        if (project.crashLogList || project.crashLogList.length === 0) {
+            resolve(statistics);
+            return;
+        }
 
-		// Find all crash logs
-		crashLogDao.findByIds(project.crashLogList).then(function (crashLogList) {
-			// Separate by version
-			crashLogList.forEach(function (crashLog) {
-				if (_.isUndefined(statistics[crashLog._version])) {
-					statistics[crashLog._version] = 0;
-				}
-				statistics[crashLog._version]++;
-			});
+        // Find all crash logs
+        crashLogDao.findByIds(project.crashLogList).then((crashLogList) => {
+            // Separate by version
+            crashLogList.forEach((crashLog) => {
+                if (_.isUndefined(statistics[crashLog._version])) {
+                    statistics[crashLog._version] = 0;
+                }
+                statistics[crashLog._version] += 1;
+            });
 
-			resolve(statistics);
-		}).catch(reject);
-	});
+            resolve(statistics);
+        }).catch(reject);
+    });
 }
 
 /**
@@ -198,7 +206,9 @@ function statisticsNumberByVersion(project) {
  * @returns {*}
  */
 function findByName(name) {
-	return Project.findOne({name: name});
+    return Project.findOne({
+        name,
+    });
 }
 
 /**
@@ -206,7 +216,7 @@ function findByName(name) {
  * @returns {*}
  */
 function findAll() {
-	return Project.find();
+    return Project.find();
 }
 
 /**
@@ -215,13 +225,11 @@ function findAll() {
  * @returns {Promise}
  */
 function findByIds(ids) {
-	// Promise storage
-	let promises = [];
-	// Find by id for all ids
-	promises = ids.map(findById);
+    // Find by id for all ids
+    const promises = ids.map(findById);
 
-	// Return all
-	return Promise.all(promises);
+    // Return all
+    return Promise.all(promises);
 }
 
 /**
@@ -230,7 +238,7 @@ function findByIds(ids) {
  * @returns {Promise}
  */
 function findById(id) {
-	return Project.findById(id);
+    return Project.findById(id);
 }
 
 /**
@@ -239,5 +247,5 @@ function findById(id) {
  * @returns {Promise} Promise
  */
 function save(projectObject) {
-	return projectObject.save();
+    return projectObject.save();
 }

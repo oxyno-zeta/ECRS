@@ -8,20 +8,24 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 const mongoose = require('mongoose');
+
 const Schema = mongoose.Schema;
 const crashLogSchema = new Schema({
-	ver: String,
-	platform: String,
-	process_type: String,
-	guid: String,
-	_version: String,
-	_productName: String,
-	prod: String,
-	_companyName: String,
-	upload_file_minidump: String,
-	extra: Schema.Types.Mixed,
-	project: Schema.Types.ObjectId,
-	date: {type: Date, default: Date.now}
+    ver: String,
+    platform: String,
+    process_type: String,
+    guid: String,
+    _version: String,
+    _productName: String,
+    prod: String,
+    _companyName: String,
+    upload_file_minidump: String,
+    extra: Schema.Types.Mixed,
+    project: Schema.Types.ObjectId,
+    date: {
+        type: Date,
+        default: Date.now,
+    },
 });
 const CrashLog = mongoose.model('CrashLog', crashLogSchema);
 
@@ -30,7 +34,7 @@ const CrashLog = mongoose.model('CrashLog', crashLogSchema);
 /* ************************************* */
 
 module.exports = {
-	CrashLog: CrashLog
+    CrashLog,
 };
 
 /* ************************************* */

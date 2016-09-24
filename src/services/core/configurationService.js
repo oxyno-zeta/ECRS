@@ -8,53 +8,55 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 const configurationWrapper = require('../../wrapper/configurationWrapper');
+
 const configuration = configurationWrapper.getConfig();
-const {CONSTANTS} = configurationWrapper;
+const {
+    CONSTANTS,
+    } = configurationWrapper;
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
 /* ************************************* */
 
 module.exports = {
-	getPort: getPort,
-	getLogLevel: getLogLevel,
-	getLogUploadDirectory: getLogUploadDirectory,
-	getAppCrashLogDirectory: getAppCrashLogDirectory,
-	database: {
-		getUrl: getUrl,
-		getLogin: getLogin,
-		getPassword: getPassword
-	},
-	auth: {
-		getJwtSecret: getJwtSecret,
-		github: {
-			isEnabled: isGithubEnabled,
-			getClientId: getGithubClientId,
-			getClientSecret: getGithubClientSecret
-		},
-		local: {
-			isEnabled: isLocalEnabled
-		}
-	},
-	isLocalRegisterEnabled: isLocalRegisterEnabled,
-	getBackendUrl: getBackendUrl,
-	mail: {
-		isPool: isMailPool,
-		getHost: getMailHost,
-		getPort: getMailPort,
-		isSecure: isMailSecure,
-		auth: {
-			getUser: getMailAuthUser,
-			getPass: getMailAuthPass
-		},
-		getMailFrom: getMailFrom
-	}
+    getPort,
+    getLogLevel,
+    getLogUploadDirectory,
+    getAppCrashLogDirectory,
+    database: {
+        getUrl,
+        getLogin,
+        getPassword,
+    },
+    auth: {
+        getJwtSecret,
+        github: {
+            isEnabled: isGithubEnabled,
+            getClientId: getGithubClientId,
+            getClientSecret: getGithubClientSecret,
+        },
+        local: {
+            isEnabled: isLocalEnabled,
+        },
+    },
+    isLocalRegisterEnabled,
+    getBackendUrl,
+    mail: {
+        isPool: isMailPool,
+        getHost: getMailHost,
+        getPort: getMailPort,
+        isSecure: isMailSecure,
+        auth: {
+            getUser: getMailAuthUser,
+            getPass: getMailAuthPass,
+        },
+        getMailFrom,
+    },
 };
 
 /* ************************************* */
 /* ********  PRIVATE FUNCTIONS  ******** */
 /* ************************************* */
-
 
 
 /* ************************************* */
@@ -66,7 +68,7 @@ module.exports = {
  * @returns {*}
  */
 function isMailPool() {
-	return configuration[CONSTANTS.MAIL_POOL];
+    return configuration[CONSTANTS.MAIL_POOL];
 }
 
 /**
@@ -74,7 +76,7 @@ function isMailPool() {
  * @returns {*}
  */
 function getMailHost() {
-	return configuration[CONSTANTS.MAIL_HOST];
+    return configuration[CONSTANTS.MAIL_HOST];
 }
 
 /**
@@ -82,7 +84,7 @@ function getMailHost() {
  * @returns {*}
  */
 function getMailPort() {
-	return configuration[CONSTANTS.MAIL_PORT];
+    return configuration[CONSTANTS.MAIL_PORT];
 }
 
 /**
@@ -90,7 +92,7 @@ function getMailPort() {
  * @returns {*}
  */
 function isMailSecure() {
-	return configuration[CONSTANTS.MAIL_SECURE];
+    return configuration[CONSTANTS.MAIL_SECURE];
 }
 
 /**
@@ -98,7 +100,7 @@ function isMailSecure() {
  * @returns {*}
  */
 function getMailAuthUser() {
-	return configuration[CONSTANTS.MAIL_AUTH_USER];
+    return configuration[CONSTANTS.MAIL_AUTH_USER];
 }
 
 /**
@@ -106,7 +108,7 @@ function getMailAuthUser() {
  * @returns {*}
  */
 function getMailAuthPass() {
-	return configuration[CONSTANTS.MAIL_AUTH_PASS];
+    return configuration[CONSTANTS.MAIL_AUTH_PASS];
 }
 
 /**
@@ -114,7 +116,7 @@ function getMailAuthPass() {
  * @returns {*}
  */
 function getMailFrom() {
-	return configuration[CONSTANTS.MAIL_FROM];
+    return configuration[CONSTANTS.MAIL_FROM];
 }
 
 /**
@@ -122,7 +124,7 @@ function getMailFrom() {
  * @returns {*}
  */
 function getBackendUrl() {
-	return configuration[CONSTANTS.BACKEND_URL];
+    return configuration[CONSTANTS.BACKEND_URL];
 }
 
 /**
@@ -130,7 +132,7 @@ function getBackendUrl() {
  * @returns {*}
  */
 function isLocalRegisterEnabled() {
-	return configuration[CONSTANTS.LOCAL_REGISTER_ENABLED];
+    return configuration[CONSTANTS.LOCAL_REGISTER_ENABLED];
 }
 
 /**
@@ -138,7 +140,7 @@ function isLocalRegisterEnabled() {
  * @returns {*}
  */
 function isLocalEnabled() {
-	return configuration[CONSTANTS.LOCAL_AUTH_ENABLED];
+    return configuration[CONSTANTS.LOCAL_AUTH_ENABLED];
 }
 
 /**
@@ -146,7 +148,7 @@ function isLocalEnabled() {
  * @returns {*}
  */
 function getJwtSecret() {
-	return configuration[CONSTANTS.JWT_SECRET];
+    return configuration[CONSTANTS.JWT_SECRET];
 }
 
 /**
@@ -154,7 +156,7 @@ function getJwtSecret() {
  * @returns {*}
  */
 function getGithubClientSecret() {
-	return configuration[CONSTANTS.GITHUB_CLIENT_SECRET];
+    return configuration[CONSTANTS.GITHUB_CLIENT_SECRET];
 }
 
 /**
@@ -162,7 +164,7 @@ function getGithubClientSecret() {
  * @returns {*}
  */
 function getGithubClientId() {
-	return configuration[CONSTANTS.GITHUB_CLIENT_ID];
+    return configuration[CONSTANTS.GITHUB_CLIENT_ID];
 }
 
 /**
@@ -170,7 +172,7 @@ function getGithubClientId() {
  * @returns {*}
  */
 function isGithubEnabled() {
-	return configuration[CONSTANTS.GITHUB_OAUTH_ENABLED];
+    return configuration[CONSTANTS.GITHUB_OAUTH_ENABLED];
 }
 
 /**
@@ -178,7 +180,7 @@ function isGithubEnabled() {
  * @returns {*}
  */
 function getPassword() {
-	return configuration[CONSTANTS.DATABASE_PASSWORD];
+    return configuration[CONSTANTS.DATABASE_PASSWORD];
 }
 
 /**
@@ -186,7 +188,7 @@ function getPassword() {
  * @returns {*}
  */
 function getLogin() {
-	return configuration[CONSTANTS.DATABASE_LOGIN];
+    return configuration[CONSTANTS.DATABASE_LOGIN];
 }
 
 /**
@@ -194,7 +196,7 @@ function getLogin() {
  * @returns {*}
  */
 function getUrl() {
-	return configuration[CONSTANTS.DATABASE_URL];
+    return configuration[CONSTANTS.DATABASE_URL];
 }
 
 /**
@@ -202,7 +204,7 @@ function getUrl() {
  * @returns {*}
  */
 function getAppCrashLogDirectory() {
-	return configuration[CONSTANTS.LOG_APP_CRASH_DIR];
+    return configuration[CONSTANTS.LOG_APP_CRASH_DIR];
 }
 
 /**
@@ -210,7 +212,7 @@ function getAppCrashLogDirectory() {
  * @returns {*}
  */
 function getLogUploadDirectory() {
-	return configuration[CONSTANTS.LOG_UPLOAD_DIR];
+    return configuration[CONSTANTS.LOG_UPLOAD_DIR];
 }
 
 /**
@@ -218,7 +220,7 @@ function getLogUploadDirectory() {
  * @returns {*}
  */
 function getLogLevel() {
-	return configuration[CONSTANTS.LOG_LEVEL];
+    return configuration[CONSTANTS.LOG_LEVEL];
 }
 
 /**
@@ -226,7 +228,5 @@ function getLogLevel() {
  * @returns {*}
  */
 function getPort() {
-	return configuration[CONSTANTS.PORT];
+    return configuration[CONSTANTS.PORT];
 }
-
-

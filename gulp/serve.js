@@ -7,29 +7,28 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
-var gulp = require('gulp');
-var runSequence = require('run-sequence');
-var browserSync = require('browser-sync');
+const gulp = require('gulp');
+const runSequence = require('run-sequence');
+const browserSync = require('browser-sync');
 
 /* ************************************* */
 /* ********  PRIVATE FUNCTIONS  ******** */
 /* ************************************* */
 
 
-
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
 
-gulp.task('serve', function (cb) {
-	return runSequence('backend:nodemon', 'web:watch', 'browser-sync', cb);
-});
+gulp.task('serve', cb => (
+    runSequence('backend:nodemon', 'web:watch', 'browser-sync', cb)
+));
 
-gulp.task('browser-sync', function () {
-	return browserSync.init(null, {
-		proxy: 'http://localhost:2000',
-		files: ['src/**/*.*'],
-		browser: 'google-chrome',
-		port: 7000
-	});
-});
+gulp.task('browser-sync', () => (
+    browserSync.init(null, {
+        proxy: 'http://localhost:2000',
+        files: ['src/**/*.*'],
+        browser: 'google-chrome',
+        port: 7000,
+    })
+));

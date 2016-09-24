@@ -8,23 +8,22 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 const nodemailer = require('nodemailer');
-const _ = require('lodash');
 const logger = require('../../shared/logger')('[MailCoreService]');
 const configurationService = require('./configurationService');
+
 let transporter;
 
 /* ************************************* */
 /* ********       EXPORTS       ******** */
 /* ************************************* */
 module.exports = {
-	initialize: initialize,
-	getTransporter: getTransporter
+    initialize,
+    getTransporter,
 };
 
 /* ************************************* */
 /* ********  PRIVATE FUNCTIONS  ******** */
 /* ************************************* */
-
 
 
 /* ************************************* */
@@ -36,7 +35,7 @@ module.exports = {
  * @returns {*}
  */
 function getTransporter() {
-	return transporter;
+    return transporter;
 }
 
 /**
@@ -44,39 +43,39 @@ function getTransporter() {
  * @returns {Promise}
  */
 function initialize() {
-	return new Promise((resolve) => {
-		logger.debug('Begin initialize mail system...');
-		// Check email service is disabled
-		if (isDisabled()) {
-			logger.debug('Mail system disabled => nothing to do');
-			return resolve();
-		}
+    return new Promise((resolve) => {
+        logger.debug('Begin initialize mail system...');
+        // Check email service is disabled
+        if (isDisabled()) {
+            logger.debug('Mail system disabled => nothing to do');
+            resolve();
+            return;
+        }
 
+        const smtpConfiguration = {
+            pool: configurationService.mail.isPool(),
+            host: configurationService.mail.getHost(),
+            port: configurationService.mail.getPort(),
+            secure: configurationService.mail.isSecure(), // use SSL
+            auth: {},
+            logger: false,
+        };
 
-		let smtpConfiguration = {
-			pool: configurationService.mail.isPool(),
-			host: configurationService.mail.getHost(),
-			port: configurationService.mail.getPort(),
-			secure: configurationService.mail.isSecure(), // use SSL
-			auth: {},
-			logger: false
-		};
+        // Put auth if possible
+        const userAuth = configurationService.mail.auth.getUser();
+        if (userAuth) {
+            smtpConfiguration.auth.user = userAuth;
+        }
+        const passAuth = configurationService.mail.auth.getPass();
+        if (passAuth) {
+            smtpConfiguration.auth.pass = passAuth;
+        }
 
-		// Put auth if possible
-		let userAuth = configurationService.mail.auth.getUser();
-		if (!_.isEqual(userAuth, '')) {
-			smtpConfiguration.auth.user = userAuth;
-		}
-		let passAuth = configurationService.mail.auth.getPass();
-		if (!_.isEqual(passAuth, '')) {
-			smtpConfiguration.auth.pass = passAuth;
-		}
+        transporter = nodemailer.createTransport(smtpConfiguration);
 
-		transporter = nodemailer.createTransport(smtpConfiguration);
-
-		logger.debug('End initialize mail system');
-		resolve();
-	});
+        logger.debug('End initialize mail system');
+        resolve();
+    });
 }
 
 /**
@@ -84,7 +83,8 @@ function initialize() {
  * @returns {boolean}
  */
 function isDisabled() {
-	return (_.isNull(configurationService.mail.getHost()) ||
-	_.isNull(configurationService.mail.getPort()) || _.isEqual('', configurationService.mail.getHost()) || _.isEqual(0, configurationService.mail.getPort()));
+    const host = configurationService.mail.getHost();
+    const port = configurationService.mail.getPort();
+    return host || port;
 }
 

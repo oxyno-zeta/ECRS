@@ -14,7 +14,6 @@ const cookieParser = require('cookie-parser');
 const serveStatic = require('serve-static');
 const compression = require('compression');
 const expressValidator = require('express-validator');
-const _ = require('lodash');
 const logger = require('./shared/logger')('[Server]');
 const api = require('./api/api');
 const configurationService = require('./services/core/configurationService');
@@ -22,6 +21,7 @@ const initializeService = require('./services/core/initializeService');
 const apiSecurity = require('./api/core/apiSecurity');
 const apiError = require('./api/core/apiError');
 const inputValidatorWrapper = require('./wrapper/inputValidatorWrapper');
+
 const app = express();
 
 /* ************************************* */
@@ -29,14 +29,13 @@ const app = express();
 /* ************************************* */
 
 module.exports = {
-	prepare: prepare,
-	listenSync: listenSync
+    prepare,
+    listenSync,
 };
 
 /* ************************************* */
 /* ********  PRIVATE FUNCTIONS  ******** */
 /* ************************************* */
-
 
 
 /* ************************************* */
@@ -48,66 +47,68 @@ module.exports = {
  * @returns {Promise} Promise
  */
 function prepare() {
-	return new Promise(function (resolve, reject) {
-		logger.info('Initialize server...');
+    return new Promise((resolve, reject) => {
+        logger.info('Initialize server...');
 
-		initializeService.run().then(function () {
-			logger.info('Preparing server...');
+        initializeService.run().then(() => {
+            logger.info('Preparing server...');
 
-			// Put express application in place
-			app.use(logger.middleware.connectLogger());
+            // Put express application in place
+            app.use(logger.middleware.connectLogger());
 
-			// Put security
-			app.use(helmet());
+            // Put security
+            app.use(helmet());
 
-			// Parse application/x-www-form-urlencoded
-			app.use(bodyParser.urlencoded({extended: false}));
+            // Parse application/x-www-form-urlencoded
+            app.use(bodyParser.urlencoded({
+                extended: false,
+            }));
 
-			// Parse application/json
-			app.use(bodyParser.json());
+            // Parse application/json
+            app.use(bodyParser.json());
 
-			// Cookie parser
-			app.use(cookieParser());
+            // Cookie parser
+            app.use(cookieParser());
 
-			// Put compression
-			app.use(compression());
+            // Put compression
+            app.use(compression());
 
-			// Express validator
-			app.use(expressValidator({
-				customValidators: {
-					isUrl: inputValidatorWrapper.isUrlSync,
-					isArray: inputValidatorWrapper.isArraySync,
-					isEmail: inputValidatorWrapper.isEmailSync,
-					stringHasMinLength: inputValidatorWrapper.stringHasMinLength
-				}
-			}));
+            // Express validator
+            app.use(expressValidator({
+                customValidators: {
+                    isUrl: inputValidatorWrapper.isUrlSync,
+                    isArray: inputValidatorWrapper.isArraySync,
+                    isEmail: inputValidatorWrapper.isEmailSync,
+                    stringHasMinLength: inputValidatorWrapper.stringHasMinLength,
+                },
+            }));
 
-			// Static files and views
-			app.set('views', __dirname + '/views');
-			app.use('/bower_components', serveStatic(__dirname + '/bower_components/'));
-			app.use(serveStatic(__dirname + '/views/'));
+            // Static files and views
+            app.set('views', `${__dirname}/views`);
+            app.use('/bower_components', serveStatic(`${__dirname}/bower_components/`));
+            app.use(serveStatic(`${__dirname}/views`));
 
-			// Application security
-			app.use(apiSecurity.middleware.securityToken(api.getPathsWithoutSecurity()));
+            // Application security
+            app.use(apiSecurity.middleware.securityToken(api.getPathsWithoutSecurity()));
 
-			// Put api
-			app.use(api.expose());
+            // Put api
+            app.use(api.expose());
 
-			// Error cleaner
-			app.use(apiError.middleware.errorCleaner());
+            // Error cleaner
+            app.use(apiError.middleware.errorCleaner());
 
-			resolve();
-		}).catch(function (err) {
-			logger.error(err);
-			reject();
-		});
-	});
+            resolve();
+        }).catch((err) => {
+            logger.error(err);
+            reject();
+        });
+    });
 }
 
 /**
  * Listen server.
  */
 function listenSync() {
-	logger.info(`Server listening on port : ${configurationService.getPort()}`);
-	app.listen(configurationService.getPort());
+    logger.info(`Server listening on port : ${configurationService.getPort()}`);
+    app.listen(configurationService.getPort());
 }

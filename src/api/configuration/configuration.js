@@ -8,24 +8,24 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 const express = require('express');
-const _ = require('lodash');
 const logger = require('../../shared/logger')('[Configuration API]');
 const APIResponse = require('../core/APIResponse');
 const APICodes = require('../core/APICodes');
 const configurationService = require('../../services/core/configurationService');
+
 const pathsWithoutSecurity = [
-	{
-		url: '/configurations',
-		methods: ['GET']
-	}
+    {
+        url: '/configurations',
+        methods: ['GET'],
+    },
 ];
 
 /* ************************************* */
 /* ********       EXPORTS       ******** */
 /* ************************************* */
 module.exports = {
-	expose: expose,
-	pathsWithoutSecurity: pathsWithoutSecurity
+    expose,
+    pathsWithoutSecurity,
 };
 
 /* ************************************* */
@@ -38,20 +38,18 @@ module.exports = {
  * @param res
  */
 function getConfiguration(req, res) {
-	let body = APIResponse.getDefaultResponseBody();
-	// Add body items
-	let configuration = {
-		auth: {
-			isGithubEnabled: configurationService.auth.github.isEnabled(),
-			isLocalEnabled: configurationService.auth.local.isEnabled()
-		},
-		isLocalRegisterEnabled: configurationService.isLocalRegisterEnabled(),
-		backendUrl: configurationService.getBackendUrl()
-	};
-	body = _.assign(body, configuration);
+    // Add body items
+    const configuration = {
+        auth: {
+            isGithubEnabled: configurationService.auth.github.isEnabled(),
+            isLocalEnabled: configurationService.auth.local.isEnabled(),
+        },
+        isLocalRegisterEnabled: configurationService.isLocalRegisterEnabled(),
+        backendUrl: configurationService.getBackendUrl(),
+    };
 
-	// Send response
-	APIResponse.sendResponse(res, body, APICodes.SUCCESS.OK);
+    // Send response
+    APIResponse.sendResponse(res, configuration, APICodes.SUCCESS.OK);
 }
 
 /* ************************************* */
@@ -63,10 +61,10 @@ function getConfiguration(req, res) {
  * @returns {*} Express Router
  */
 function expose() {
-	logger.debug('Putting configuration API...');
-	var router = express.Router();
+    logger.debug('Putting configuration API...');
+    const router = express.Router();
 
-	router.get('/configurations', getConfiguration);
+    router.get('/configurations', getConfiguration);
 
-	return router;
+    return router;
 }
