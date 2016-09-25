@@ -59,6 +59,10 @@ function isEmailSync(value, mandatory) {
         return !mandatory;
     }
 
+    if (!_.isString(value)) {
+        return false;
+    }
+
     return emailValidator.validate(value);
 }
 
