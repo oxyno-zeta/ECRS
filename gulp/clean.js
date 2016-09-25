@@ -7,9 +7,10 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
-var gulp = require('gulp');
-var del = require('del');
-var conf = require('./conf');
+const gulp = require('gulp');
+const del = require('del');
+
+const conf = require('./conf');
 
 /* ************************************* */
 /* ********  PRIVATE FUNCTIONS  ******** */
@@ -29,4 +30,8 @@ gulp.task('clean:web', () => del(conf.sources.web.dist));
 gulp.task('clean:release:dist', () => del(conf.release.dist.main));
 
 gulp.task('clean:release:tmp', () => del(conf.release.tmp.main));
+
+gulp.task('clean:tests', () => del(conf.tests.resultDir));
+
+gulp.task('clean:tests:move', () => del(conf.tests.move.files));
 

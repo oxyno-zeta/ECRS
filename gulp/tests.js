@@ -10,6 +10,8 @@
 const gulp = require('gulp');
 const gulpMocha = require('gulp-mocha');
 const gulpIstanbul = require('gulp-istanbul');
+const runSequence = require('run-sequence');
+
 const conf = require('./conf');
 
 /* ************************************* */
@@ -22,6 +24,15 @@ const conf = require('./conf');
 /* ************************************* */
 
 gulp.task('tests', (cb) => {
+    runSequence('clean:tests', 'tests:backend', 'tests:move:backend', 'clean:tests:move', cb);
+});
+
+gulp.task('tests:move:backend', () => {
+    gulp.src(conf.tests.move.files)
+        .pipe(gulp.dest(conf.tests.move.backend));
+});
+
+gulp.task('tests:backend', (cb) => {
     gulp.src(conf.tests.backend.toTest)
         .pipe(gulpIstanbul()) // Covering files
         .pipe(gulpIstanbul.hookRequire()) // Force `require` to return covered files
