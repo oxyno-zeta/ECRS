@@ -11,6 +11,6 @@ before_script:
   - bower install
 
 script:
-  - gulp tests:backend && cat ./coverage/backend/lcov.info | coveralls
+  - gulp tests && cat ./coverage/backend/lcov.info | coveralls
   - gulp release
 
