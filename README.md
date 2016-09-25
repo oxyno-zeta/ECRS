@@ -1,6 +1,6 @@
 ECRS (Electron Crash Report Server)
 ===================================
-[![GitHub release](https://img.shields.io/github/release/oxynozeta/ecrs.svg?maxAge=2592000)]() [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/oxyno-zeta/ECRS/master/LICENSE.md) [![Build Status](https://travis-ci.org/oxyno-zeta/ECRS.svg?branch=master)](https://travis-ci.org/oxyno-zeta/ECRS)
+[![GitHub release](https://img.shields.io/github/release/oxynozeta/ecrs.svg?maxAge=2592000)]() [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/oxyno-zeta/ECRS/master/LICENSE.md) [![Build Status](https://travis-ci.org/oxyno-zeta/ECRS.svg?branch=master)](https://travis-ci.org/oxyno-zeta/ECRS) [![Coverage Status](https://coveralls.io/repos/github/oxyno-zeta/ECRS/badge.svg)](https://coveralls.io/github/oxyno-zeta/ECRS)
 
 # Docker
 There is some docker image with ECRS :
