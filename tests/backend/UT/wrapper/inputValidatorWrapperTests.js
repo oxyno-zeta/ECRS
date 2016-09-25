@@ -10,16 +10,12 @@
 const {
     assert,
     } = require('chai');
-const inputValidatorWrapper = require('../../../src/wrapper/inputValidatorWrapper');
+const inputValidatorWrapper = require('../../../../src/wrapper/inputValidatorWrapper');
 
 /* ************************************* */
-/* ********  PRIVATE FUNCTIONS  ******** */
+/* ********        TESTS        ******** */
 /* ************************************* */
 
-
-/* ************************************* */
-/* ********   PUBLIC FUNCTIONS  ******** */
-/* ************************************* */
 describe('inputValidatorWrapper', () => {
     describe('isArraySync', () => {
         it('should return true with Array', () => {

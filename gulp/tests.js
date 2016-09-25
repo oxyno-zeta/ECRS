@@ -24,7 +24,7 @@ const conf = require('./conf');
 /* ************************************* */
 
 gulp.task('tests', (cb) => {
-    runSequence('clean:tests', 'tests:backend', 'tests:move:backend', 'clean:tests:move', cb);
+    runSequence('clean:tests', 'tests:backend', 'tests:move:backend', cb);
 });
 
 gulp.task('tests:move:backend', () => {
