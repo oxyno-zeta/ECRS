@@ -47,7 +47,7 @@ module.exports = {
 function deleteById(id) {
     return new Promise((resolve, reject) => {
         findById(id).then((crashLog) => {
-            if (crashLog) {
+            if (!crashLog) {
                 reject(crashLog);
                 return;
             }

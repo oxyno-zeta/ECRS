@@ -37,7 +37,7 @@ module.exports = {
  * @returns {boolean}
  */
 function stringHasMinLength(value, minLength) {
-    if (value) {
+    if (_.isUndefined(value) || _.isNull(value)) {
         return false;
     }
 
@@ -55,7 +55,7 @@ function stringHasMinLength(value, minLength) {
  * @returns {*}
  */
 function isEmailSync(value, mandatory) {
-    if (value) {
+    if (_.isUndefined(value) || _.isNull(value)) {
         return !mandatory;
     }
 
@@ -69,8 +69,12 @@ function isEmailSync(value, mandatory) {
  * @returns {*}
  */
 function isUrlSync(value, mandatory) {
-    if (value) {
+    if (_.isUndefined(value) || _.isNull(value)) {
         return !mandatory;
+    }
+
+    if (!_.isString(value)) {
+        return false;
     }
 
     return isUrl(value);

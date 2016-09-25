@@ -36,6 +36,27 @@ module.exports = {
             fonts: ['src/bower_components/font-awesome/fonts/*'],
         },
     },
+    tests: {
+        backend: {
+            toTest: [
+                'src/**/*.js',
+                '!src/views',
+                '!src/views/**/*',
+                '!src/bower_components/',
+                '!src/bower_components/**/*',
+            ],
+            files: [
+                'tests/backend/**/*.js',
+            ],
+            options: {
+                reporter: 'spec',
+                report: 'lcovonly',
+                timeout: 10000,
+                color: true,
+                bail: false, // True : stop after first fail
+            },
+        },
+    },
     other: {
         wiredepConf: {
             directory: 'src/bower_components',
