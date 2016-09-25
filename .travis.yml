@@ -5,14 +5,13 @@ language: node_js
 node_js:
   - 6
 
-branches:
-  only:
-    - master
-
 before_script:
-  - npm install -g gulp bower
+  - npm install -g gulp bower coveralls
   - npm install
   - bower install
 
-script: gulp release
+script:
+  - gulp tests
+  - cat ./coverage/lcov.info | coveralls
+  - gulp release
 
