@@ -19,29 +19,7 @@ const mockery = require('mockery');
 
 describe('[UT] configurationWrapper', () => {
     let DEFAULT = null;
-    const DEFAULT_CONFIG = {
-        CRASH_REPORTER_PORT: 2000,
-        CRASH_REPORTER_LOG_LEVEL: 'info',
-        CRASH_REPORTER_LOG_UPLOAD_DIR: path.join(process.cwd(), 'upload-logs/'),
-        CRASH_REPORTER_LOG_APP_CRASH_DIR: path.join(process.cwd(), 'app-crash-logs/'),
-        CRASH_REPORTER_DATABASE_URL: '',
-        CRASH_REPORTER_DATABASE_LOGIN: '',
-        CRASH_REPORTER_DATABASE_PASSWORD: '',
-        CRASH_REPORTER_AUTH_GITHUB_OAUTH_ENABLED: true,
-        CRASH_REPORTER_AUTH_GITHUB_CLIENT_ID: '',
-        CRASH_REPORTER_AUTH_GITHUB_CLIENT_SECRET: '',
-        CRASH_REPORTER_AUTH_JWT_SECRET: '',
-        CRASH_REPORTER_AUTH_LOCAL_AUTH_ENABLED: true,
-        CRASH_REPORTER_LOCAL_REGISTER_ENABLED: true,
-        CRASH_REPORTER_URL: 'http://your-domain.com',
-        CRASH_REPORTER_MAIL_HOST: '',
-        CRASH_REPORTER_MAIL_POOL: false,
-        CRASH_REPORTER_MAIL_PORT: 0,
-        CRASH_REPORTER_MAIL_SECURE: false,
-        CRASH_REPORTER_MAIL_AUTH_USER: '',
-        CRASH_REPORTER_MAIL_AUTH_PASS: '',
-        CRASH_REPORTER_MAIL_FROM: '',
-    };
+    let DEFAULT_CONFIG = null;
 
     before(() => {
         mockery.enable({
@@ -62,6 +40,7 @@ describe('[UT] configurationWrapper', () => {
 
         this.configurationWrapper = require('../../../../src/wrapper/configurationWrapper');
 
+        DEFAULT_CONFIG = this.configurationWrapper.DEFAULT_CONFIG;
         this.CONSTANTS = this.configurationWrapper.CONSTANTS;
     });
 

@@ -87,6 +87,7 @@ nconf.defaults(DEFAULT_CONFIG);
 /* ************************************* */
 
 module.exports = {
+    DEFAULT_CONFIG,
     CONSTANTS,
     getConfig,
 };
