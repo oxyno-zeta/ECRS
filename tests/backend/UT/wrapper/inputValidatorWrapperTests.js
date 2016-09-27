@@ -457,5 +457,12 @@ describe('[UT] inputValidatorWrapper', () => {
             const result = inputValidatorWrapper.stringHasMinLength(input, minLength);
             assert.isOk(result);
         });
+
+        it('should return true with String (\'testtest\') and minLength with 4', () => {
+            const input = 'testtest';
+            const minLength = 4;
+            const result = inputValidatorWrapper.stringHasMinLength(input, minLength);
+            assert.isOk(result);
+        });
     });
 });
