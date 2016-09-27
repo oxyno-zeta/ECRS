@@ -7,7 +7,6 @@ node_js:
 
 before_script:
   - npm install -g gulp bower coveralls
-  - npm install
   - bower install
 
 script:
