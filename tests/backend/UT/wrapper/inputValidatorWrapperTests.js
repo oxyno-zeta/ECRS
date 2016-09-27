@@ -16,7 +16,7 @@ const inputValidatorWrapper = require('../../../../src/wrapper/inputValidatorWra
 /* ********        TESTS        ******** */
 /* ************************************* */
 
-describe('inputValidatorWrapper', () => {
+describe('[UT] inputValidatorWrapper', () => {
     describe('isArraySync', () => {
         it('should return true with Array', () => {
             const input = [];

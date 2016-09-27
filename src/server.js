@@ -31,6 +31,8 @@ const app = express();
 module.exports = {
     prepare,
     listenSync,
+    getApp,
+    buildAppSync,
 };
 
 /* ************************************* */
@@ -43,6 +45,63 @@ module.exports = {
 /* ************************************* */
 
 /**
+ * Build Express App Sync.
+ */
+function buildAppSync() {
+    // Put express application in place
+    app.use(logger.middleware.connectLogger());
+
+    // Put security
+    app.use(helmet());
+
+    // Parse application/x-www-form-urlencoded
+    app.use(bodyParser.urlencoded({
+        extended: false,
+    }));
+
+    // Parse application/json
+    app.use(bodyParser.json());
+
+    // Cookie parser
+    app.use(cookieParser());
+
+    // Put compression
+    app.use(compression());
+
+    // Express validator
+    app.use(expressValidator({
+        customValidators: {
+            isUrl: inputValidatorWrapper.isUrlSync,
+            isArray: inputValidatorWrapper.isArraySync,
+            isEmail: inputValidatorWrapper.isEmailSync,
+            stringHasMinLength: inputValidatorWrapper.stringHasMinLength,
+        },
+    }));
+
+    // Static files and views
+    app.set('views', `${__dirname}/views`);
+    app.use('/bower_components', serveStatic(`${__dirname}/bower_components/`));
+    app.use(serveStatic(`${__dirname}/views`));
+
+    // Application security
+    app.use(apiSecurity.middleware.securityToken(api.getPathsWithoutSecurity()));
+
+    // Put api
+    app.use(api.expose());
+
+    // Error cleaner
+    app.use(apiError.middleware.errorCleaner());
+}
+
+/**
+ * Get Express app.
+ * @returns {*}
+ */
+function getApp() {
+    return app;
+}
+
+/**
  * Prepare server.
  * @returns {Promise} Promise
  */
@@ -53,49 +112,8 @@ function prepare() {
         initializeService.run().then(() => {
             logger.info('Preparing server...');
 
-            // Put express application in place
-            app.use(logger.middleware.connectLogger());
-
-            // Put security
-            app.use(helmet());
-
-            // Parse application/x-www-form-urlencoded
-            app.use(bodyParser.urlencoded({
-                extended: false,
-            }));
-
-            // Parse application/json
-            app.use(bodyParser.json());
-
-            // Cookie parser
-            app.use(cookieParser());
-
-            // Put compression
-            app.use(compression());
-
-            // Express validator
-            app.use(expressValidator({
-                customValidators: {
-                    isUrl: inputValidatorWrapper.isUrlSync,
-                    isArray: inputValidatorWrapper.isArraySync,
-                    isEmail: inputValidatorWrapper.isEmailSync,
-                    stringHasMinLength: inputValidatorWrapper.stringHasMinLength,
-                },
-            }));
-
-            // Static files and views
-            app.set('views', `${__dirname}/views`);
-            app.use('/bower_components', serveStatic(`${__dirname}/bower_components/`));
-            app.use(serveStatic(`${__dirname}/views`));
-
-            // Application security
-            app.use(apiSecurity.middleware.securityToken(api.getPathsWithoutSecurity()));
-
-            // Put api
-            app.use(api.expose());
-
-            // Error cleaner
-            app.use(apiError.middleware.errorCleaner());
+            // Build Express app
+            buildAppSync();
 
             resolve();
         }).catch((err) => {

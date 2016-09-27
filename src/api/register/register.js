@@ -8,7 +8,6 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 const express = require('express');
-const _ = require('lodash');
 const logger = require('../../shared/logger')('[Register API]');
 const APIResponse = require('../core/APIResponse');
 const APICodes = require('../core/APICodes');
@@ -47,6 +46,10 @@ function register(req, res) {
     // Validation
     req.checkBody('username', 'Invalid Username').notEmpty();
     req.checkBody('password', 'Invalid Password').notEmpty();
+    req.checkBody('username', 'Username too short')
+        .stringHasMinLength(userService.userValidation.username.minLength);
+    req.checkBody('password', 'Password too short')
+        .stringHasMinLength(userService.userValidation.localPassword.minLength);
     req.checkBody('email', 'Invalid Email').isEmail(false);
 
     const errors = req.validationErrors();
@@ -66,7 +69,7 @@ function register(req, res) {
 
     // Check if username already exists
     userService.findByUsernameForLocal(userData.username).then((userDb) => {
-        if (!_.isNull(userDb)) {
+        if (userDb) {
             APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.CONFLICT);
             return;
         }

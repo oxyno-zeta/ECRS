@@ -298,7 +298,7 @@ function initialize() {
         };
 
         findByUsernameForLocal(userData.username).then((result) => {
-            if (!_.isNull(result)) {
+            if (result) {
                 logger.debug('User "admin" already exist in database');
                 resolve();
                 return;
@@ -307,7 +307,7 @@ function initialize() {
             // Check if need another administrator
             userDao.findAllByRole(rolesObj.admin).then((users) => {
                 // Check there are users with admin role
-                if (!_.isNull(users) && users.length !== 0) {
+                if (users && users.length !== 0) {
                     // There are others admin
                     logger.debug('Another user with admin role exists => Don\'t create a new one');
                     resolve();

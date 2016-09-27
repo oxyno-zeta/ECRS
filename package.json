@@ -51,6 +51,7 @@
     "mocha-lcov-reporter": "^1.2.0",
     "mockery": "^1.7.0",
     "run-sequence": "^1.2.2",
+    "supertest": "^2.0.0",
     "uglify-save-license": "^0.4.1",
     "wiredep": "^4.0.0"
   },

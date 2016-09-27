@@ -17,7 +17,7 @@ const mockery = require('mockery');
 /* ********        TESTS        ******** */
 /* ************************************* */
 
-describe('configurationWrapper', () => {
+describe('[UT] configurationWrapper', () => {
     let DEFAULT = null;
     const DEFAULT_CONFIG = {
         CRASH_REPORTER_PORT: 2000,
