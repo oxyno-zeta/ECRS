@@ -44,8 +44,8 @@ function register(req, res) {
     const body = APIResponse.getDefaultResponseBody();
 
     // Validation
-    req.checkBody('username', 'Invalid Username').notEmpty();
-    req.checkBody('password', 'Invalid Password').notEmpty();
+    req.checkBody('username', 'Empty Username').notEmpty();
+    req.checkBody('password', 'Empty Password').notEmpty();
     req.checkBody('username', 'Username too short')
         .stringHasMinLength(userService.userValidation.username.minLength);
     req.checkBody('password', 'Password too short')
@@ -60,11 +60,17 @@ function register(req, res) {
         return;
     }
 
-    //
+    // Create user data, trim all fields and lowercase for username and email
+    let email = req.body.email;
+    const username = req.body.username.toLowerCase().trim();
+    const password = req.body.password.trim();
+    if (email) {
+        email = email.toLowerCase().trim();
+    }
     const userData = {
-        username: req.body.username.toLowerCase(),
-        password: req.body.password,
-        email: req.body.email.toLowerCase(),
+        username,
+        password,
+        email,
     };
 
     // Check if username already exists
