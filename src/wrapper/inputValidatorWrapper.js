@@ -45,7 +45,7 @@ function stringHasMinLength(value, minLength) {
         return false;
     }
 
-    return _.isEqual(value.trim().length, minLength);
+    return (value.trim().length >= minLength);
 }
 
 /**
