@@ -37,15 +37,8 @@ module.exports = {
         },
     },
     tests: {
-        resultDir: 'coverage/',
-        move: {
-            files: [
-                'coverage/**/*',
-                '!coverage/backend/',
-                '!coverage/backend/**/*',
-                '!coverage/frontend/',
-                '!coverage/frontend/**/*',
-            ],
+        resultDir: {
+            main: 'coverage/',
             backend: 'coverage/backend',
             frontend: 'coverage/frontend',
         },

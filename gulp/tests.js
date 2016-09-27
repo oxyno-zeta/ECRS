@@ -24,12 +24,7 @@ const conf = require('./conf');
 /* ************************************* */
 
 gulp.task('tests', (cb) => {
-    runSequence('clean:tests', 'tests:backend', 'tests:move:backend', cb);
-});
-
-gulp.task('tests:move:backend', () => {
-    gulp.src(conf.tests.move.files)
-        .pipe(gulp.dest(conf.tests.move.backend));
+    runSequence('clean:tests', 'tests:backend', cb);
 });
 
 gulp.task('tests:backend', (cb) => {
@@ -51,7 +46,13 @@ gulp.task('tests:backend', (cb) => {
                     // Continue even if there is an error
                     this.emit('end');
                 })
-                .pipe(gulpIstanbul.writeReports()) // Creating the reports after tests ran
+                .pipe(gulpIstanbul.writeReports({
+                    dir: conf.tests.resultDir.backend,
+                    reporters: ['lcov', 'cobertura', 'clover', 'json', 'text', 'text-summary'],
+                    reportOpts: {
+                        dir: conf.tests.resultDir.backend,
+                    },
+                })) // Creating the reports after tests ran
                 .once('end', cb);
         });
 });
