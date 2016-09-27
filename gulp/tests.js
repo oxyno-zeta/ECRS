@@ -34,7 +34,7 @@ gulp.task('tests:backend', (cb) => {
         .once('finish', () => {
             gulp.src(conf.tests.backend.files)
                 .pipe(gulpMocha(conf.tests.backend.options))
-                .once('error', function (err) {
+                .once('error', (err) => {
                     // Check if test failed of something else
                     if (err.message.indexOf('test failed') !== -1) {
                         // Test fail
