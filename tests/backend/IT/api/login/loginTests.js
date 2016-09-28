@@ -312,4 +312,99 @@ describe('[IT] [API] Login', () => {
                 });
         });
     });
+
+    describe('Login URL disabled', () => {
+        let findByUsernameWithLocalHashNotNullFail = false;
+        let findByUsernameWithLocalHashNotNullHasResult = false;
+        let findByUsernameWithLocalHashNotNullResult = null;
+        const mockUserSalt = securityService.generateSaltSync();
+        let mockUserObject = null;
+        let mockUserInstance = null;
+
+        before(() => {
+            const configurationWrapper = require('../../../../../src/wrapper/configurationWrapper');
+
+            mockery.enable({
+                warnOnUnregistered: false,
+                useCleanCache: true,
+            });
+
+            mockery.registerMock('./shared/logger', mocks.logger);
+            mockery.registerMock('./api/core/apiSecurity', mocks.apiSecurity);
+            mockery.registerMock('../shared/logger', mocks.logger);
+            mockery.registerMock('../../shared/logger', mocks.logger);
+            mockery.registerMock('../dao/userDao', {
+                findByUsernameWithLocalHashNotNull: () => new Promise((resolve, reject) => {
+                    if (findByUsernameWithLocalHashNotNullFail) {
+                        reject();
+                    } else if (findByUsernameWithLocalHashNotNullHasResult) {
+                        resolve(findByUsernameWithLocalHashNotNullResult);
+                    } else {
+                        resolve(null);
+                    }
+                }),
+            });
+            mockery.registerMock('./mailService', {
+                sendRegisterEmail: () => new Promise(resolve => resolve()),
+            });
+
+            const getConfigResult = configurationWrapper.DEFAULT_CONFIG;
+            getConfigResult.CRASH_REPORTER_AUTH_JWT_SECRET = 'jwt_token';
+            getConfigResult.CRASH_REPORTER_AUTH_LOCAL_AUTH_ENABLED = false;
+            mockery.registerMock('../../wrapper/configurationWrapper', {
+                getConfig: () => getConfigResult,
+                CONSTANTS: configurationWrapper.CONSTANTS,
+            });
+
+            const server = require('../../../../../src/server');
+
+            server.buildAppSync();
+            this.expressApp = server.getApp();
+
+            // Generate user data => same username/password
+            return new Promise((resolve, reject) => {
+                mockUserObject = {
+                    username: 'test_user',
+                    role: userModel.rolesObj.normal,
+                    local: {
+                        salt: mockUserSalt,
+                        hash: null,
+                    },
+                };
+                securityService.generateHash(mockUserObject.username, mockUserSalt).then((hash) => {
+                    mockUserObject.local.hash = hash;
+
+                    // Create user instance
+                    mockUserInstance = new userModel.User(mockUserObject);
+
+                    // Resolve promise
+                    resolve();
+                }).catch(reject);
+            });
+        });
+
+        after(() => {
+            mockery.disable();
+            mockery.deregisterAll();
+        });
+
+        afterEach(() => {
+            findByUsernameWithLocalHashNotNullFail = false;
+            findByUsernameWithLocalHashNotNullHasResult = false;
+            findByUsernameWithLocalHashNotNullResult = null;
+        });
+
+        it('should return a 404 when login is disabled', (done) => {
+            supertest(this.expressApp)
+                .post('/api/v1/login')
+                .expect(404)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+                    done();
+                });
+        });
+    });
 });
