@@ -44,7 +44,10 @@ function logger() {
         },
         info: () => {
         },
-        error: () => {
+        error: text => {
+            if (text) {
+                console.error(text);
+            }
         },
         warn: () => {
         },

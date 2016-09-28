@@ -46,11 +46,11 @@ function login(req, res) {
     // Get default body
     const body = APIResponse.getDefaultResponseBody();
     // Check body
-    req.checkBody('username', 'Invalid Username').notEmpty();
-    req.checkBody('password', 'Invalid Password').notEmpty();
-    req.checkBody('username', 'Invalid Username (Minimum size error)')
+    req.checkBody('username', 'Username Empty').notEmpty();
+    req.checkBody('password', 'Password Empty').notEmpty();
+    req.checkBody('username', 'Username too short')
         .stringHasMinLength(userService.userValidation.username.minLength);
-    req.checkBody('password', 'Invalid Password (Minimum size error)')
+    req.checkBody('password', 'Password too short')
         .stringHasMinLength(userService.userValidation.localPassword.minLength);
     const errors = req.validationErrors();
     // Check if validation failed
@@ -61,12 +61,12 @@ function login(req, res) {
     }
 
     // Validation succeed => next
-    const username = req.body.username;
-    const password = req.body.password;
+    const username = req.body.username.toLowerCase().trim();
+    const password = req.body.password.trim();
 
     // Search user in database
     userService.findByUsernameForLocal(username).then((user) => {
-        if (user) {
+        if (!user) {
             // User not found in database
             APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.UNAUTHORIZED);
             return;
@@ -74,7 +74,7 @@ function login(req, res) {
 
         // Do the login part.
         userService.localLogin(username, password).then((loggedUser) => {
-            if (loggedUser) {
+            if (!loggedUser) {
                 APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.UNAUTHORIZED);
                 return;
             }
@@ -82,7 +82,7 @@ function login(req, res) {
             const time2daysInMs = 172800000;
             res.cookie('id_token',
                 apiSecurity.encode({
-                    id: loggedUser.id,
+                    id: loggedUser._id,
                 }, {
                     expiresIn: '2 days',
                 }),
