@@ -81,7 +81,7 @@ module.exports = function loggerCreator(prefix = '') {
  */
 function logForger(prefix, logFunction) {
     return (text) => {
-        let string = text;
+        let string;
         // Check if error
         if (_.isError(text)) {
             if (text.stack) {
@@ -92,8 +92,13 @@ function logForger(prefix, logFunction) {
         }
 
         // Check if array or object
-        if (_.isArray(text) || _.isObject(text)) {
+        if (!string && (_.isArray(text) || _.isObject(text))) {
             string = JSON.stringify(text);
+        }
+
+        // Other case
+        if (!string) {
+            string = text;
         }
 
         logFunction(`${prefix} ${string}`);
