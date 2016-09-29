@@ -38,7 +38,6 @@ describe('[IT] [API] Login', () => {
             });
 
             mockery.registerMock('./shared/logger', mocks.logger);
-            mockery.registerMock('./api/core/apiSecurity', mocks.apiSecurity);
             mockery.registerMock('../shared/logger', mocks.logger);
             mockery.registerMock('../../shared/logger', mocks.logger);
             mockery.registerMock('../dao/userDao', {
@@ -330,7 +329,6 @@ describe('[IT] [API] Login', () => {
             });
 
             mockery.registerMock('./shared/logger', mocks.logger);
-            mockery.registerMock('./api/core/apiSecurity', mocks.apiSecurity);
             mockery.registerMock('../shared/logger', mocks.logger);
             mockery.registerMock('../../shared/logger', mocks.logger);
             mockery.registerMock('../dao/userDao', {

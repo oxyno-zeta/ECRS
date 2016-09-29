@@ -8,18 +8,12 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 
-const apiSecurity = {
-    middleware: {
-        securityToken,
-    },
-};
 
 /* ************************************* */
 /* ********       EXPORTS       ******** */
 /* ************************************* */
 module.exports = {
     logger,
-    apiSecurity,
 };
 
 /* ************************************* */
@@ -30,10 +24,6 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
-
-function securityToken() {
-    return (req, res, next) => next();
-}
 
 function logger() {
     return {
