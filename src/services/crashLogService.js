@@ -128,7 +128,7 @@ function saveNewCrashLog(crashLogApiData, projectObject) {
                 // Find user from project
                 userService.findUserByProjectId(projectId).then((userInstance) => {
                     // Send email to user if email exists
-                    if (userInstance.email && !_.isEqual(userInstance.email, '')) {
+                    if (userInstance && userInstance.email && !_.isEqual(userInstance.email, '')) {
                         mailService.sendNewCrashLogEmail(userInstance.email, projectObject)
                             .then(logger.debug).catch(logger.error);
                     }
@@ -139,34 +139,35 @@ function saveNewCrashLog(crashLogApiData, projectObject) {
             });
         }
 
-        if (crashLogApiData.upload_file_minidump) {
-            const uploadFilePath = path.join(configurationService.getLogUploadDirectory(),
-                crashLogApiData.upload_file_minidump);
-            const newFilePath = path.join(configurationService.getAppCrashLogDirectory(),
-                crashLogApiData.upload_file_minidump);
-
-            // Check if file exist
-            fs.exists(uploadFilePath, (isExist) => {
-                // Move file if exists
-                if (isExist) {
-                    logger.debug('File exist => move it');
-
-                    fs.rename(uploadFilePath, newFilePath, (err) => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            logger.debug('File moved => Continue');
-                            go();
-                        }
-                    });
-                } else {
-                    logger.debug('No file => Continue');
-                    go();
-                }
-            });
-        } else {
+        if (!crashLogApiData.upload_file_minidump) {
             logger.debug('No dump detected => Continue');
             go();
+            return;
         }
+
+        const uploadFilePath = path.join(configurationService.getLogUploadDirectory(),
+            crashLogApiData.upload_file_minidump);
+        const newFilePath = path.join(configurationService.getAppCrashLogDirectory(),
+            crashLogApiData.upload_file_minidump);
+
+        // Check if file exist
+        fs.exists(uploadFilePath, (isExist) => {
+            // Move file if exists
+            if (isExist) {
+                logger.debug('File exist => move it');
+
+                fs.rename(uploadFilePath, newFilePath, (err) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        logger.debug('File moved => Continue');
+                        go();
+                    }
+                });
+            } else {
+                logger.debug('No file => Continue');
+                go();
+            }
+        });
     });
 }

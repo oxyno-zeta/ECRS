@@ -26,7 +26,7 @@ const upload = multer({
 });
 const pathsWithoutSecurity = [
     {
-        url: /.*crash-logs\/.*/ig,
+        url: /.*crash-logs\/projects\/.*/ig,
         methods: ['POST'],
     },
 ];
@@ -55,7 +55,7 @@ function postCrashLog(req, res) {
     // Get project Id
     const projectId = req.params.projectId;
     // Check if project id exists
-    if (projectId) {
+    if (!projectId) {
         APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.BAD_REQUEST);
         // Stop here
         return;
@@ -63,10 +63,18 @@ function postCrashLog(req, res) {
 
     logger.debug(`Project Id : ${projectId}`);
 
+    const requestBody = req.body;
+    // Check if request body exists
+    if (!requestBody || _.isEqual(Object.keys(requestBody).length, 0)) {
+        APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.BAD_REQUEST);
+        // Stop here
+        return;
+    }
+
     // Find Project by id
     projectService.findById(projectId).then((project) => {
         // Check if project exists in database
-        if (project) {
+        if (!project) {
             // Send response
             APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
             return;
@@ -77,15 +85,25 @@ function postCrashLog(req, res) {
         if (file) {
             file = {};
         }
-        const requestBody = req.body;
 
-        // Update request body
-        requestBody.upload_file_minidump = file.filename;
+        // Get only interesting fields
+        const crashLogObject = {
+            ver: requestBody.ver,
+            platform: requestBody.platform,
+            process_type: requestBody.process_type,
+            guid: requestBody.guid,
+            _version: requestBody._version,
+            _productName: requestBody._productName,
+            prod: requestBody.prod,
+            _companyName: requestBody._companyName,
+            upload_file_minidump: file ? file.filename : null,
+            extra: requestBody.extra,
+        };
 
         logger.debug(`File : ${JSON.stringify(file)}`);
-        logger.debug(`Body : ${JSON.stringify(requestBody)}`);
+        logger.debug(`Body : ${JSON.stringify(crashLogObject)}`);
 
-        crashLogService.saveNewCrashLog(requestBody, project).then((crashLog) => {
+        crashLogService.saveNewCrashLog(crashLogObject, project).then((crashLog) => {
             APIResponse.sendTextResponse(res, crashLog._id, APICodes.SUCCESS.CREATED);
         }).catch((err) => {
             logger.error(err);
