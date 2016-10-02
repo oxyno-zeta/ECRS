@@ -12,8 +12,6 @@ const {
     assert,
     } = require('chai');
 const mockery = require('mockery');
-const userModel = require('../../../../../src/models/userModel');
-const securityService = require('../../../../../src/services/core/securityService');
 
 const mocks = require('../../mocks');
 
@@ -33,7 +31,6 @@ describe('[IT] [API] Crash log', () => {
     let userDaoFindByProjectIdFail = false;
     let userDaoFindByProjectIdHasResult = false;
     let userDaoFindByProjectIdResult = null;
-    let multerUploadSingleFilename = '';
 
     before(() => {
         const configurationWrapper = require('../../../../../src/wrapper/configurationWrapper');
