@@ -77,7 +77,7 @@ function populateUser() {
         const body = APIResponse.getDefaultResponseBody();
 
         userService.findById(userId).then((user) => {
-            if (user) {
+            if (!user) {
                 // User not found in database
                 APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.UNAUTHORIZED);
                 return;

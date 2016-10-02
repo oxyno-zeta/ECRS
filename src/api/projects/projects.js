@@ -15,6 +15,7 @@ const APICodes = require('../core/APICodes');
 const apiSecurity = require('../core/apiSecurity');
 const projectService = require('../../services/projectService');
 const userService = require('../../services/userService');
+
 const rolesObj = userService.rolesObj;
 const projectMapper = require('../../mappers/projectMapper');
 const crashLogMapper = require('../../mappers/crashLogMapper');
@@ -65,8 +66,8 @@ function create(req, res) {
     // Get default body
     const body = APIResponse.getDefaultResponseBody();
     // Check body
-    req.checkBody('name', 'Invalid Name').notEmpty();
-    req.checkBody('projectUrl', 'Invalid Project Url').isUrl(false);
+    req.checkBody('name', 'Empty Name').notEmpty();
+    req.checkBody('projectUrl', 'Not an Url').isUrl(false);
 
     const errors = req.validationErrors();
     // Check if validation failed
@@ -76,9 +77,22 @@ function create(req, res) {
         return;
     }
 
+    const name = req.body.name.trim();
+    let projectUrl = req.body.projectUrl;
+    // Trim if possible
+    if (projectUrl) {
+        projectUrl = projectUrl.trim();
+    }
+
+    // Check if name exists
+    if (!name) {
+        APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.BAD_REQUEST);
+        return;
+    }
+
     const data = {
-        name: req.body.name.trim(),
-        projectUrl: req.body.projectUrl,
+        name,
+        projectUrl,
     };
 
     // Get user
@@ -86,7 +100,7 @@ function create(req, res) {
 
     // Check if project name already exist in database
     projectService.findByName(data.name).then((result) => {
-        if (!_.isNull(result)) {
+        if (result) {
             // Conflict
             APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.CONFLICT);
             return;

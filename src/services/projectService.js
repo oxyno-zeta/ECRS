@@ -8,6 +8,7 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 const _ = require('lodash');
+const logger = require('../shared/logger')('[ProjectService]');
 const projectDao = require('../dao/projectDao');
 const projectMapper = require('../mappers/projectMapper');
 const crashLogService = require('./crashLogService');
@@ -157,7 +158,7 @@ function create(data, userInstance) {
                 resolve(project);
             }).catch((err) => {
                 // Need to try to delete project
-                projectDao.deleteById(project._id);
+                projectDao.deleteById(project._id).then(logger.debug).catch(logger.error);
                 reject(err);
             });
         }).catch(reject);
