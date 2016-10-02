@@ -40,6 +40,9 @@ describe('[IT] [API] Projects', () => {
     let userDaoSaveFail = false;
     let userDaoSaveHasResult = false;
     let userDaoSaveResult = null;
+    let projectDaoFindByIdFail = false;
+    let projectDaoFindByIdHasResult = false;
+    let projectDaoFindByIdResult = null;
 
     before(() => {
         const configurationWrapper = require('../../../../../src/wrapper/configurationWrapper');
@@ -112,6 +115,15 @@ describe('[IT] [API] Projects', () => {
             deleteById: () => new Promise((resolve, reject) => {
                 resolve();
             }),
+            findById: () => new Promise((resolve, reject) => {
+                if (projectDaoFindByIdFail) {
+                    reject();
+                } else if (projectDaoFindByIdHasResult) {
+                    resolve(projectDaoFindByIdResult);
+                } else {
+                    resolve();
+                }
+            }),
         });
 
         const getConfigResult = configurationWrapper.DEFAULT_CONFIG;
@@ -159,6 +171,9 @@ describe('[IT] [API] Projects', () => {
         userDaoSaveFail = false;
         userDaoSaveHasResult = false;
         userDaoSaveResult = null;
+        projectDaoFindByIdFail = false;
+        projectDaoFindByIdHasResult = false;
+        projectDaoFindByIdResult = null;
     });
 
     describe('GET /projects', () => {
@@ -202,6 +217,7 @@ describe('[IT] [API] Projects', () => {
                 _id: userId,
                 role: rolesObj.admin,
                 username: 'test',
+                projects: [],
             };
             projectDaoFindAllHasResult = true;
             projectDaoFindAllResult = [{
@@ -236,6 +252,7 @@ describe('[IT] [API] Projects', () => {
                 _id: userId,
                 role: rolesObj.admin,
                 username: 'test',
+                projects: [],
             };
             projectDaoFindAllFail = true;
 
@@ -262,6 +279,7 @@ describe('[IT] [API] Projects', () => {
                 _id: userId,
                 role: rolesObj.normal,
                 username: 'test',
+                projects: [],
             };
             projectDaoFindByIdsHasResult = true;
             projectDaoFindByIdsResult = [{
@@ -296,6 +314,7 @@ describe('[IT] [API] Projects', () => {
                 _id: userId,
                 role: rolesObj.admin,
                 username: 'test',
+                projects: [],
             };
             projectDaoFindByIdsFail = true;
 
@@ -357,6 +376,7 @@ describe('[IT] [API] Projects', () => {
                 _id: userId,
                 role: rolesObj.admin,
                 username: 'test',
+                projects: [],
             };
 
             supertest(this.expressApp)
@@ -382,6 +402,7 @@ describe('[IT] [API] Projects', () => {
                 _id: userId,
                 role: rolesObj.admin,
                 username: 'test',
+                projects: [],
             };
 
             supertest(this.expressApp)
@@ -408,6 +429,7 @@ describe('[IT] [API] Projects', () => {
                 _id: userId,
                 role: rolesObj.admin,
                 username: 'test',
+                projects: [],
             };
             const body = {
                 name: '',
@@ -437,6 +459,7 @@ describe('[IT] [API] Projects', () => {
                 _id: userId,
                 role: rolesObj.admin,
                 username: 'test',
+                projects: [],
             };
             const body = {
                 name: '  ',
@@ -466,6 +489,7 @@ describe('[IT] [API] Projects', () => {
                 _id: userId,
                 role: rolesObj.admin,
                 username: 'test',
+                projects: [],
             };
             const body = {
                 projectUrl: 'test',
@@ -495,6 +519,7 @@ describe('[IT] [API] Projects', () => {
                 _id: userId,
                 role: rolesObj.admin,
                 username: 'test',
+                projects: [],
             };
             const body = {
                 name: 'test',
@@ -529,6 +554,7 @@ describe('[IT] [API] Projects', () => {
                 _id: userId,
                 role: rolesObj.admin,
                 username: 'test',
+                projects: [],
             };
             const body = {
                 name: 'test',
@@ -668,6 +694,191 @@ describe('[IT] [API] Projects', () => {
             supertest(this.expressApp)
                 .post('/api/v1/projects/')
                 .send(body)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(500)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Internal Server Error', resultBody.reason);
+                    done();
+                });
+        });
+    });
+
+    describe('GET /projects/:id', () => {
+        it('should return 401 when no security token provided', (done) => {
+            const projectId = 'test';
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}`)
+                .expect(401)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Unauthorized', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 401 when user not found in database', (done) => {
+            const projectId = 'test';
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(401)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Unauthorized', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 403 when user is not administrator and not in projects', (done) => {
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.normal,
+                username: 'test',
+                projects: [],
+            };
+
+            const projectId = 'test';
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(403)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Forbidden', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 200 when user is not administrator and in projects', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.normal,
+                username: 'test',
+                projects: [projectId],
+            };
+            projectDaoFindByIdHasResult = true;
+            projectDaoFindByIdResult = {
+                _id: projectId,
+                name: 'test',
+            };
+
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(200)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal(projectDaoFindByIdResult.name, resultBody.name);
+                    assert.equal(projectDaoFindByIdResult._id, resultBody.id);
+                    done();
+                });
+        });
+
+        it('should return 200 when user is administrator and not in projects', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+            };
+            projectDaoFindByIdHasResult = true;
+            projectDaoFindByIdResult = {
+                _id: projectId,
+                name: 'test',
+            };
+
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(200)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal(projectDaoFindByIdResult.name, resultBody.name);
+                    assert.equal(projectDaoFindByIdResult._id, resultBody.id);
+                    done();
+                });
+        });
+
+        it('should return 404 with user administrator when project not found', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+            };
+
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(404)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Not Found', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 500 with user administrator when find project is rejected', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+            };
+            projectDaoFindByIdFail = true;
+
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}`)
                 .set('Authorization', `Bearer ${apiToken}`)
                 .expect(500)
                 .end((err, result) => {
