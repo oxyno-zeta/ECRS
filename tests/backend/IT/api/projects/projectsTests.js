@@ -46,6 +46,9 @@ describe('[IT] [API] Projects', () => {
     let projectDaoStatisticsNumberByVersionFail = false;
     let projectDaoStatisticsNumberByVersionHasResult = false;
     let projectDaoStatisticsNumberByVersionResult = null;
+    let projectDaoGetAllVersionsFail = false;
+    let projectDaoGetAllVersionsHasResult = false;
+    let projectDaoGetAllVersionsResult = null;
 
     before(() => {
         const configurationWrapper = require('../../../../../src/wrapper/configurationWrapper');
@@ -136,6 +139,15 @@ describe('[IT] [API] Projects', () => {
                     resolve();
                 }
             }),
+            getAllVersions: () => new Promise((resolve, reject) => {
+                if (projectDaoGetAllVersionsFail) {
+                    reject();
+                } else if (projectDaoGetAllVersionsHasResult) {
+                    resolve(projectDaoGetAllVersionsResult);
+                } else {
+                    resolve();
+                }
+            }),
         });
 
         const getConfigResult = configurationWrapper.DEFAULT_CONFIG;
@@ -189,6 +201,9 @@ describe('[IT] [API] Projects', () => {
         projectDaoStatisticsNumberByVersionFail = false;
         projectDaoStatisticsNumberByVersionHasResult = false;
         projectDaoStatisticsNumberByVersionResult = null;
+        projectDaoGetAllVersionsFail = false;
+        projectDaoGetAllVersionsHasResult = false;
+        projectDaoGetAllVersionsResult = null;
     });
 
     describe('GET /projects', () => {
@@ -1087,6 +1102,194 @@ describe('[IT] [API] Projects', () => {
 
             supertest(this.expressApp)
                 .get(`/api/v1/projects/${projectId}/statistics/number/version`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(500)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Internal Server Error', resultBody.reason);
+                    done();
+                });
+        });
+    });
+
+    describe('GET /projects/:id/versions', () => {
+        it('should return 401 when no security token provided', (done) => {
+            const projectId = 'test';
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/versions`)
+                .expect(401)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Unauthorized', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 401 when user not found in database', (done) => {
+            const projectId = 'test';
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/versions`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(401)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Unauthorized', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 403 when user is not administrator and not in projects', (done) => {
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.normal,
+                username: 'test',
+                projects: [],
+            };
+
+            const projectId = 'test';
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/versions`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(403)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Forbidden', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 200 when user is not administrator and in projects', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.normal,
+                username: 'test',
+                projects: [projectId],
+            };
+            projectDaoFindByIdHasResult = true;
+            projectDaoFindByIdResult = {
+                _id: projectId,
+                name: 'test',
+            };
+            projectDaoGetAllVersionsHasResult = true;
+            projectDaoGetAllVersionsResult = [
+                '1.0.0',
+            ];
+
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/versions`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(200)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.deepEqual(projectDaoGetAllVersionsResult, resultBody);
+                    done();
+                });
+        });
+
+        it('should return 404 with user administrator when project not found', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+            };
+
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/versions`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(404)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Not Found', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 500 with user administrator when find project is rejected', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+            };
+            projectDaoFindByIdFail = true;
+
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/versions`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(500)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Internal Server Error', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 500 with user administrator when getAllVersions is rejected', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+            };
+            projectDaoFindByIdHasResult = true;
+            projectDaoFindByIdResult = {
+                _id: projectId,
+                name: 'test',
+            };
+            projectDaoGetAllVersionsFail = true;
+
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/versions`)
                 .set('Authorization', `Bearer ${apiToken}`)
                 .expect(500)
                 .end((err, result) => {
