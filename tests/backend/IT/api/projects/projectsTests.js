@@ -1443,7 +1443,7 @@ describe('[IT] [API] Projects', () => {
                     startDate: new Date().getTime(),
                 })
                 .set('Authorization', `Bearer ${apiToken}`)
-                //.expect(200)
+                .expect(200)
                 .end((err, result) => {
                     if (err) {
                         done(err);
