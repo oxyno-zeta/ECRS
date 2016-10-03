@@ -13,6 +13,7 @@ const {
     } = require('chai');
 const mockery = require('mockery');
 const { rolesObj } = require('../../../../../src/models/userModel');
+const moment = require('moment');
 
 const mocks = require('../../mocks');
 
@@ -49,6 +50,9 @@ describe('[IT] [API] Projects', () => {
     let projectDaoGetAllVersionsFail = false;
     let projectDaoGetAllVersionsHasResult = false;
     let projectDaoGetAllVersionsResult = null;
+    let projectDaoStatisticsNumberByDateFail = false;
+    let projectDaoStatisticsNumberByDateHasResult = false;
+    let projectDaoStatisticsNumberByDateResult = null;
 
     before(() => {
         const configurationWrapper = require('../../../../../src/wrapper/configurationWrapper');
@@ -148,6 +152,15 @@ describe('[IT] [API] Projects', () => {
                     resolve();
                 }
             }),
+            statisticsNumberByDate: () => new Promise((resolve, reject) => {
+                if (projectDaoStatisticsNumberByDateFail) {
+                    reject();
+                } else if (projectDaoStatisticsNumberByDateHasResult) {
+                    resolve(projectDaoStatisticsNumberByDateResult);
+                } else {
+                    resolve();
+                }
+            }),
         });
 
         const getConfigResult = configurationWrapper.DEFAULT_CONFIG;
@@ -204,6 +217,9 @@ describe('[IT] [API] Projects', () => {
         projectDaoGetAllVersionsFail = false;
         projectDaoGetAllVersionsHasResult = false;
         projectDaoGetAllVersionsResult = null;
+        projectDaoStatisticsNumberByDateFail = false;
+        projectDaoStatisticsNumberByDateHasResult = false;
+        projectDaoStatisticsNumberByDateResult = null;
     });
 
     describe('GET /projects', () => {
@@ -1290,6 +1306,244 @@ describe('[IT] [API] Projects', () => {
 
             supertest(this.expressApp)
                 .get(`/api/v1/projects/${projectId}/versions`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(500)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Internal Server Error', resultBody.reason);
+                    done();
+                });
+        });
+    });
+
+    describe('GET /projects/:id/statistics/number/date', () => {
+        it('should return 401 when no security token provided', (done) => {
+            const projectId = 'test';
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/statistics/number/date`)
+                .expect(401)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Unauthorized', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 401 when user not found in database', (done) => {
+            const projectId = 'test';
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/statistics/number/date`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(401)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Unauthorized', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 400 when startDate is not provided', (done) => {
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.normal,
+                username: 'test',
+                projects: [],
+            };
+
+            const projectId = 'test';
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/statistics/number/date`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(400)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Bad Request', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 403 when user is not administrator and not in projects', (done) => {
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.normal,
+                username: 'test',
+                projects: [],
+            };
+
+            const projectId = 'test';
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/statistics/number/date`)
+                .query({
+                    startDate: new Date().getTime(),
+                })
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(403)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Forbidden', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 200 when user is not administrator and in projects', (done) => {
+            // Mock data
+            const projectId = 'test';
+            const date = moment(new Date()).millisecond(0).second(0).minute(0)
+                .hours(0)
+                .toDate()
+                .getTime();
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.normal,
+                username: 'test',
+                projects: [projectId],
+            };
+            projectDaoFindByIdHasResult = true;
+            projectDaoFindByIdResult = {
+                _id: projectId,
+                name: 'test',
+            };
+            projectDaoStatisticsNumberByDateHasResult = true;
+            projectDaoStatisticsNumberByDateResult = {};
+            projectDaoStatisticsNumberByDateResult[date] = 4;
+
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/statistics/number/date`)
+                .query({
+                    startDate: new Date().getTime(),
+                })
+                .set('Authorization', `Bearer ${apiToken}`)
+                //.expect(200)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    let key;
+                    for (key in projectDaoStatisticsNumberByDateResult) {
+                        if (Object.prototype.hasOwnProperty.call(projectDaoStatisticsNumberByDateResult, key)) {
+                            assert.equal(projectDaoStatisticsNumberByDateResult[key], resultBody[key]);
+                        }
+                    }
+                    done();
+                });
+        });
+
+        it('should return 404 with user administrator when project not found', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+            };
+
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/statistics/number/date`)
+                .query({
+                    startDate: new Date().getTime(),
+                })
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(404)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Not Found', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 500 with user administrator when find project is rejected', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+            };
+            projectDaoFindByIdFail = true;
+
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/statistics/number/date`)
+                .query({
+                    startDate: new Date().getTime(),
+                })
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(500)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Internal Server Error', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 500 with user administrator when statisticsNumberByDate is rejected', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+            };
+            projectDaoFindByIdHasResult = true;
+            projectDaoFindByIdResult = {
+                _id: projectId,
+                name: 'test',
+            };
+            projectDaoStatisticsNumberByDateFail = true;
+
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/statistics/number/date`)
+                .query({
+                    startDate: new Date().getTime(),
+                })
                 .set('Authorization', `Bearer ${apiToken}`)
                 .expect(500)
                 .end((err, result) => {
