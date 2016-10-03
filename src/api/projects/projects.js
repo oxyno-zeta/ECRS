@@ -176,14 +176,14 @@ function statisticsNumberByVersion(req, res) {
     }
 
     // Check if promise exist
-    if (promise) {
+    if (!promise) {
         APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.FORBIDDEN);
         return;
     }
 
     promise.then((project) => {
         // Check if project exists
-        if (project) {
+        if (!project) {
             APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
             return;
         }
