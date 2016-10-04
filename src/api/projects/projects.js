@@ -324,14 +324,14 @@ function statisticsNumberByVersionByDate(req, res) {
     // Get start date
     let startDate = req.query.startDate;
     // Change type if necessary
-    if (_.isString(startDate)) {
+    if (!(_.isUndefined(startDate) || _.isNull(startDate)) && !_.isInteger(startDate)) {
         startDate = _.parseInt(startDate);
-    }
 
-    // Check if it is int only if startDate exists
-    if (!_.isInteger(startDate) && !_.isUndefined(startDate)) {
-        APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.BAD_REQUEST);
-        return;
+        // Check if it is int only if startDate exists
+        if (!_.isInteger(startDate)) {
+            APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.BAD_REQUEST);
+            return;
+        }
     }
 
     // Get project id
@@ -346,19 +346,19 @@ function statisticsNumberByVersionByDate(req, res) {
     }
 
     // Check if promise exist
-    if (promise) {
+    if (!promise) {
         APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.FORBIDDEN);
         return;
     }
 
     promise.then((project) => {
         // Check if project exists
-        if (project) {
+        if (!project) {
             APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
             return;
         }
 
-        if (startDate) {
+        if (!startDate) {
             promise = projectService.statisticsNumberByVersionByDate(projectId, versions);
         } else {
             promise = projectService.statisticsNumberByVersionByDateAndStartDate(projectId, versions, startDate);
