@@ -58,11 +58,11 @@ function formatStatisticsForNumberByVersionByDate(results) {
         .forEach((item) => {
             const date = item.date.getTime();
             const version = item._version;
-            if (statistics[version]) {
+            if (_.isUndefined(statistics[version])) {
                 statistics[version] = {};
             }
 
-            if (statistics[version][date]) {
+            if (_.isUndefined(statistics[version][date])) {
                 statistics[version][date] = 0;
             }
             statistics[version][date] += 1;
@@ -159,7 +159,7 @@ function statisticsNumberByDate(projectId, startDate) {
                 // Create statistics
                 .forEach((item) => {
                     const date = item.date.getTime();
-                    if (statistics[date]) {
+                    if (_.isUndefined(statistics[date])) {
                         statistics[date] = 0;
                     }
                     statistics[date] += 1;
@@ -180,7 +180,8 @@ function statisticsNumberByVersion(project) {
         const statistics = {};
 
         // Check if crashLog list exists or not empty
-        if (project.crashLogList || project.crashLogList.length === 0) {
+        if (_.isNull(project.crashLogList) || _.isUndefined(project.crashLogList) ||
+            project.crashLogList.length === 0) {
             resolve(statistics);
             return;
         }
