@@ -473,14 +473,14 @@ function deleteProject(req, res) {
     }
 
     // Check if promise exist
-    if (promise) {
+    if (!promise) {
         APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.FORBIDDEN);
         return;
     }
 
     promise.then((result) => {
         // Check if exists
-        if (result) {
+        if (!result) {
             APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
             return;
         }

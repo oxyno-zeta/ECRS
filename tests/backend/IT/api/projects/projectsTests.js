@@ -62,6 +62,10 @@ describe('[IT] [API] Projects', () => {
     let crashLogDaoFindByIdsWithPaginationFail = false;
     let crashLogDaoFindByIdsWithPaginationHasResult = false;
     let crashLogDaoFindByIdsWithPaginationResult = null;
+    let crashLogDaoFindByIdFail = false;
+    let crashLogDaoFindByIdHasResult = false;
+    let crashLogDaoFindByIdResult = null;
+    let projectDaoDeleteByIdFail = false;
 
     before(() => {
         const configurationWrapper = require('../../../../../src/wrapper/configurationWrapper');
@@ -132,7 +136,11 @@ describe('[IT] [API] Projects', () => {
                 }
             }),
             deleteById: () => new Promise((resolve, reject) => {
-                resolve();
+                if (projectDaoDeleteByIdFail) {
+                    reject();
+                } else {
+                    resolve();
+                }
             }),
             findById: () => new Promise((resolve, reject) => {
                 if (projectDaoFindByIdFail) {
@@ -170,7 +178,7 @@ describe('[IT] [API] Projects', () => {
                     resolve();
                 }
             }),
-            statisticsNumberByVersionByDate: () => new Promise((resolve, reject)=> {
+            statisticsNumberByVersionByDate: () => new Promise((resolve, reject) => {
                 if (projectDaoStatisticsNumberByVersionByDateFail) {
                     reject();
                 } else if (projectDaoStatisticsNumberByVersionByDateHasResult) {
@@ -179,7 +187,7 @@ describe('[IT] [API] Projects', () => {
                     resolve();
                 }
             }),
-            statisticsNumberByVersionByDateAndStartDate: () => new Promise((resolve, reject)=> {
+            statisticsNumberByVersionByDateAndStartDate: () => new Promise((resolve, reject) => {
                 if (projectDaoStatisticsNumberByVersionByDateAndStartDateFail) {
                     reject();
                 } else if (projectDaoStatisticsNumberByVersionByDateAndStartDateHasResult) {
@@ -195,6 +203,18 @@ describe('[IT] [API] Projects', () => {
                     reject();
                 } else if (crashLogDaoFindByIdsWithPaginationHasResult) {
                     resolve(crashLogDaoFindByIdsWithPaginationResult);
+                } else {
+                    resolve();
+                }
+            }),
+            deleteById: () => new Promise((resolve, reject) => {
+                resolve();
+            }),
+            findById: () => new Promise((resolve, reject) => {
+                if (crashLogDaoFindByIdFail) {
+                    reject();
+                } else if (crashLogDaoFindByIdHasResult) {
+                    resolve(crashLogDaoFindByIdResult);
                 } else {
                     resolve();
                 }
@@ -267,6 +287,10 @@ describe('[IT] [API] Projects', () => {
         crashLogDaoFindByIdsWithPaginationFail = false;
         crashLogDaoFindByIdsWithPaginationHasResult = false;
         crashLogDaoFindByIdsWithPaginationResult = null;
+        crashLogDaoFindByIdFail = false;
+        crashLogDaoFindByIdHasResult = false;
+        crashLogDaoFindByIdResult = null;
+        projectDaoDeleteByIdFail = false;
     });
 
     describe('GET /projects', () => {
@@ -2267,6 +2291,217 @@ describe('[IT] [API] Projects', () => {
 
             supertest(this.expressApp)
                 .get(`/api/v1/projects/${projectId}/crash-logs`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(500)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Internal Server Error', resultBody.reason);
+                    done();
+                });
+        });
+    });
+
+    describe('DELETE /projects/:id', () => {
+        it('should return 401 when no security token provided', (done) => {
+            const projectId = 'test';
+            supertest(this.expressApp)
+                .delete(`/api/v1/projects/${projectId}`)
+                .expect(401)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Unauthorized', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 401 when user not found in database', (done) => {
+            const projectId = 'test';
+            supertest(this.expressApp)
+                .delete(`/api/v1/projects/${projectId}`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(401)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Unauthorized', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 403 when user is not administrator and not in projects', (done) => {
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.normal,
+                username: 'test',
+                projects: [],
+            };
+
+            const projectId = 'test';
+            supertest(this.expressApp)
+                .delete(`/api/v1/projects/${projectId}`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(403)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Forbidden', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 204 when user is not administrator and in projects', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.normal,
+                username: 'test',
+                projects: [projectId],
+            };
+            projectDaoFindByIdHasResult = true;
+            projectDaoFindByIdResult = {
+                _id: projectId,
+                name: 'test',
+                crashLogList: ['crash-id'],
+            };
+            crashLogDaoFindByIdHasResult = true;
+            crashLogDaoFindByIdResult = {
+                _id: 'crash-id',
+                platform: 'win32',
+                process_type: 'render',
+            };
+
+            supertest(this.expressApp)
+                .delete(`/api/v1/projects/${projectId}`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(204, done);
+        });
+
+        it('should return 200 when user is administrator and not in projects', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [projectId],
+            };
+            projectDaoFindByIdHasResult = true;
+            projectDaoFindByIdResult = {
+                _id: projectId,
+                name: 'test',
+                crashLogList: ['crash-id'],
+            };
+            crashLogDaoFindByIdHasResult = true;
+            crashLogDaoFindByIdResult = {
+                _id: 'crash-id',
+                platform: 'win32',
+                process_type: 'render',
+            };
+
+            supertest(this.expressApp)
+                .delete(`/api/v1/projects/${projectId}`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(204, done);
+        });
+
+        it('should return 404 with user administrator when project not found', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+            };
+
+            supertest(this.expressApp)
+                .delete(`/api/v1/projects/${projectId}`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(404)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Not Found', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 500 with user administrator when find project is rejected', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+            };
+            projectDaoFindByIdFail = true;
+
+            supertest(this.expressApp)
+                .delete(`/api/v1/projects/${projectId}`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(500)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Internal Server Error', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 500 with user administrator when projectDao.deleteById is rejected', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+            };
+            projectDaoFindByIdHasResult = true;
+            projectDaoFindByIdResult = {
+                _id: projectId,
+                name: 'test',
+                crashLogList: ['crash-id'],
+            };
+            projectDaoDeleteByIdFail = true;
+
+            supertest(this.expressApp)
+                .delete(`/api/v1/projects/${projectId}`)
                 .set('Authorization', `Bearer ${apiToken}`)
                 .expect(500)
                 .end((err, result) => {

@@ -81,11 +81,11 @@ function deleteRecursivelyById(id) {
                 // Remove project now
                 projectDao.deleteById(id).then(resolve).catch(reject);
             }).catch((err) => {
+                // Continue function
+                const goFunction = () => reject(err);
+
                 // Save updated project
-                projectDao.save(project).finally(() => {
-                    // Saved
-                    reject(err);
-                });
+                projectDao.save(project).then(goFunction).catch(goFunction);
             });
         }).catch(reject);
     });
