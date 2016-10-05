@@ -59,6 +59,9 @@ describe('[IT] [API] Projects', () => {
     let projectDaoStatisticsNumberByVersionByDateAndStartDateFail = false;
     let projectDaoStatisticsNumberByVersionByDateAndStartDateHasResult = false;
     let projectDaoStatisticsNumberByVersionByDateAndStartDateResult = null;
+    let crashLogDaoFindByIdsWithPaginationFail = false;
+    let crashLogDaoFindByIdsWithPaginationHasResult = false;
+    let crashLogDaoFindByIdsWithPaginationResult = null;
 
     before(() => {
         const configurationWrapper = require('../../../../../src/wrapper/configurationWrapper');
@@ -186,6 +189,17 @@ describe('[IT] [API] Projects', () => {
                 }
             }),
         });
+        mockery.registerMock('../dao/crashLogDao', {
+            findByIdsWithPagination: () => new Promise((resolve, reject) => {
+                if (crashLogDaoFindByIdsWithPaginationFail) {
+                    reject();
+                } else if (crashLogDaoFindByIdsWithPaginationHasResult) {
+                    resolve(crashLogDaoFindByIdsWithPaginationResult);
+                } else {
+                    resolve();
+                }
+            }),
+        });
 
         const getConfigResult = configurationWrapper.DEFAULT_CONFIG;
         getConfigResult.CRASH_REPORTER_AUTH_JWT_SECRET = 'jwt_token';
@@ -250,6 +264,9 @@ describe('[IT] [API] Projects', () => {
         projectDaoStatisticsNumberByVersionByDateAndStartDateFail = false;
         projectDaoStatisticsNumberByVersionByDateAndStartDateHasResult = false;
         projectDaoStatisticsNumberByVersionByDateAndStartDateResult = null;
+        crashLogDaoFindByIdsWithPaginationFail = false;
+        crashLogDaoFindByIdsWithPaginationHasResult = false;
+        crashLogDaoFindByIdsWithPaginationResult = null;
     });
 
     describe('GET /projects', () => {
@@ -2013,5 +2030,255 @@ describe('[IT] [API] Projects', () => {
                         done();
                     });
             });
+    });
+
+    describe('GET /projects/:id/crash-logs', () => {
+        it('should return 401 when no security token provided', (done) => {
+            const projectId = 'test';
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/crash-logs`)
+                .expect(401)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Unauthorized', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 401 when user not found in database', (done) => {
+            const projectId = 'test';
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/crash-logs`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(401)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Unauthorized', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 403 when user is not administrator and not in projects', (done) => {
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.normal,
+                username: 'test',
+                projects: [],
+            };
+
+            const projectId = 'test';
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/crash-logs`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(403)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Forbidden', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 200 when user is not administrator and in projects', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.normal,
+                username: 'test',
+                projects: [projectId],
+            };
+            projectDaoFindByIdHasResult = true;
+            projectDaoFindByIdResult = {
+                _id: projectId,
+                name: 'test',
+                crashLogList: ['crash-id'],
+            };
+            crashLogDaoFindByIdsWithPaginationHasResult = true;
+            crashLogDaoFindByIdsWithPaginationResult = [{
+                _id: 'crash-id',
+                platform: 'win32',
+                process_type: 'render',
+            }];
+
+            const transformedResult = [{
+                id: 'crash-id',
+                platform: 'win32',
+                process_type: 'render',
+            }];
+
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/crash-logs`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(200)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal(resultBody.total, crashLogDaoFindByIdsWithPaginationResult.length);
+                    transformedResult.forEach((item, index) => {
+                        assert.deepEqual(resultBody.items[index], item);
+                    });
+                    done();
+                });
+        });
+
+        it('should return 200 when user is administrator and not in projects', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+            };
+            projectDaoFindByIdHasResult = true;
+            projectDaoFindByIdResult = {
+                _id: projectId,
+                name: 'test',
+                crashLogList: ['crash-id'],
+            };
+
+            crashLogDaoFindByIdsWithPaginationHasResult = true;
+            crashLogDaoFindByIdsWithPaginationResult = [{
+                _id: 'crash-id',
+                platform: 'win32',
+                process_type: 'render',
+            }];
+
+            const transformedResult = [{
+                id: 'crash-id',
+                platform: 'win32',
+                process_type: 'render',
+            }];
+
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/crash-logs`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(200)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal(resultBody.total, crashLogDaoFindByIdsWithPaginationResult.length);
+                    transformedResult.forEach((item, index) => {
+                        assert.deepEqual(resultBody.items[index], item);
+                    });
+                    done();
+                });
+        });
+
+        it('should return 404 with user administrator when project not found', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+            };
+
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/crash-logs`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(404)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Not Found', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 500 with user administrator when find project is rejected', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+            };
+            projectDaoFindByIdFail = true;
+
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/crash-logs`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(500)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Internal Server Error', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 500 with user administrator when findByIdsWithPagination is rejected', (done) => {
+            // Mock data
+            const projectId = 'test';
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+            };
+            projectDaoFindByIdHasResult = true;
+            projectDaoFindByIdResult = {
+                _id: projectId,
+                name: 'test',
+                crashLogList: ['crash-id'],
+            };
+            crashLogDaoFindByIdsWithPaginationFail = true;
+
+            supertest(this.expressApp)
+                .get(`/api/v1/projects/${projectId}/crash-logs`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(500)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Internal Server Error', resultBody.reason);
+                    done();
+                });
+        });
     });
 });

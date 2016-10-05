@@ -395,22 +395,26 @@ function getProjectCrashLogs(req, res) {
     }
 
     // Check if promise exist
-    if (promise) {
+    if (!promise) {
         APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.FORBIDDEN);
         return;
     }
 
-    // Get pagination element
+    // Get pagination elements
     let limit = req.query.limit;
     if (limit && _.isString(limit)) {
         limit = _.parseInt(limit);
+    } else {
+        limit = null;
     }
     let skip = req.query.skip;
     if (skip && _.isString(skip)) {
         skip = _.parseInt(skip);
+    } else {
+        skip = null;
     }
     let sort = req.query.sort;
-    if (!_.isUndefined(sort)) {
+    if (sort) {
         if (_.isString(sort)) {
             try {
                 sort = JSON.parse(sort);
@@ -429,14 +433,15 @@ function getProjectCrashLogs(req, res) {
 
     promise.then((result) => {
         // Check if exists
-        if (result) {
+        if (!result) {
             APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
             return;
         }
 
         crashLogService.findByIdsWithPagination(result.crashLogList, limit, skip, sort).then((crashLogList) => {
+            const total = result.crashLogList.length;
             APIResponse.sendResponse(res, {
-                total: result.crashLogList.length,
+                total,
                 items: crashLogMapper.formatListToApi(crashLogList),
             }, APICodes.SUCCESS.OK);
         }).catch((err) => {
