@@ -26,6 +26,7 @@ describe('[IT] [API] Register', () => {
         let findByUsernameWithLocalHashNotNullFail = false;
         let findByUsernameWithLocalHashNotNullHasResult = false;
         let findByUsernameWithLocalHashNotNullResult = null;
+        let mailServiceSendRegisterEmailCalled = false;
 
         before(() => {
             const configurationWrapper = require('../../../../../src/wrapper/configurationWrapper');
@@ -57,7 +58,10 @@ describe('[IT] [API] Register', () => {
                 }),
             });
             mockery.registerMock('./mailService', {
-                sendRegisterEmail: () => new Promise(resolve => resolve()),
+                sendRegisterEmail: () => new Promise(resolve => {
+                    mailServiceSendRegisterEmailCalled = true;
+                    resolve();
+                }),
             });
 
             const getConfigResult = configurationWrapper.DEFAULT_CONFIG;
@@ -82,6 +86,7 @@ describe('[IT] [API] Register', () => {
             findByUsernameWithLocalHashNotNullFail = false;
             findByUsernameWithLocalHashNotNullHasResult = false;
             findByUsernameWithLocalHashNotNullResult = null;
+            mailServiceSendRegisterEmailCalled = false;
         });
 
         it('should return a 400 when no body', (done) => {
@@ -344,6 +349,34 @@ describe('[IT] [API] Register', () => {
                     }
 
                     const resultBody = result.body;
+                    assert.equal(body.username, resultBody.username);
+                    assert.equal(userModel.rolesObj.normal, resultBody.role);
+                    done();
+                });
+        });
+
+        it('should return a 201 when register succeed and mail service called when mail provided', (done) => {
+            // Mock result for find in database
+            findByUsernameWithLocalHashNotNullHasResult = true;
+            findByUsernameWithLocalHashNotNullResult = null;
+
+            const body = {
+                username: 'length',
+                password: 'length',
+                email: 'test@test.com',
+            };
+            supertest(this.expressApp)
+                .post('/api/v1/register')
+                .send(body)
+                .expect(201)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.isTrue(mailServiceSendRegisterEmailCalled);
                     assert.equal(body.username, resultBody.username);
                     assert.equal(userModel.rolesObj.normal, resultBody.role);
                     done();
