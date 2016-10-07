@@ -50,7 +50,7 @@ function onlyAdministrator() {
         const user = req.userDb;
 
         // Check if user exists
-        if (user) {
+        if (!user) {
             // User not found
             APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.UNAUTHORIZED);
             return;

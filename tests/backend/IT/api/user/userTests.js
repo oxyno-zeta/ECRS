@@ -30,6 +30,12 @@ describe('[IT] [API] User', () => {
     let userDaoSaveFail = false;
     let userDaoSaveHasResult = false;
     let userDaoSaveResult = null;
+    let userDaoFindAllWithPaginationFail = false;
+    let userDaoFindAllWithPaginationHasResult = false;
+    let userDaoFindAllWithPaginationResult = null;
+    let userDaoCountAllFail = false;
+    let userDaoCountAllHasResult = false;
+    let userDaoCountAllResult = null;
 
     before(() => {
         const configurationWrapper = require('../../../../../src/wrapper/configurationWrapper');
@@ -52,13 +58,31 @@ describe('[IT] [API] User', () => {
                     resolve();
                 }
             }),
-            save: (item) => new Promise((resolve, reject) => {
+            save: item => new Promise((resolve, reject) => {
                 if (userDaoSaveFail) {
                     reject();
                 } else if (userDaoSaveHasResult) {
                     resolve(userDaoSaveResult);
                 } else {
                     resolve(item);
+                }
+            }),
+            findAllWithPagination: () => new Promise((resolve, reject) => {
+                if (userDaoFindAllWithPaginationFail) {
+                    reject();
+                } else if (userDaoFindAllWithPaginationHasResult) {
+                    resolve(userDaoFindAllWithPaginationResult);
+                } else {
+                    resolve();
+                }
+            }),
+            countAll: () => new Promise((resolve, reject) => {
+                if (userDaoCountAllFail) {
+                    reject();
+                } else if (userDaoCountAllHasResult) {
+                    resolve(userDaoCountAllResult);
+                } else {
+                    resolve();
                 }
             }),
         });
@@ -96,6 +120,12 @@ describe('[IT] [API] User', () => {
         userDaoSaveFail = false;
         userDaoSaveHasResult = false;
         userDaoSaveResult = null;
+        userDaoFindAllWithPaginationFail = false;
+        userDaoFindAllWithPaginationHasResult = false;
+        userDaoFindAllWithPaginationResult = null;
+        userDaoCountAllFail = false;
+        userDaoCountAllHasResult = false;
+        userDaoCountAllResult = null;
     });
 
     describe('GET /users/current/', () => {
@@ -568,6 +598,232 @@ describe('[IT] [API] User', () => {
                         done();
                     });
             }).catch(done);
+        });
+    });
+
+    describe('GET /users/', () => {
+        it('should return 401 when no security token provided', (done) => {
+            supertest(this.expressApp)
+                .get('/api/v1/users/')
+                .expect(401)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Unauthorized', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 401 when user not found in database', (done) => {
+            supertest(this.expressApp)
+                .get('/api/v1/users/')
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(401)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Unauthorized', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 403 when user is not administrator', (done) => {
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.normal,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+
+            supertest(this.expressApp)
+                .get('/api/v1/users/')
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(403)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Forbidden', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 200 when user is administrator', (done) => {
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+            userDaoFindAllWithPaginationHasResult = true;
+            userDaoFindAllWithPaginationResult = [{
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            }, {
+                _id: `${userId}1`,
+                role: rolesObj.normal,
+                username: 'test2',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            }];
+            userDaoCountAllHasResult = true;
+            userDaoCountAllResult = userDaoFindAllWithPaginationResult.length;
+
+            const transformedResult = [{
+                id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                github: {},
+            }, {
+                id: `${userId}1`,
+                role: rolesObj.normal,
+                username: 'test2',
+                github: {},
+            }];
+
+            supertest(this.expressApp)
+                .get('/api/v1/users/')
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(200)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    resultBody.items.forEach((item, index) => assert.deepEqual(item, transformedResult[index]));
+                    assert.deepEqual(resultBody.total, userDaoCountAllResult);
+                    done();
+                });
+        });
+
+        it('should return 500 when findAllWithPagination is rejected', (done) => {
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+            userDaoFindAllWithPaginationFail = true;
+            userDaoCountAllHasResult = true;
+            userDaoCountAllResult = 0;
+
+            supertest(this.expressApp)
+                .get('/api/v1/users/')
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(500)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Internal Server Error', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 500 when countAll is rejected', (done) => {
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+            userDaoFindAllWithPaginationHasResult = true;
+            userDaoFindAllWithPaginationResult = [];
+            userDaoCountAllFail = true;
+
+            supertest(this.expressApp)
+                .get('/api/v1/users/')
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(500)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Internal Server Error', resultBody.reason);
+                    done();
+                });
         });
     });
 });

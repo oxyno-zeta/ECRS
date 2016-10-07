@@ -107,10 +107,14 @@ function getUsers(req, res) {
     let limit = req.query.limit;
     if (limit && _.isString(limit)) {
         limit = _.parseInt(limit);
+    } else {
+        limit = null;
     }
     let skip = req.query.skip;
     if (skip && _.isString(skip)) {
         skip = _.parseInt(skip);
+    } else {
+        skip = null;
     }
     let sort = req.query.sort;
     if (sort) {
@@ -128,6 +132,8 @@ function getUsers(req, res) {
                 delete sort.id;
             }
         }
+    } else {
+        sort = null;
     }
 
     const promises = [];
