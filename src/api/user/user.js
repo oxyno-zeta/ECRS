@@ -61,11 +61,11 @@ function changeCurrentPassword(req, res, next) {
     }
 
     // Check body
-    req.checkBody('oldPassword', 'Invalid Old password').notEmpty();
-    req.checkBody('newPassword', 'Invalid new password').notEmpty();
-    req.checkBody('oldPassword', 'Invalid Old Password (Minimum size error)')
+    req.checkBody('oldPassword', 'Old password empty').notEmpty();
+    req.checkBody('newPassword', 'New password empty').notEmpty();
+    req.checkBody('oldPassword', 'Old password too short')
         .stringHasMinLength(userService.userValidation.localPassword.minLength);
-    req.checkBody('newPassword', 'Invalid New Password (Minimum size error)')
+    req.checkBody('newPassword', 'New password too short')
         .stringHasMinLength(userService.userValidation.localPassword.minLength);
 
     const errors = req.validationErrors();
@@ -90,7 +90,8 @@ function changeCurrentPassword(req, res, next) {
             return;
         }
 
-        next(err);
+        logger.error(err);
+        APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
     });
 }
 
