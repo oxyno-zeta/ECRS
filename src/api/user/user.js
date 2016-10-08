@@ -100,7 +100,7 @@ function changeCurrentPassword(req, res, next) {
  * @param req
  * @param res
  */
-function getUsers(req, res) {
+function getUsersAdministrator(req, res) {
     const body = APIResponse.getDefaultResponseBody();
 
     // Get pagination element
@@ -152,16 +152,16 @@ function getUsers(req, res) {
 }
 
 /**
- * Change password.
+ * Change password for administrator.
  * @param req
  * @param res
  */
-function changePassword(req, res) {
+function changePasswordAdministrator(req, res) {
     const body = APIResponse.getDefaultResponseBody();
 
     // Validation
-    req.checkBody('newPassword', 'Invalid new password').notEmpty();
-    req.checkBody('newPassword', 'Invalid New Password (Minimum size error)')
+    req.checkBody('newPassword', 'New password empty').notEmpty();
+    req.checkBody('newPassword', 'New password too short')
         .stringHasMinLength(userService.userValidation.localPassword.minLength);
 
     const errors = req.validationErrors();
@@ -180,7 +180,7 @@ function changePassword(req, res) {
     // Get user from database
     userService.findById(userId).then((user) => {
         // Check if user exists
-        if (_.isNull(user)) {
+        if (!user) {
             // User not found in database
             APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
             return;
@@ -455,13 +455,14 @@ function expose() {
     logger.debug('Putting users API...');
     const router = express.Router();
 
-    router.get('/users', apiSecurity.middleware.populateUser(), apiSecurity.middleware.onlyAdministrator(), getUsers);
+    router.get('/users', apiSecurity.middleware.populateUser(), apiSecurity.middleware.onlyAdministrator(),
+        getUsersAdministrator);
     router.get('/users/roles', getRoles);
     router.get('/users/current', apiSecurity.middleware.populateUser(), getCurrentUser);
     router.put('/users/current/password', apiSecurity.middleware.populateUser(), changeCurrentPassword);
     router.put('/users/current/email', apiSecurity.middleware.populateUser(), changeCurrentEmail);
     router.put('/users/:id/password', apiSecurity.middleware.populateUser(),
-        apiSecurity.middleware.onlyAdministrator(), changePassword);
+        apiSecurity.middleware.onlyAdministrator(), changePasswordAdministrator);
     router.delete('/users/:id', apiSecurity.middleware.populateUser(),
         apiSecurity.middleware.onlyAdministrator(), removeUser);
     router.put('/users/:id', apiSecurity.middleware.populateUser(),
