@@ -12,7 +12,7 @@ const {
     assert,
     } = require('chai');
 const mockery = require('mockery');
-const { rolesObj } = require('../../../../../src/models/userModel');
+const { rolesObj, roles } = require('../../../../../src/models/userModel');
 const securityService = require('../../../../../src/services/core/securityService');
 
 const mocks = require('../../mocks');
@@ -2091,6 +2091,60 @@ describe('[IT] [API] User', () => {
 
                     const resultBody = result.body;
                     assert.equal('Internal Server Error', resultBody.reason);
+                    done();
+                });
+        });
+    });
+
+    describe('GET /users/roles', () => {
+        it('should return 401 when no security token provided', (done) => {
+            supertest(this.expressApp)
+                .get('/api/v1/users/roles/')
+                .expect(401)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Unauthorized', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 200 when get list of roles', (done) => {
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.normal,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+
+            supertest(this.expressApp)
+                .get('/api/v1/users/roles')
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(200)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.isArray(resultBody);
+                    assert.sameMembers(roles, resultBody);
                     done();
                 });
         });
