@@ -47,6 +47,9 @@ describe('[IT] [API] User', () => {
     let projectDaoFindByIdResult = null;
     let userDaoRemoveByIdFail = false;
     let projectDaoDeleteByIdFail = false;
+    let userDaoFindByUsernameWithLocalHashNotNullFail = false;
+    let userDaoFindByUsernameWithLocalHashNotNullHasResult = false;
+    let userDaoFindByUsernameWithLocalHashNotNullResult = null;
 
     before(() => {
         const configurationWrapper = require('../../../../../src/wrapper/configurationWrapper');
@@ -110,6 +113,15 @@ describe('[IT] [API] User', () => {
             removeById: () => new Promise((resolve, reject) => {
                 if (userDaoRemoveByIdFail) {
                     reject();
+                } else {
+                    resolve();
+                }
+            }),
+            findByUsernameWithLocalHashNotNull: () => new Promise((resolve, reject) => {
+                if (userDaoFindByUsernameWithLocalHashNotNullFail) {
+                    reject();
+                } else if (userDaoFindByUsernameWithLocalHashNotNullHasResult) {
+                    resolve(userDaoFindByUsernameWithLocalHashNotNullResult);
                 } else {
                     resolve();
                 }
@@ -185,6 +197,9 @@ describe('[IT] [API] User', () => {
         projectDaoFindByIdResult = null;
         userDaoRemoveByIdFail = false;
         projectDaoDeleteByIdFail = false;
+        userDaoFindByUsernameWithLocalHashNotNullFail = false;
+        userDaoFindByUsernameWithLocalHashNotNullHasResult = false;
+        userDaoFindByUsernameWithLocalHashNotNullResult = null;
     });
 
     describe('GET /users/current/', () => {
@@ -1647,6 +1662,437 @@ describe('[IT] [API] User', () => {
                         done();
                     });
             }).catch(done);
+        });
+    });
+
+    describe('POST /users/', () => {
+        it('should return 401 when no security token provided', (done) => {
+            supertest(this.expressApp)
+                .post('/api/v1/users/')
+                .expect(401)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Unauthorized', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 401 when user not found in database', (done) => {
+            supertest(this.expressApp)
+                .post('/api/v1/users/')
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(401)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Unauthorized', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 403 when user not administrator', (done) => {
+            const body = {
+                username: '',
+                password: '',
+                role: '',
+            };
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.normal,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+
+            supertest(this.expressApp)
+                .post('/api/v1/users/')
+                .set('Authorization', `Bearer ${apiToken}`)
+                .send(body)
+                .expect(403)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Forbidden', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 400 when empty fields', (done) => {
+            const body = {
+                username: '',
+                password: '',
+                role: '',
+            };
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+
+            supertest(this.expressApp)
+                .post('/api/v1/users/')
+                .set('Authorization', `Bearer ${apiToken}`)
+                .send(body)
+                .expect(400)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Bad Request', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 400 when fields too short', (done) => {
+            const body = {
+                username: 'a',
+                password: 'a',
+                role: rolesObj.normal,
+            };
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+
+            supertest(this.expressApp)
+                .post('/api/v1/users/')
+                .set('Authorization', `Bearer ${apiToken}`)
+                .send(body)
+                .expect(400)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Bad Request', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 400 when not an email but other fields ok', (done) => {
+            const body = {
+                username: 'username',
+                password: 'password',
+                role: rolesObj.normal,
+                email: 't',
+            };
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+
+            supertest(this.expressApp)
+                .post('/api/v1/users/')
+                .set('Authorization', `Bearer ${apiToken}`)
+                .send(body)
+                .expect(400)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Bad Request', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 400 when fields are ok but role doesn\'t exists', (done) => {
+            const body = {
+                username: 'username',
+                password: 'password',
+                role: 'role',
+                email: 'test@test.com',
+            };
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+
+            supertest(this.expressApp)
+                .post('/api/v1/users/')
+                .set('Authorization', `Bearer ${apiToken}`)
+                .send(body)
+                .expect(400)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Bad Request', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 409 when user already exists', (done) => {
+            const body = {
+                username: 'username',
+                password: 'password',
+                role: rolesObj.normal,
+                email: 'test@test.com',
+            };
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: body.username,
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+            userDaoFindByUsernameWithLocalHashNotNullHasResult = true;
+            userDaoFindByUsernameWithLocalHashNotNullResult = {
+                _id: userId2,
+                role: rolesObj.normal,
+                username: 'test2',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+
+            supertest(this.expressApp)
+                .post('/api/v1/users/')
+                .set('Authorization', `Bearer ${apiToken}`)
+                .send(body)
+                .expect(409)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Conflict', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 500 when userDao.findByUsernameWithLocalHashNotNull is rejected', (done) => {
+            const body = {
+                username: 'username',
+                password: 'password',
+                role: rolesObj.normal,
+                email: 'test@test.com',
+            };
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+            userDaoFindByUsernameWithLocalHashNotNullFail = true;
+
+            supertest(this.expressApp)
+                .post('/api/v1/users/')
+                .set('Authorization', `Bearer ${apiToken}`)
+                .send(body)
+                .expect(500)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Internal Server Error', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 201 when user is created', (done) => {
+            const body = {
+                username: 'username',
+                password: 'password',
+                role: rolesObj.normal,
+                email: 'test@test.com',
+            };
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+
+            supertest(this.expressApp)
+                .post('/api/v1/users/')
+                .set('Authorization', `Bearer ${apiToken}`)
+                .send(body)
+                .expect(201)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal(body.username, resultBody.username);
+                    assert.equal(body.email, resultBody.email);
+                    assert.equal(body.role, resultBody.role);
+                    assert.isString(resultBody.id);
+                    done();
+                });
+        });
+
+        it('should return 201 when user is created', (done) => {
+            const body = {
+                username: 'username',
+                password: 'password',
+                role: rolesObj.normal,
+                email: 'test@test.com',
+            };
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+            userDaoSaveFail = true;
+
+            supertest(this.expressApp)
+                .post('/api/v1/users/')
+                .set('Authorization', `Bearer ${apiToken}`)
+                .send(body)
+                .expect(500)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Internal Server Error', resultBody.reason);
+                    done();
+                });
         });
     });
 });

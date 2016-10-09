@@ -274,13 +274,13 @@ function createUserAdministrator(req, res) {
     const body = APIResponse.getDefaultResponseBody();
 
     // Validation
-    req.checkBody('username', 'Invalid Username').notEmpty();
-    req.checkBody('password', 'Invalid Password').notEmpty();
-    req.checkBody('role', 'Invalid Role').notEmpty();
+    req.checkBody('username', 'Empty Username').notEmpty();
+    req.checkBody('password', 'Empty Password').notEmpty();
+    req.checkBody('role', 'Empty Role').notEmpty();
     req.checkBody('email', 'Invalid Email').isEmail(false);
-    req.checkBody('username', 'Invalid Username (Minimum size error)')
+    req.checkBody('username', 'Username too short')
         .stringHasMinLength(userService.userValidation.username.minLength);
-    req.checkBody('password', 'Invalid Password (Minimum size error)')
+    req.checkBody('password', 'Password too short')
         .stringHasMinLength(userService.userValidation.localPassword.minLength);
 
     const errors = req.validationErrors();
@@ -300,14 +300,14 @@ function createUserAdministrator(req, res) {
     };
 
     // Check that role exists
-    if (rolesObj[userData.role]) {
+    if (!rolesObj[userData.role]) {
         APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.BAD_REQUEST);
         return;
     }
 
     // Check if username already exists
     userService.findByUsernameForLocal(userData.username).then((userDb) => {
-        if (!_.isNull(userDb)) {
+        if (userDb) {
             APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.CONFLICT);
             return;
         }
