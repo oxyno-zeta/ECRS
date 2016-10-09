@@ -38,6 +38,15 @@ describe('[IT] [API] User', () => {
     let userDaoCountAllFail = false;
     let userDaoCountAllHasResult = false;
     let userDaoCountAllResult = null;
+    let userDaoFindOtherAdministratorFail = false;
+    let userDaoFindOtherAdministratorHasResult = false;
+    let userDaoFindOtherAdministratorResult = null;
+    let projectDaoFindByIdHasObjectResult = false;
+    let projectDaoFindByIdHasResult = false;
+    let projectDaoFindByIdFail = false;
+    let projectDaoFindByIdResult = null;
+    let userDaoRemoveByIdFail = false;
+    let projectDaoDeleteByIdFail = false;
 
     before(() => {
         const configurationWrapper = require('../../../../../src/wrapper/configurationWrapper');
@@ -51,7 +60,7 @@ describe('[IT] [API] User', () => {
         mockery.registerMock('../shared/logger', mocks.logger);
         mockery.registerMock('../../shared/logger', mocks.logger);
         mockery.registerMock('../dao/userDao', {
-            findById: (id) => new Promise((resolve, reject) => {
+            findById: id => new Promise((resolve, reject) => {
                 if (userDaoFindByIdFail) {
                     reject();
                 } else if (userDaoFindByIdHasObjectResult) {
@@ -85,6 +94,42 @@ describe('[IT] [API] User', () => {
                     reject();
                 } else if (userDaoCountAllHasResult) {
                     resolve(userDaoCountAllResult);
+                } else {
+                    resolve();
+                }
+            }),
+            findOtherAdministrator: () => new Promise((resolve, reject) => {
+                if (userDaoFindOtherAdministratorFail) {
+                    reject();
+                } else if (userDaoFindOtherAdministratorHasResult) {
+                    resolve(userDaoFindOtherAdministratorResult);
+                } else {
+                    resolve();
+                }
+            }),
+            removeById: () => new Promise((resolve, reject) => {
+                if (userDaoRemoveByIdFail) {
+                    reject();
+                } else {
+                    resolve();
+                }
+            }),
+        });
+        mockery.registerMock('../dao/projectDao', {
+            findById: id => new Promise((resolve, reject) => {
+                if (projectDaoFindByIdFail) {
+                    reject();
+                } else if (projectDaoFindByIdHasObjectResult) {
+                    resolve(projectDaoFindByIdResult[id]);
+                } else if (projectDaoFindByIdHasResult) {
+                    resolve(projectDaoFindByIdResult);
+                } else {
+                    resolve();
+                }
+            }),
+            deleteById: () => new Promise((resolve, reject) => {
+                if (projectDaoDeleteByIdFail) {
+                    reject();
                 } else {
                     resolve();
                 }
@@ -131,6 +176,15 @@ describe('[IT] [API] User', () => {
         userDaoCountAllFail = false;
         userDaoCountAllHasResult = false;
         userDaoCountAllResult = null;
+        userDaoFindOtherAdministratorFail = false;
+        userDaoFindOtherAdministratorHasResult = false;
+        userDaoFindOtherAdministratorResult = null;
+        projectDaoFindByIdHasObjectResult = false;
+        projectDaoFindByIdHasResult = false;
+        projectDaoFindByIdFail = false;
+        projectDaoFindByIdResult = null;
+        userDaoRemoveByIdFail = false;
+        projectDaoDeleteByIdFail = false;
     });
 
     describe('GET /users/current/', () => {
@@ -1227,6 +1281,360 @@ describe('[IT] [API] User', () => {
                     .put(`/api/v1/users/${userId2}/password`)
                     .set('Authorization', `Bearer ${apiToken}`)
                     .send(body)
+                    .expect(500)
+                    .end((err, result) => {
+                        if (err) {
+                            done(err);
+                            return;
+                        }
+
+                        const resultBody = result.body;
+                        assert.equal('Internal Server Error', resultBody.reason);
+                        done();
+                    });
+            }).catch(done);
+        });
+    });
+
+    describe('DELETE /users/:id/', () => {
+        it('should return 401 when no security token provided', (done) => {
+            supertest(this.expressApp)
+                .delete(`/api/v1/users/${userId}/`)
+                .expect(401)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Unauthorized', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 401 when user not found in database', (done) => {
+            supertest(this.expressApp)
+                .delete(`/api/v1/users/${userId}/`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(401)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Unauthorized', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 404 when user is not found', (done) => {
+            // Mock data
+            const salt = securityService.generateSaltSync();
+            securityService.generateHash('password', salt).then((hash) => {
+                userDaoFindByIdHasObjectResult = true;
+                userDaoFindByIdResult = {};
+                userDaoFindByIdResult[userId] = {
+                    _id: userId,
+                    role: rolesObj.admin,
+                    username: 'test',
+                    projects: [],
+                    local: {
+                        hash,
+                        salt,
+                    },
+                    github: {
+                        accessToken: undefined,
+                        id: undefined,
+                        profileUrl: undefined,
+                    },
+                };
+
+                supertest(this.expressApp)
+                    .delete(`/api/v1/users/${userId2}/`)
+                    .set('Authorization', `Bearer ${apiToken}`)
+                    .expect(404)
+                    .end((err, result) => {
+                        if (err) {
+                            done(err);
+                            return;
+                        }
+
+                        const resultBody = result.body;
+                        assert.equal('Not Found', resultBody.reason);
+                        done();
+                    });
+            }).catch(done);
+        });
+
+        it('should return 403 when user is last administrator', (done) => {
+            // Mock data
+            const salt = securityService.generateSaltSync();
+            securityService.generateHash('password', salt).then((hash) => {
+                userDaoFindByIdHasObjectResult = true;
+                userDaoFindByIdResult = {};
+                userDaoFindByIdResult[userId] = {
+                    _id: userId,
+                    role: rolesObj.admin,
+                    username: 'test',
+                    projects: [],
+                    local: {
+                        hash,
+                        salt,
+                    },
+                    github: {
+                        accessToken: undefined,
+                        id: undefined,
+                        profileUrl: undefined,
+                    },
+                };
+                userDaoFindByIdResult[userId2] = {
+                    _id: userId2,
+                    role: rolesObj.admin,
+                    username: 'test2',
+                    projects: [],
+                    local: {
+                        hash: undefined,
+                        salt: undefined,
+                    },
+                    github: {
+                        accessToken: 'accessToken',
+                        id: 'id',
+                        profileUrl: 'profileUrl',
+                    },
+                };
+                userDaoFindOtherAdministratorHasResult = true;
+                userDaoFindOtherAdministratorResult = {
+                    _id: userId2,
+                    role: rolesObj.admin,
+                    username: 'test2',
+                    projects: [],
+                    local: {
+                        hash: undefined,
+                        salt: undefined,
+                    },
+                    github: {
+                        accessToken: 'accessToken',
+                        id: 'id',
+                        profileUrl: 'profileUrl',
+                    },
+                };
+
+                supertest(this.expressApp)
+                    .delete(`/api/v1/users/${userId2}/`)
+                    .set('Authorization', `Bearer ${apiToken}`)
+                    .expect(403)
+                    .end((err, result) => {
+                        if (err) {
+                            done(err);
+                            return;
+                        }
+
+                        const resultBody = result.body;
+                        assert.equal('Forbidden', resultBody.reason);
+                        done();
+                    });
+            }).catch(done);
+        });
+
+        it('should return 204 when want to remove an administrator', (done) => {
+            // Mock data
+            const salt = securityService.generateSaltSync();
+            securityService.generateHash('password', salt).then((hash) => {
+                userDaoFindByIdHasObjectResult = true;
+                userDaoFindByIdResult = {};
+                userDaoFindByIdResult[userId] = {
+                    _id: userId,
+                    role: rolesObj.admin,
+                    username: 'test',
+                    projects: [],
+                    local: {
+                        hash,
+                        salt,
+                    },
+                    github: {
+                        accessToken: undefined,
+                        id: undefined,
+                        profileUrl: undefined,
+                    },
+                };
+                userDaoFindByIdResult[userId2] = {
+                    _id: userId2,
+                    role: rolesObj.admin,
+                    username: 'test2',
+                    projects: ['project1'],
+                    local: {
+                        hash: undefined,
+                        salt: undefined,
+                    },
+                    github: {
+                        accessToken: 'accessToken',
+                        id: 'id',
+                        profileUrl: 'profileUrl',
+                    },
+                };
+                projectDaoFindByIdHasResult = true;
+                projectDaoFindByIdResult = {
+                    _id: 'project1',
+                    name: 'project1',
+                    crashLogList: [],
+                };
+
+                supertest(this.expressApp)
+                    .delete(`/api/v1/users/${userId2}/`)
+                    .set('Authorization', `Bearer ${apiToken}`)
+                    .expect(204, done);
+            }).catch(done);
+        });
+
+        it('should return 204 when want to remove a normal user', (done) => {
+            // Mock data
+            const salt = securityService.generateSaltSync();
+            securityService.generateHash('password', salt).then((hash) => {
+                userDaoFindByIdHasObjectResult = true;
+                userDaoFindByIdResult = {};
+                userDaoFindByIdResult[userId] = {
+                    _id: userId,
+                    role: rolesObj.admin,
+                    username: 'test',
+                    projects: [],
+                    local: {
+                        hash,
+                        salt,
+                    },
+                    github: {
+                        accessToken: undefined,
+                        id: undefined,
+                        profileUrl: undefined,
+                    },
+                };
+                userDaoFindByIdResult[userId2] = {
+                    _id: userId2,
+                    role: rolesObj.normal,
+                    username: 'test2',
+                    projects: ['project1'],
+                    local: {
+                        hash: undefined,
+                        salt: undefined,
+                    },
+                    github: {
+                        accessToken: 'accessToken',
+                        id: 'id',
+                        profileUrl: 'profileUrl',
+                    },
+                };
+                projectDaoFindByIdHasResult = true;
+                projectDaoFindByIdResult = {
+                    _id: 'project1',
+                    name: 'project1',
+                    crashLogList: [],
+                };
+
+                supertest(this.expressApp)
+                    .delete(`/api/v1/users/${userId2}/`)
+                    .set('Authorization', `Bearer ${apiToken}`)
+                    .expect(204, done);
+            }).catch(done);
+        });
+
+        it('should return 500 when checkIsUserLastAdministrator is rejected', (done) => {
+            // Mock data
+            const salt = securityService.generateSaltSync();
+            securityService.generateHash('password', salt).then((hash) => {
+                userDaoFindByIdHasObjectResult = true;
+                userDaoFindByIdResult = {};
+                userDaoFindByIdResult[userId] = {
+                    _id: userId,
+                    role: rolesObj.admin,
+                    username: 'test',
+                    projects: [],
+                    local: {
+                        hash,
+                        salt,
+                    },
+                    github: {
+                        accessToken: undefined,
+                        id: undefined,
+                        profileUrl: undefined,
+                    },
+                };
+                userDaoFindByIdResult[userId2] = {
+                    _id: userId2,
+                    role: rolesObj.admin,
+                    username: 'test2',
+                    projects: [],
+                    local: {
+                        hash: undefined,
+                        salt: undefined,
+                    },
+                    github: {
+                        accessToken: 'accessToken',
+                        id: 'id',
+                        profileUrl: 'profileUrl',
+                    },
+                };
+                userDaoFindOtherAdministratorFail = true;
+
+                supertest(this.expressApp)
+                    .delete(`/api/v1/users/${userId2}/`)
+                    .set('Authorization', `Bearer ${apiToken}`)
+                    .expect(500)
+                    .end((err, result) => {
+                        if (err) {
+                            done(err);
+                            return;
+                        }
+
+                        const resultBody = result.body;
+                        assert.equal('Internal Server Error', resultBody.reason);
+                        done();
+                    });
+            }).catch(done);
+        });
+
+        it('should return 500 when userDao.removeById is rejected', (done) => {
+            // Mock data
+            const salt = securityService.generateSaltSync();
+            securityService.generateHash('password', salt).then((hash) => {
+                userDaoFindByIdHasObjectResult = true;
+                userDaoFindByIdResult = {};
+                userDaoFindByIdResult[userId] = {
+                    _id: userId,
+                    role: rolesObj.admin,
+                    username: 'test',
+                    projects: [],
+                    local: {
+                        hash,
+                        salt,
+                    },
+                    github: {
+                        accessToken: undefined,
+                        id: undefined,
+                        profileUrl: undefined,
+                    },
+                };
+                userDaoFindByIdResult[userId2] = {
+                    _id: userId2,
+                    role: rolesObj.normal,
+                    username: 'test2',
+                    projects: [],
+                    local: {
+                        hash: undefined,
+                        salt: undefined,
+                    },
+                    github: {
+                        accessToken: 'accessToken',
+                        id: 'id',
+                        profileUrl: 'profileUrl',
+                    },
+                };
+                userDaoRemoveByIdFail = true;
+
+                supertest(this.expressApp)
+                    .delete(`/api/v1/users/${userId2}/`)
+                    .set('Authorization', `Bearer ${apiToken}`)
                     .expect(500)
                     .end((err, result) => {
                         if (err) {

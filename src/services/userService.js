@@ -165,7 +165,7 @@ function createNewUser(userData) {
  */
 function checkIsUserLastAdministrator(user) {
     return new Promise((resolve, reject) => (
-        userDao.findOtherAdministrator(user).then(otherAdmin => resolve(_.isNull(otherAdmin))).catch(reject)
+        userDao.findOtherAdministrator(user).then(otherAdmin => resolve(!!otherAdmin)).catch(reject)
     ));
 }
 

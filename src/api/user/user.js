@@ -210,7 +210,7 @@ function changePasswordAdministrator(req, res) {
  * @param req
  * @param res
  */
-function removeUser(req, res) {
+function removeUserAdministrator(req, res) {
     const body = APIResponse.getDefaultResponseBody();
 
     // Get user id
@@ -218,7 +218,7 @@ function removeUser(req, res) {
     // Get user from database
     userService.findById(userId).then((user) => {
         // Check if user exists
-        if (user) {
+        if (!user) {
             // User not found in database
             APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
             return;
@@ -464,7 +464,7 @@ function expose() {
     router.put('/users/:id/password', apiSecurity.middleware.populateUser(),
         apiSecurity.middleware.onlyAdministrator(), changePasswordAdministrator);
     router.delete('/users/:id', apiSecurity.middleware.populateUser(),
-        apiSecurity.middleware.onlyAdministrator(), removeUser);
+        apiSecurity.middleware.onlyAdministrator(), removeUserAdministrator);
     router.put('/users/:id', apiSecurity.middleware.populateUser(),
         apiSecurity.middleware.onlyAdministrator(), updateUser);
     router.post('/users', apiSecurity.middleware.populateUser(),
