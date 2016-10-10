@@ -415,16 +415,15 @@ function updateUser(req, res) {
  * Change email for current user.
  * @param req
  * @param res
- * @param next
  */
-function changeCurrentEmail(req, res, next) {
+function changeCurrentEmail(req, res) {
     // Get default body
     const body = APIResponse.getDefaultResponseBody();
     // Get user
     const user = req.userDb;
 
     // Check body
-    req.checkBody('email', 'Invalid Email').notEmpty();
+    req.checkBody('email', 'Empty Email').notEmpty();
     req.checkBody('email', 'Invalid Email').isEmail(true);
 
     const errors = req.validationErrors();
@@ -440,7 +439,10 @@ function changeCurrentEmail(req, res, next) {
 
     userService.updateEmail(user, newEmail).then((result) => {
         APIResponse.sendResponse(res, userMapper.formatToApi(result), APICodes.SUCCESS.OK);
-    }).catch(next);
+    }).catch((err) => {
+        logger.error(err);
+        APIResponse.sendResponse(res, body, APICodes.SERVER_ERROR.INTERNAL_SERVER_ERROR);
+    });
 }
 
 /* ************************************* */
