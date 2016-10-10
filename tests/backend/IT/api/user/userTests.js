@@ -1420,22 +1420,6 @@ describe('[IT] [API] User', () => {
                         profileUrl: 'profileUrl',
                     },
                 };
-                userDaoFindOtherAdministratorHasResult = true;
-                userDaoFindOtherAdministratorResult = {
-                    _id: userId2,
-                    role: rolesObj.admin,
-                    username: 'test2',
-                    projects: [],
-                    local: {
-                        hash: undefined,
-                        salt: undefined,
-                    },
-                    github: {
-                        accessToken: 'accessToken',
-                        id: 'id',
-                        profileUrl: 'profileUrl',
-                    },
-                };
 
                 supertest(this.expressApp)
                     .delete(`/api/v1/users/${userId2}/`)
@@ -1480,6 +1464,22 @@ describe('[IT] [API] User', () => {
                     role: rolesObj.admin,
                     username: 'test2',
                     projects: ['project1'],
+                    local: {
+                        hash: undefined,
+                        salt: undefined,
+                    },
+                    github: {
+                        accessToken: 'accessToken',
+                        id: 'id',
+                        profileUrl: 'profileUrl',
+                    },
+                };
+                userDaoFindOtherAdministratorHasResult = true;
+                userDaoFindOtherAdministratorResult = {
+                    _id: userId2,
+                    role: rolesObj.admin,
+                    username: 'test2',
+                    projects: [],
                     local: {
                         hash: undefined,
                         salt: undefined,
