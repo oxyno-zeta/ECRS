@@ -1,6 +1,5 @@
 ROADMAP
 =======
-* Add tests and code coverage (Backend)
 * Rework loading => remove use of modal
 * Rework profile design to use left menu
 * Rework Administration to use left menu

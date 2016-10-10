@@ -4,5 +4,6 @@
 # 1.0.1
 ## Code
 * Add ESLint support (Extends Airbnb standard)
+* Add Tests and code coverage (Backend)
 ## Bug
 * Fix forgotten dependency
