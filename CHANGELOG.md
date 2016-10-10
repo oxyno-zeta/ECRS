@@ -5,5 +5,6 @@
 ## Code
 * Add ESLint support (Extends Airbnb standard)
 * Add Tests and code coverage (Backend)
+* Add Coveralls report with Travis-CI
 ## Bug
 * Fix forgotten dependency
