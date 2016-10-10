@@ -14,7 +14,7 @@ const server = require('./server');
 /* ************************************* */
 
 // Prepare server
-server.prepare().then(function () {
-	// Listen server
-	server.listenSync();
-});
+server.prepare().then(() => (
+    // Listen server
+    server.listenSync()
+)).catch(() => process.exit(1));

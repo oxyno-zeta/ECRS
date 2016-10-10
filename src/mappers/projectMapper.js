@@ -8,16 +8,18 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 const _ = require('lodash');
-const {Project} = require('../models/projectModel');
+const {
+    Project,
+    } = require('../models/projectModel');
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
 /* ************************************* */
 
 module.exports = {
-	formatToApi: formatToApi,
-	formatListToApi: formatListToApi,
-	build: build
+    formatToApi,
+    formatListToApi,
+    build,
 };
 
 /* ************************************* */
@@ -35,7 +37,7 @@ module.exports = {
  * @returns {Array}
  */
 function formatListToApi(projectList) {
-	return projectList.map(formatToApi);
+    return projectList.map(formatToApi);
 }
 
 /**
@@ -44,14 +46,14 @@ function formatListToApi(projectList) {
  * @returns {*} Project
  */
 function build(data) {
-	let d = _.cloneDeep(data);
-	if (_.isUndefined(data.projectUrl)) {
-		d.projectUrl = null;
-	}
-	if (_.isUndefined(data.crashLogList)) {
-		d.crashLogList = [];
-	}
-	return new Project(d);
+    const cloneData = _.cloneDeep(data);
+    if (_.isUndefined(data.projectUrl)) {
+        cloneData.projectUrl = null;
+    }
+    if (_.isUndefined(data.crashLogList)) {
+        cloneData.crashLogList = [];
+    }
+    return new Project(cloneData);
 }
 
 /**
@@ -60,9 +62,9 @@ function build(data) {
  * @returns {{name: *, projectUrl: string}}
  */
 function formatToApi(projectObject) {
-	return {
-		id: projectObject._id,
-		name: projectObject.name,
-		projectUrl: projectObject.projectUrl
-	};
+    return {
+        id: projectObject._id,
+        name: projectObject.name,
+        projectUrl: projectObject.projectUrl,
+    };
 }

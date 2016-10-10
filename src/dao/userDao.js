@@ -8,23 +8,25 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 const _ = require('lodash');
-const {User, rolesObj} = require('../models/userModel');
-const {Project} = require('../models/projectModel');
+const {
+    User,
+    rolesObj,
+    } = require('../models/userModel');
 
 /* ************************************* */
 /* ********       EXPORTS       ******** */
 /* ************************************* */
 module.exports = {
-	save: save,
-	findByGithubId: findByGithubId,
-	findByUsernameWithLocalHashNotNull: findByUsernameWithLocalHashNotNull,
-	findAllByRole: findAllByRole,
-	findById: findById,
-	findAllWithPagination: findAllWithPagination,
-	countAll: countAll,
-	removeById: removeById,
-	findOtherAdministrator: findOtherAdministrator,
-	findByProjectId: findByProjectId
+    save,
+    findByGithubId,
+    findByUsernameWithLocalHashNotNull,
+    findAllByRole,
+    findById,
+    findAllWithPagination,
+    countAll,
+    removeById,
+    findOtherAdministrator,
+    findByProjectId,
 };
 
 /* ************************************* */
@@ -43,9 +45,9 @@ module.exports = {
  * @returns {*}
  */
 function findByProjectId(projectId) {
-	return User.findOne({
-		'projects': projectId
-	});
+    return User.findOne({
+        projects: projectId,
+    });
 }
 
 /**
@@ -54,7 +56,12 @@ function findByProjectId(projectId) {
  * @returns {*}
  */
 function findOtherAdministrator(user) {
-	return User.findOne({_id: {$ne: user._id}, role: rolesObj.admin});
+    return User.findOne({
+        _id: {
+            $ne: user._id,
+        },
+        role: rolesObj.admin,
+    });
 }
 
 /**
@@ -63,7 +70,7 @@ function findOtherAdministrator(user) {
  * @returns {*}
  */
 function removeById(id) {
-	return User.findByIdAndRemove(id);
+    return User.findByIdAndRemove(id);
 }
 
 /**
@@ -71,7 +78,7 @@ function removeById(id) {
  * @returns {*}
  */
 function countAll() {
-	return User.find().count();
+    return User.find().count();
 }
 
 /**
@@ -82,21 +89,21 @@ function countAll() {
  * @returns {*}
  */
 function findAllWithPagination(limit, skip, sort) {
-	let promise = User.find();
+    const promise = User.find();
 
-	if (!_.isUndefined(limit)) {
-		promise.limit(limit);
-	}
+    if (limit) {
+        promise.limit(limit);
+    }
 
-	if (!_.isUndefined(skip)) {
-		promise.skip(skip);
-	}
+    if (skip) {
+        promise.skip(skip);
+    }
 
-	if (!_.isUndefined(sort)) {
-		promise.sort(sort);
-	}
+    if (sort) {
+        promise.sort(sort);
+    }
 
-	return promise;
+    return promise;
 }
 
 /**
@@ -105,7 +112,7 @@ function findAllWithPagination(limit, skip, sort) {
  * @returns {*}
  */
 function findById(id) {
-	return User.findById(id);
+    return User.findById(id);
 }
 
 /**
@@ -114,7 +121,9 @@ function findById(id) {
  * @returns {*}
  */
 function findAllByRole(role) {
-	return User.find({role: role});
+    return User.find({
+        role,
+    });
 }
 
 /**
@@ -123,7 +132,12 @@ function findAllByRole(role) {
  * @returns {*}
  */
 function findByUsernameWithLocalHashNotNull(username) {
-	return User.findOne({username: username, 'local.hash': {$ne: null}});
+    return User.findOne({
+        username,
+        'local.hash': {
+            $ne: null,
+        },
+    });
 }
 
 /**
@@ -132,7 +146,9 @@ function findByUsernameWithLocalHashNotNull(username) {
  * @returns {*}
  */
 function findByGithubId(githubId) {
-	return User.findOne({'github.id': githubId});
+    return User.findOne({
+        'github.id': githubId,
+    });
 }
 
 /**
@@ -141,5 +157,5 @@ function findByGithubId(githubId) {
  * @returns {*|Promise}
  */
 function save(userInstance) {
-	return userInstance.save();
+    return userInstance.save();
 }

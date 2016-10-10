@@ -8,23 +8,22 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 const isUrl = require('is-url');
-const emailValidator = require("email-validator");
+const emailValidator = require('email-validator');
 const _ = require('lodash');
 
 /* ************************************* */
 /* ********       EXPORTS       ******** */
 /* ************************************* */
 module.exports = {
-	isUrlSync: isUrlSync,
-	isArraySync: _.isArray,
-	isEmailSync: isEmailSync,
-	stringHasMinLength: stringHasMinLength
+    isArraySync: _.isArray,
+    isUrlSync,
+    isEmailSync,
+    stringHasMinLength,
 };
 
 /* ************************************* */
 /* ********  PRIVATE FUNCTIONS  ******** */
 /* ************************************* */
-
 
 
 /* ************************************* */
@@ -33,20 +32,20 @@ module.exports = {
 
 /**
  * String has minimum length.
- * @param value {String}
+ * @param value {String} Value to test
  * @param minLength {Number} Minimum length
  * @returns {boolean}
  */
 function stringHasMinLength(value, minLength) {
-	if (_.isUndefined(value) || _.isNull(value)) {
-		return false;
-	}
+    if (_.isUndefined(value) || _.isNull(value)) {
+        return false;
+    }
 
-	if (!_.isString(value)) {
-		return false;
-	}
+    if (!_.isString(value)) {
+        return false;
+    }
 
-	return _.isEqual(value.trim().length, minLength);
+    return (value.trim().length >= minLength);
 }
 
 /**
@@ -56,11 +55,15 @@ function stringHasMinLength(value, minLength) {
  * @returns {*}
  */
 function isEmailSync(value, mandatory) {
-	if (_.isUndefined(value) || _.isNull(value)) {
-		return !mandatory;
-	}
+    if (_.isUndefined(value) || _.isNull(value)) {
+        return !mandatory;
+    }
 
-	return emailValidator.validate(value);
+    if (!_.isString(value)) {
+        return false;
+    }
+
+    return emailValidator.validate(value);
 }
 
 /**
@@ -70,9 +73,13 @@ function isEmailSync(value, mandatory) {
  * @returns {*}
  */
 function isUrlSync(value, mandatory) {
-	if (_.isUndefined(value) || _.isNull(value)) {
-		return !mandatory;
-	}
+    if (_.isUndefined(value) || _.isNull(value)) {
+        return !mandatory;
+    }
 
-	return isUrl(value);
+    if (!_.isString(value)) {
+        return false;
+    }
+
+    return isUrl(value);
 }

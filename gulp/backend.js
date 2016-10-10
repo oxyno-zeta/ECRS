@@ -1,5 +1,5 @@
 /*
- * Author: Alexandre Havrileck (Oxyno-zeta) 
+ * Author: Alexandre Havrileck (Oxyno-zeta)
  * Date: 03/07/16
  * Licence: See Readme
  */
@@ -7,10 +7,10 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
-var gulp = require('gulp');
-var nodemon = require('gulp-nodemon');
+const gulp = require('gulp');
+const nodemon = require('gulp-nodemon');
 // Nodemon configuration
-var nodemonJson = require('../nodemon.json');
+const nodemonJson = require('../nodemon.json');
 // Remove some parts
 delete nodemonJson.events;
 
@@ -19,21 +19,19 @@ delete nodemonJson.events;
 /* ************************************* */
 
 
-
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
 
-gulp.task('backend:nodemon', function (cb) {
+gulp.task('backend:nodemon', (cb) => {
+    let started = false;
 
-	var started = false;
-
-	nodemon(nodemonJson).once('start', function () {
-		// to avoid nodemon being started multiple times
-		// thanks @matthisk
-		if (!started) {
-			cb();
-			started = true;
-		}
-	});
+    nodemon(nodemonJson).once('start', () => {
+        // to avoid nodemon being started multiple times
+        // thanks @matthisk
+        if (!started) {
+            cb();
+            started = true;
+        }
+    });
 });

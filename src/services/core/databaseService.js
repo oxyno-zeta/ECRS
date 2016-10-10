@@ -16,13 +16,12 @@ const userService = require('../userService');
 /* ********       EXPORTS       ******** */
 /* ************************************* */
 module.exports = {
-	initDatabase: initDatabase
+    initDatabase,
 };
 
 /* ************************************* */
 /* ********  PRIVATE FUNCTIONS  ******** */
 /* ************************************* */
-
 
 
 /* ************************************* */
@@ -34,42 +33,44 @@ module.exports = {
  * @returns {Promise}
  */
 function initDatabase() {
-	return new Promise(function (resolve, reject) {
-		logger.debug('Begin initialize database...');
+    return new Promise((resolve, reject) => {
+        logger.debug('Begin initialize database...');
 
-		logger.debug('Put new promise system');
-		// Put new Promise system
-		mongoose.Promise = Promise;
+        logger.debug('Put new promise system');
+        // Put new Promise system
+        mongoose.Promise = Promise;
 
-		var options = {};
-		if ("" !== configurationService.database.getLogin()) {
-			options.user = configurationService.database.getLogin();
-		}
+        const options = {};
+        const login = configurationService.database.getLogin();
+        if (login) {
+            options.user = login;
+        }
 
-		if ("" !== configurationService.database.getPassword()) {
-			options.pass = configurationService.database.getPassword();
-		}
+        const password = configurationService.database.getPassword();
+        if (password) {
+            options.pass = password;
+        }
 
-		mongoose.connect(configurationService.database.getUrl(), options);
+        mongoose.connect(configurationService.database.getUrl(), options);
 
-		mongoose.connection.on('connected', function () {
-			logger.debug('Mongoose connection open to ' + configurationService.database.getUrl());
-			userService.initialize().then(function () {
-				logger.debug('End initialize database');
-				resolve();
-			}).catch(reject);
-		});
+        mongoose.connection.on('connected', () => {
+            logger.debug(`Mongoose connection open to ${configurationService.database.getUrl()}`);
+            userService.initialize().then(() => {
+                logger.debug('End initialize database');
+                resolve();
+            }).catch(reject);
+        });
 
-		// If the connection throws an error
-		mongoose.connection.on('error', function (err) {
-			logger.error('Mongoose connection error');
-			reject(err);
-		});
+        // If the connection throws an error
+        mongoose.connection.on('error', (err) => {
+            logger.error('Mongoose connection error');
+            reject(err);
+        });
 
-		// When the connection is disconnected
-		mongoose.connection.on('disconnected', function () {
-			logger.debug('Mongoose default connection disconnected');
-		});
-	});
+        // When the connection is disconnected
+        mongoose.connection.on('disconnected', () => {
+            logger.debug('Mongoose default connection disconnected');
+        });
+    });
 }
 

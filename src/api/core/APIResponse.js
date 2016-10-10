@@ -14,16 +14,15 @@ const logger = require('../../shared/logger')('[Core API]');
 /* ********       EXPORTS       ******** */
 /* ************************************* */
 module.exports = {
-	sendArrayResponse: sendArrayResponse,
-	sendResponse: sendResponse,
-	sendTextResponse: sendTextResponse,
-	getDefaultResponseBody: getDefaultResponseBody
+    sendArrayResponse,
+    sendResponse,
+    sendTextResponse,
+    getDefaultResponseBody,
 };
 
 /* ************************************* */
 /* ********  PRIVATE FUNCTIONS  ******** */
 /* ************************************* */
-
 
 
 /* ************************************* */
@@ -37,12 +36,12 @@ module.exports = {
  * @param statusObject {Object} Status object (from APICodes)
  */
 function sendArrayResponse(response, array, statusObject) {
-	// Update response
-	response.status(statusObject.code);
-	// Debug part
-	logger.debug(`Answer: Code = ${statusObject.code}, Text = ${JSON.stringify(array)}`);
-	// Send response
-	response.send(array);
+    // Update response
+    response.status(statusObject.code);
+    // Debug part
+    logger.debug(`Answer: Code = ${statusObject.code}, Text = ${JSON.stringify(array)}`);
+    // Send response
+    response.send(array);
 }
 
 /**
@@ -52,22 +51,21 @@ function sendArrayResponse(response, array, statusObject) {
  * @param statusObject {Object} Status object (from APICodes)
  */
 function sendTextResponse(response, text, statusObject) {
-	// Update response
-	response.status(statusObject.code);
+    // Update response
+    response.status(statusObject.code);
 
-	// Check status code
-	if (statusObject.code === 204) {
-		// Debug part
-		logger.debug(`Answer: Code = ${statusObject.code}`);
-		// Send response
-		response.end();
-	}
-	else {
-		// Debug part
-		logger.debug(`Answer: Code = ${statusObject.code}, Text = ${text}`);
-		// Send response
-		response.send(text);
-	}
+    // Check status code
+    if (statusObject.code === 204) {
+        // Debug part
+        logger.debug(`Answer: Code = ${statusObject.code}`);
+        // Send response
+        response.end();
+        return;
+    }
+    // Debug part
+    logger.debug(`Answer: Code = ${statusObject.code}, Text = ${text}`);
+    // Send response
+    response.send(text);
 }
 
 /**
@@ -77,26 +75,25 @@ function sendTextResponse(response, text, statusObject) {
  * @param statusObject {Object} Status object (from APICodes)
  */
 function sendResponse(response, body, statusObject) {
-	// Update response
-	response.status(statusObject.code);
+    // Update response
+    response.status(statusObject.code);
 
-	// Check status code
-	if (statusObject.code === 204) {
-		// Debug part
-		logger.debug(`Answer: Code = ${statusObject.code}`);
-		// Send response
-		response.end();
-	}
-	else {
-		// Update body if necessary
-		if (_.has(body, 'reason')) {
-			body.reason = statusObject.reason;
-		}
-		// Debug part
-		logger.debug(`Answer: Code = ${statusObject.code}, Body = ${JSON.stringify(body)}`);
-		// Send response
-		response.json(body);
-	}
+    // Check status code
+    if (statusObject.code === 204) {
+        // Debug part
+        logger.debug(`Answer: Code = ${statusObject.code}`);
+        // Send response
+        response.end();
+        return;
+    }
+    // Update body if necessary
+    if (_.has(body, 'reason')) {
+        body.reason = statusObject.reason;
+    }
+    // Debug part
+    logger.debug(`Answer: Code = ${statusObject.code}, Body = ${JSON.stringify(body)}`);
+    // Send response
+    response.json(body);
 }
 
 /**
@@ -104,7 +101,7 @@ function sendResponse(response, body, statusObject) {
  * @returns {{reason: string}}
  */
 function getDefaultResponseBody() {
-	return {
-		reason: ''
-	};
+    return {
+        reason: '',
+    };
 }

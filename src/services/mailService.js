@@ -8,23 +8,25 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 const path = require('path');
-const {EmailTemplate} = require('email-templates');
+const {
+    EmailTemplate,
+    } = require('email-templates');
 const mailCoreService = require('./core/mailCoreService');
 const configurationService = require('./core/configurationService');
+
 const mainTemplateDir = path.join(__dirname, 'mail-templates');
 
 /* ************************************* */
 /* ********       EXPORTS       ******** */
 /* ************************************* */
 module.exports = {
-	sendRegisterEmail: sendRegisterEmail,
-	sendNewCrashLogEmail: sendNewCrashLogEmail
+    sendRegisterEmail,
+    sendNewCrashLogEmail,
 };
 
 /* ************************************* */
 /* ********  PRIVATE FUNCTIONS  ******** */
 /* ************************************* */
-
 
 
 /* ************************************* */
@@ -38,44 +40,44 @@ module.exports = {
  * @returns {Promise}
  */
 function sendNewCrashLogEmail(toEmail, projectInstance) {
-	return new Promise((resolve, reject) => {
-		// Get transporter
-		let transporter = mailCoreService.getTransporter();
+    return new Promise((resolve, reject) => {
+        // Get transporter
+        const transporter = mailCoreService.getTransporter();
 
-		// Prepare template directory
-		const registerMailTemplareDirectory = path.join(mainTemplateDir, 'new-crash-log');
+        // Prepare template directory
+        const registerMailTemplareDirectory = path.join(mainTemplateDir, 'new-crash-log');
 
-		// Get template sender
-		let templateSender = transporter.templateSender(new EmailTemplate(registerMailTemplareDirectory), {
-			from: configurationService.mail.getMailFrom(),
-			subject: `New Crash Report just published for project ${projectInstance.name}`,
-			attachments: [{
-				'filename': 'logo.png',
-				'path': path.join(registerMailTemplareDirectory, 'logo.png'),
-				cid: 'logo'
-			}]
-		});
+        // Get template sender
+        const templateSender = transporter.templateSender(new EmailTemplate(registerMailTemplareDirectory), {
+            from: configurationService.mail.getMailFrom(),
+            subject: `New Crash Report just published for project ${projectInstance.name}`,
+            attachments: [{
+                filename: 'logo.png',
+                path: path.join(registerMailTemplareDirectory, 'logo.png'),
+                cid: 'logo',
+            }],
+        });
 
-		let message = {
-			to: toEmail
-		};
+        const message = {
+            to: toEmail,
+        };
 
-		// Context for the template renderer
-		let context = {
-			project: projectInstance,
-			backendUrl: configurationService.getBackendUrl()
-		};
+        // Context for the template renderer
+        const context = {
+            project: projectInstance,
+            backendUrl: configurationService.getBackendUrl(),
+        };
 
-		// Send using template
-		templateSender(message, context, function (error, info) {
-			if (error) {
-				reject(error);
-				return;
-			}
+        // Send using template
+        templateSender(message, context, (error, info) => {
+            if (error) {
+                reject(error);
+                return;
+            }
 
-			resolve(info);
-		});
-	});
+            resolve(info);
+        });
+    });
 }
 
 /**
@@ -84,40 +86,40 @@ function sendNewCrashLogEmail(toEmail, projectInstance) {
  * @returns {Promise}
  */
 function sendRegisterEmail(toEmail) {
-	return new Promise((resolve, reject) => {
-		// Get transporter
-		let transporter = mailCoreService.getTransporter();
+    return new Promise((resolve, reject) => {
+        // Get transporter
+        const transporter = mailCoreService.getTransporter();
 
-		// Prepare template directory
-		const registerMailTemplareDirectory = path.join(mainTemplateDir, 'register');
+        // Prepare template directory
+        const registerMailTemplareDirectory = path.join(mainTemplateDir, 'register');
 
-		// Get template sender
-		let templateSender = transporter.templateSender(new EmailTemplate(registerMailTemplareDirectory), {
-			from: configurationService.mail.getMailFrom(),
-			subject: 'Thanks for Register !',
-			attachments: [{
-				'filename': 'logo.png',
-				'path': path.join(registerMailTemplareDirectory, 'logo.png'),
-				cid: 'logo'
-			}]
-		});
+        // Get template sender
+        const templateSender = transporter.templateSender(new EmailTemplate(registerMailTemplareDirectory), {
+            from: configurationService.mail.getMailFrom(),
+            subject: 'Thanks for Register !',
+            attachments: [{
+                filename: 'logo.png',
+                path: path.join(registerMailTemplareDirectory, 'logo.png'),
+                cid: 'logo',
+            }],
+        });
 
-		let message = {
-			to: toEmail
-		};
+        const message = {
+            to: toEmail,
+        };
 
-		// Context for the template renderer
-		let context = {};
+        // Context for the template renderer
+        const context = {};
 
-		// Send using template
-		templateSender(message, context, function (error, info) {
-			if (error) {
-				reject(error);
-				return;
-			}
+        // Send using template
+        templateSender(message, context, (error, info) => {
+            if (error) {
+                reject(error);
+                return;
+            }
 
-			resolve(info);
-		});
-	});
+            resolve(info);
+        });
+    });
 }
 

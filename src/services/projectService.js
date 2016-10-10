@@ -8,6 +8,7 @@
 /* ********       REQUIRE       ******** */
 /* ************************************* */
 const _ = require('lodash');
+const logger = require('../shared/logger')('[ProjectService]');
 const projectDao = require('../dao/projectDao');
 const projectMapper = require('../mappers/projectMapper');
 const crashLogService = require('./crashLogService');
@@ -18,18 +19,18 @@ const userService = require('./userService');
 /* ************************************* */
 
 module.exports = {
-	findById: findById,
-	findByIds: findByIds,
-	findAll: findAll,
-	findByName: findByName,
-	create: create,
-	statisticsNumberByVersion: statisticsNumberByVersion,
-	statisticsNumberByDate: statisticsNumberByDate,
-	statisticsNumberByVersionByDate: statisticsNumberByVersionByDate,
-	statisticsNumberByVersionByDateAndStartDate: statisticsNumberByVersionByDateAndStartDate,
-	getAllVersions: getAllVersions,
-	deleteRecursivelyById: deleteRecursivelyById,
-	deleteRecursivelyByIds: deleteRecursivelyByIds
+    findById,
+    findByIds,
+    findAll,
+    findByName,
+    create,
+    statisticsNumberByVersion,
+    statisticsNumberByDate,
+    statisticsNumberByVersionByDate,
+    statisticsNumberByVersionByDateAndStartDate,
+    getAllVersions,
+    deleteRecursivelyById,
+    deleteRecursivelyByIds,
 };
 
 /* ************************************* */
@@ -47,7 +48,7 @@ module.exports = {
  * @returns {Promise}
  */
 function deleteRecursivelyByIds(ids) {
-	return Promise.all(ids.map(deleteRecursivelyById));
+    return Promise.all(ids.map(deleteRecursivelyById));
 }
 
 /**
@@ -56,40 +57,38 @@ function deleteRecursivelyByIds(ids) {
  * @returns {*}
  */
 function deleteRecursivelyById(id) {
-	return new Promise((resolve, reject) => {
-		projectDao.findById(id).then(function (project) {
-			let promises = [];
-			// Add promises
-			project.crashLogList.forEach(function (id) {
-				promises.push(new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
+        projectDao.findById(id).then((project) => {
+            const promises = [];
+            // Add promises
+            project.crashLogList.forEach((localId) => {
+                promises.push(new Promise((resolveLoop, rejectLoop) => {
+                    // Remove from array
+                    function removeFromArray() {
+                        _.remove(project.crashLogList, id2 => _.isEqual(localId, id2));
+                    }
 
-					function removeFromArray() {
-						_.remove(project.crashLogList, function (id2) {
-							return _.isEqual(id, id2);
-						});
-					}
+                    crashLogService.deleteById(localId).then(() => {
+                        // Success => Remove from array
+                        removeFromArray();
+                        resolveLoop();
+                    }).catch(rejectLoop);
+                }));
+            });
 
-					crashLogService.deleteById(id).then(function () {
-						// Success => Remove from array
-						removeFromArray();
-						resolve();
-					}).catch(reject);
-				}));
-			});
+            Promise.all(promises).then(() => {
+                // Remove all crash logs done
+                // Remove project now
+                projectDao.deleteById(id).then(resolve).catch(reject);
+            }).catch((err) => {
+                // Continue function
+                const goFunction = () => reject(err);
 
-			Promise.all(promises).then(function () {
-				// Remove all crash logs done
-				// Remove project now
-				projectDao.deleteById(id).then(resolve).catch(reject);
-			}).catch(function (err) {
-				// Save updated project
-				projectDao.save(project).finally(function () {
-					// Saved
-					reject(err);
-				});
-			});
-		}).catch(reject);
-	});
+                // Save updated project
+                projectDao.save(project).then(goFunction).catch(goFunction);
+            });
+        }).catch(reject);
+    });
 }
 
 /**
@@ -98,7 +97,7 @@ function deleteRecursivelyById(id) {
  * @returns {Promise}
  */
 function getAllVersions(projectId) {
-	return projectDao.getAllVersions(projectId);
+    return projectDao.getAllVersions(projectId);
 }
 
 /**
@@ -108,7 +107,7 @@ function getAllVersions(projectId) {
  * @returns {Promise}
  */
 function statisticsNumberByVersionByDate(projectId, versions) {
-	return projectDao.statisticsNumberByVersionByDate(projectId, versions);
+    return projectDao.statisticsNumberByVersionByDate(projectId, versions);
 }
 
 /**
@@ -119,7 +118,7 @@ function statisticsNumberByVersionByDate(projectId, versions) {
  * @returns {Promise}
  */
 function statisticsNumberByVersionByDateAndStartDate(projectId, versions, startDate) {
-	return projectDao.statisticsNumberByVersionByDateAndStartDate(projectId, versions, startDate);
+    return projectDao.statisticsNumberByVersionByDateAndStartDate(projectId, versions, startDate);
 }
 
 /**
@@ -129,7 +128,7 @@ function statisticsNumberByVersionByDateAndStartDate(projectId, versions, startD
  * @returns {Promise}
  */
 function statisticsNumberByDate(projectId, startDate) {
-	return projectDao.statisticsNumberByDate(projectId, startDate);
+    return projectDao.statisticsNumberByDate(projectId, startDate);
 }
 
 /**
@@ -138,7 +137,7 @@ function statisticsNumberByDate(projectId, startDate) {
  * @returns {Promise}
  */
 function statisticsNumberByVersion(project) {
-	return projectDao.statisticsNumberByVersion(project);
+    return projectDao.statisticsNumberByVersion(project);
 }
 
 /**
@@ -148,22 +147,22 @@ function statisticsNumberByVersion(project) {
  * @returns {Promise}
  */
 function create(data, userInstance) {
-	return new Promise((resolve, reject) => {
-		// Create project instance
-		let project = projectMapper.build(data);
+    return new Promise((resolve, reject) => {
+        // Create project instance
+        const project = projectMapper.build(data);
 
-		projectDao.save(project).then(function () {
-			// Project added in database
-			userInstance.projects.push(project._id);
-			userService.saveForInstance(userInstance).then(function () {
-				resolve(project);
-			}).catch(function (err) {
-				// Need to try to delete project
-				projectDao.deleteById(project._id);
-				reject(err);
-			});
-		}).catch(reject);
-	});
+        projectDao.save(project).then(() => {
+            // Project added in database
+            userInstance.projects.push(project._id);
+            userService.saveForInstance(userInstance).then(() => {
+                resolve(project);
+            }).catch((err) => {
+                // Need to try to delete project
+                projectDao.deleteById(project._id).then(logger.debug).catch(logger.error);
+                reject(err);
+            });
+        }).catch(reject);
+    });
 }
 
 /**
@@ -172,7 +171,7 @@ function create(data, userInstance) {
  * @returns {*}
  */
 function findByName(name) {
-	return projectDao.findByName(name);
+    return projectDao.findByName(name);
 }
 
 /**
@@ -180,7 +179,7 @@ function findByName(name) {
  * @returns {*}
  */
 function findAll() {
-	return projectDao.findAll();
+    return projectDao.findAll();
 }
 
 /**
@@ -189,7 +188,7 @@ function findAll() {
  * @returns {Promise}
  */
 function findByIds(ids) {
-	return projectDao.findByIds(ids);
+    return projectDao.findByIds(ids);
 }
 
 /**
@@ -198,6 +197,6 @@ function findByIds(ids) {
  * @returns {Promise}
  */
 function findById(id) {
-	return projectDao.findById(id);
+    return projectDao.findById(id);
 }
 

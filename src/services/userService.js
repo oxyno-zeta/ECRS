@@ -10,7 +10,9 @@
 const _ = require('lodash');
 const logger = require('../shared/logger')('[UserService]');
 const userMapper = require('../mappers/userMapper');
-const {rolesObj, roles, validation} = require('../models/userModel');
+const {
+    rolesObj, roles, validation,
+    } = require('../models/userModel');
 const userDao = require('../dao/userDao');
 const securityService = require('./core/securityService');
 const mailService = require('./mailService');
@@ -19,26 +21,26 @@ const mailService = require('./mailService');
 /* ********       EXPORTS       ******** */
 /* ************************************* */
 module.exports = {
-	rolesObj: rolesObj,
-	roles: roles,
-	userValidation: validation,
-	initialize: initialize,
-	saveOrUpdateFromGithub: saveOrUpdateFromGithub,
-	findByUsernameForLocal: findByUsernameForLocal,
-	localLogin: localLogin,
-	findById: findById,
-	findAllWithPagination: findAllWithPagination,
-	saveForInstance: saveForInstance,
-	checkOldPasswordAndChangePassword: checkOldPasswordAndChangePassword,
-	changePassword: changePassword,
-	countAll: countAll,
-	removeById: removeById,
-	checkIsUserLastAdministrator: checkIsUserLastAdministrator,
-	createNewUser: createNewUser,
-	updateUser: updateUser,
-	register: register,
-	findUserByProjectId: findUserByProjectId,
-	updateEmail: updateEmail
+    userValidation: validation,
+    rolesObj,
+    roles,
+    initialize,
+    saveOrUpdateFromGithub,
+    findByUsernameForLocal,
+    localLogin,
+    findById,
+    findAllWithPagination,
+    saveForInstance,
+    checkOldPasswordAndChangePassword,
+    changePassword,
+    countAll,
+    removeById,
+    checkIsUserLastAdministrator,
+    createNewUser,
+    updateUser,
+    register,
+    findUserByProjectId,
+    updateEmail,
 };
 
 /* ************************************* */
@@ -51,29 +53,29 @@ module.exports = {
  * @returns {Promise}
  */
 function createForLocal(userData) {
-	return new Promise(function (resolve, reject) {
-		let salt = securityService.generateSaltSync();
-		securityService.generateHash(userData.password, salt).then(function (hash) {
-			let userDataForBuild = {
-				username: userData.username,
-				email: userData.email,
-				photo: null,
-				role: userData.role,
-				local: {
-					hash: hash,
-					salt: salt
-				},
-				github: {
-					accessToken: null,
-					id: null,
-					profileUrl: null
-				}
-			};
+    return new Promise((resolve, reject) => {
+        const salt = securityService.generateSaltSync();
+        securityService.generateHash(userData.password, salt).then((hash) => {
+            const userDataForBuild = {
+                username: userData.username,
+                email: userData.email,
+                photo: null,
+                role: userData.role,
+                local: {
+                    hash,
+                    salt,
+                },
+                github: {
+                    accessToken: null,
+                    id: null,
+                    profileUrl: null,
+                },
+            };
 
-			let user = userMapper.build(userDataForBuild);
-			userDao.save(user).then(resolve).catch(reject);
-		}).catch(reject);
-	});
+            const user = userMapper.build(userDataForBuild);
+            userDao.save(user).then(resolve).catch(reject);
+        }).catch(reject);
+    });
 }
 
 /* ************************************* */
@@ -87,10 +89,11 @@ function createForLocal(userData) {
  * @returns {*|Promise}
  */
 function updateEmail(userInstance, email) {
-	// Update email
-	userInstance.email = email;
-	// Save update
-	return userDao.save(userInstance);
+    const userInstanceUpdated = userInstance;
+    // Update email
+    userInstanceUpdated.email = email;
+    // Save update
+    return userDao.save(userInstanceUpdated);
 }
 
 /**
@@ -99,7 +102,7 @@ function updateEmail(userInstance, email) {
  * @returns {*}
  */
 function findUserByProjectId(projectId) {
-	return userDao.findByProjectId(projectId);
+    return userDao.findByProjectId(projectId);
 }
 
 /**
@@ -108,21 +111,22 @@ function findUserByProjectId(projectId) {
  * @returns {Promise}
  */
 function register(userData) {
-	return new Promise((resolve, reject) => {
-		// Give normal role
-		userData.role = rolesObj.normal;
-		// Save in database
-		createForLocal(userData).then((userInstance) => {
-			// Resolve
-			resolve(userInstance);
+    return new Promise((resolve, reject) => {
+        const userDataObject = userData;
+        // Give normal role
+        userDataObject.role = rolesObj.normal;
+        // Save in database
+        createForLocal(userDataObject).then((userInstance) => {
+            // Resolve
+            resolve(userInstance);
 
-			// Send email if user has email
-			// Don't need to wait email sending (backend task)
-			if (userInstance.email && !_.isEqual(userInstance.email, '')) {
-				mailService.sendRegisterEmail(userInstance.email).then(logger.debug).catch(logger.error);
-			}
-		}).catch(reject);
-	});
+            // Send email if user has email
+            // Don't need to wait email sending (backend task)
+            if (userInstance.email && !_.isEqual(userInstance.email, '')) {
+                mailService.sendRegisterEmail(userInstance.email).then(logger.debug).catch(logger.error);
+            }
+        }).catch(reject);
+    });
 }
 
 /**
@@ -132,16 +136,17 @@ function register(userData) {
  * @returns {*|Promise}
  */
 function updateUser(userInstance, userData) {
-	// Apply update
-	if (!_.isNull(userData.email) || !_.isUndefined(userData.email)) {
-		userInstance.email = userData.email;
-	}
+    const userInstanceUpdated = userInstance;
+    // Apply update
+    if (userData.email) {
+        userInstanceUpdated.email = userData.email;
+    }
 
-	if (!_.isNull(userData.role) || !_.isUndefined(userData.role)) {
-		userInstance.role = userData.role;
-	}
+    if (userData.role) {
+        userInstanceUpdated.role = userData.role;
+    }
 
-	return userDao.save(userInstance);
+    return userDao.save(userInstance);
 }
 
 /**
@@ -150,7 +155,7 @@ function updateUser(userInstance, userData) {
  * @returns {Promise}
  */
 function createNewUser(userData) {
-	return createForLocal(userData);
+    return createForLocal(userData);
 }
 
 /**
@@ -159,11 +164,11 @@ function createNewUser(userData) {
  * @returns {Promise}
  */
 function checkIsUserLastAdministrator(user) {
-	return new Promise((resolve, reject) => {
-		userDao.findOtherAdministrator(user).then((otherAdmin) => {
-			resolve(_.isNull(otherAdmin));
-		}).catch(reject);
-	});
+    return new Promise((resolve, reject) => (
+        userDao.findOtherAdministrator(user)
+            .then(otherAdmin => resolve(_.isNull(otherAdmin) || _.isUndefined(otherAdmin)))
+            .catch(reject)
+    ));
 }
 
 /**
@@ -172,7 +177,7 @@ function checkIsUserLastAdministrator(user) {
  * @returns {*}
  */
 function removeById(id) {
-	return userDao.removeById(id);
+    return userDao.removeById(id);
 }
 
 /**
@@ -180,7 +185,7 @@ function removeById(id) {
  * @returns {*}
  */
 function countAll() {
-	return userDao.countAll();
+    return userDao.countAll();
 }
 
 /**
@@ -191,7 +196,7 @@ function countAll() {
  * @returns {*}
  */
 function findAllWithPagination(limit, skip, sort) {
-	return userDao.findAllWithPagination(limit, skip, sort);
+    return userDao.findAllWithPagination(limit, skip, sort);
 }
 
 /**
@@ -201,16 +206,17 @@ function findAllWithPagination(limit, skip, sort) {
  * @returns {Promise}
  */
 function changePassword(user, newPassword) {
-	// Create new salt
-	let newSalt = securityService.generateSaltSync();
-	// Generate Hash
-	return securityService.generateHash(newPassword, newSalt).then(function (newHash) {
-		user.local.salt = newSalt;
-		user.local.hash = newHash;
+    const userInstance = user;
+    // Create new salt
+    const newSalt = securityService.generateSaltSync();
+    // Generate Hash
+    return securityService.generateHash(newPassword, newSalt).then((newHash) => {
+        userInstance.local.salt = newSalt;
+        userInstance.local.hash = newHash;
 
-		// Save new user data
-		return userDao.save(user);
-	});
+        // Save new user data
+        return userDao.save(user);
+    });
 }
 
 /**
@@ -221,16 +227,16 @@ function changePassword(user, newPassword) {
  * @returns {Promise}
  */
 function checkOldPasswordAndChangePassword(user, oldPassword, newPassword) {
-	return new Promise((resolve, reject) => {
-		securityService.compare(oldPassword, user.local.hash, user.local.salt).then(function (isOk) {
-			if (!isOk) {
-				throw new Error('Wrong old password');
-			}
+    return new Promise((resolve, reject) => {
+        securityService.compare(oldPassword, user.local.hash, user.local.salt).then((isOk) => {
+            if (!isOk) {
+                throw new Error('Wrong old password');
+            }
 
-			// Save new password
-			changePassword(user, newPassword).then(resolve).catch(reject);
-		}).catch(reject);
-	});
+            // Save new password
+            changePassword(user, newPassword).then(resolve).catch(reject);
+        }).catch(reject);
+    });
 }
 
 /**
@@ -239,7 +245,7 @@ function checkOldPasswordAndChangePassword(user, oldPassword, newPassword) {
  * @returns {*|Promise}
  */
 function saveForInstance(userInstance) {
-	return userDao.save(userInstance);
+    return userDao.save(userInstance);
 }
 
 /**
@@ -248,7 +254,7 @@ function saveForInstance(userInstance) {
  * @returns {*}
  */
 function findById(id) {
-	return userDao.findById(id);
+    return userDao.findById(id);
 }
 
 /**
@@ -258,18 +264,17 @@ function findById(id) {
  * @returns {Promise}
  */
 function localLogin(username, password) {
-	return new Promise(function (resolve, reject) {
-		findByUsernameForLocal(username).then(function (user) {
-			securityService.compare(password, user.local.hash, user.local.salt).then(function (result) {
-				if (result) {
-					resolve(user);
-				}
-				else {
-					resolve(null);
-				}
-			}).catch(reject);
-		}).catch(reject);
-	});
+    return new Promise((resolve, reject) => {
+        findByUsernameForLocal(username).then((user) => {
+            securityService.compare(password, user.local.hash, user.local.salt).then((result) => {
+                if (result) {
+                    resolve(user);
+                } else {
+                    resolve(null);
+                }
+            }).catch(reject);
+        }).catch(reject);
+    });
 }
 
 /**
@@ -278,7 +283,7 @@ function localLogin(username, password) {
  * @returns {*}
  */
 function findByUsernameForLocal(username) {
-	return userDao.findByUsernameWithLocalHashNotNull(username);
+    return userDao.findByUsernameWithLocalHashNotNull(username);
 }
 
 /**
@@ -286,43 +291,42 @@ function findByUsernameForLocal(username) {
  * @returns {Promise}
  */
 function initialize() {
-	return new Promise(function (resolve, reject) {
-		logger.debug('Begin initialize...');
-		let userData = {
-			username: 'admin',
-			password: 'admin',
-			role: rolesObj.admin
-		};
+    return new Promise((resolve, reject) => {
+        logger.debug('Begin initialize...');
+        const userData = {
+            username: 'admin',
+            password: 'admin',
+            role: rolesObj.admin,
+        };
 
-		findByUsernameForLocal(userData.username).then(function (result) {
-			if (!_.isNull(result)) {
-				logger.debug('User "admin" already exist in database');
-				resolve();
-				return;
-			}
+        findByUsernameForLocal(userData.username).then((result) => {
+            if (result) {
+                logger.debug('User "admin" already exist in database');
+                resolve();
+                return;
+            }
 
-			// Check if need another administrator
-			userDao.findAllByRole(rolesObj.admin).then(function (users) {
-				// Check there are users with admin role
-				if (!_.isNull(users) && users.length !== 0) {
-					// There are others admin
-					logger.debug('Another user with admin role exists => Don\'t create a new one');
-					resolve();
-					return;
-				}
+            // Check if need another administrator
+            userDao.findAllByRole(rolesObj.admin).then((users) => {
+                // Check there are users with admin role
+                if (users && users.length !== 0) {
+                    // There are others admin
+                    logger.debug('Another user with admin role exists => Don\'t create a new one');
+                    resolve();
+                    return;
+                }
 
-				// Save new user
-				logger.debug('Save admin user in database');
-				createForLocal(userData)
-					.then(function (result) {
-						logger.debug('End initialize...');
-						resolve(result);
-					}).catch(reject);
-			}).catch(reject);
-		}).catch(reject);
-	});
+                // Save new user
+                logger.debug('Save admin user in database');
+                createForLocal(userData)
+                    .then((result2) => {
+                        logger.debug('End initialize...');
+                        resolve(result2);
+                    }).catch(reject);
+            }).catch(reject);
+        }).catch(reject);
+    });
 }
-
 
 /**
  * Save or Update from Github.
@@ -330,61 +334,61 @@ function initialize() {
  * @returns {Promise}
  */
 function saveOrUpdateFromGithub(userData) {
-	return new Promise(function (resolve, reject) {
-		userDao.findByGithubId(userData.githubId).then(function (result) {
-			// Check if user exists in database
-			if (_.isUndefined(result) || _.isNull(result)) {
-				// Doesn't exists => create new one
-				let userDataForBuilder = {
-					username: userData.username,
-					email: null,
-					photo: null,
-					role: rolesObj.normal,
-					github: {
-						id: userData.githubId,
-						accessToken: userData.accessToken,
-						profileUrl: userData.profileUrl
-					},
-					local: {
-						hash: null,
-						salt: null
-					}
-				};
-				// Get email
-				if (_.isUndefined(userData.emails) && _.isArray(userData.emails) && userData.emails.length !== 0) {
-					userDataForBuilder.email = userData.emails[0].value;
-				}
-				// Get photo
-				if (_.isUndefined(userData.photos) && _.isArray(userData.photos) && userData.photos.length !== 0) {
-					userDataForBuilder.photo = userData.photos[0].value;
-				}
-				// Update result
-				result = userMapper.build(userDataForBuilder);
-			}
-			else {
-				// Already exists => need update
+    return new Promise((resolve, reject) => {
+        userDao.findByGithubId(userData.githubId).then((result) => {
+            let userInDatabase = result;
+            // Check if user exists in database
+            if (_.isUndefined(userInDatabase) || _.isNull(userInDatabase)) {
+                // Doesn't exists => create new one
+                const userDataForBuilder = {
+                    username: userData.username,
+                    email: null,
+                    photo: null,
+                    role: rolesObj.normal,
+                    github: {
+                        id: userData.githubId,
+                        accessToken: userData.accessToken,
+                        profileUrl: userData.profileUrl,
+                    },
+                    local: {
+                        hash: null,
+                        salt: null,
+                    },
+                };
+                // Get email
+                if (userData.emails && _.isArray(userData.emails) && userData.emails.length !== 0) {
+                    userDataForBuilder.email = userData.emails[0].value;
+                }
+                // Get photo
+                if (userData.photos && _.isArray(userData.photos) && userData.photos.length !== 0) {
+                    userDataForBuilder.photo = userData.photos[0].value;
+                }
+                // Update result
+                userInDatabase = userMapper.build(userDataForBuilder);
+            } else {
+                // Already exists => need update
 
-				// Update general data
-				result.github.accessToken = userData.accessToken;
-				result.github.id = userData.githubId;
-				result.github.profileUrl = userData.profileUrl;
+                // Update general data
+                userInDatabase.github.accessToken = userData.accessToken;
+                userInDatabase.github.id = userData.githubId;
+                userInDatabase.github.profileUrl = userData.profileUrl;
 
-				if (_.isUndefined(userData.username) || _.isNull(userData.username)) {
-					result.username = userData.username;
-				}
+                if (userData.username) {
+                    userInDatabase.username = userData.username;
+                }
 
-				// Update email
-				if (_.isUndefined(userData.emails) && _.isArray(userData.emails) && userData.emails.length !== 0) {
-					result.email = userData.emails[0].value;
-				}
-				// Update photo
-				if (_.isUndefined(userData.photos) && _.isArray(userData.photos) && userData.photos.length !== 0) {
-					result.photo = userData.photos[0].value;
-				}
-			}
+                // Update email
+                if (userData.emails && _.isArray(userData.emails) && userData.emails.length !== 0) {
+                    userInDatabase.email = userData.emails[0].value;
+                }
+                // Update photo
+                if (userData.photos && _.isArray(userData.photos) && userData.photos.length !== 0) {
+                    userInDatabase.photo = userData.photos[0].value;
+                }
+            }
 
-			// Save it in database
-			userDao.save(result).then(resolve).catch(reject);
-		}).catch(reject);
-	});
+            // Save it in database
+            userDao.save(userInDatabase).then(resolve).catch(reject);
+        }).catch(reject);
+    });
 }

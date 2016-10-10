@@ -7,16 +7,18 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
-const {CrashLog} = require('../models/crashLogModel');
+const {
+    CrashLog,
+    } = require('../models/crashLogModel');
 
 /* ************************************* */
 /* ********        EXPORTS      ******** */
 /* ************************************* */
 
 module.exports = {
-	formatToApi: formatToApi,
-	formatListToApi: formatListToApi,
-	build: build
+    formatToApi,
+    formatListToApi,
+    build,
 };
 
 /* ************************************* */
@@ -34,7 +36,7 @@ module.exports = {
  * @returns {*}
  */
 function formatListToApi(list) {
-	return list.map(formatToApi);
+    return list.map(formatToApi);
 }
 
 /**
@@ -43,35 +45,35 @@ function formatListToApi(list) {
  * @returns {*} CrashLog
  */
 function build(data) {
-	// Update extra data to JSON object if possible
-	try {
-		data.extra = JSON.parse(data.extra);
-	}
-	catch (e) {
-		// Nothing
-	}
+    const dataUpdated = data;
+    // Update extra data to JSON object if possible
+    try {
+        dataUpdated.extra = JSON.parse(data.extra);
+    } catch (e) {
+        // Nothing
+    }
 
-	return new CrashLog(data);
+    return new CrashLog(dataUpdated);
 }
 
 /**
  * Format to Api.
  * @param crashLogObject {Object} CrashLog Object
- * @returns {{id: *, ver: *, platform: (*|String|string), process_type: *, guid: *, _version: *, _productName: *, prod: *, _companyName: *, upload_file_minidump: *, extra: (*|crashLogSchema.extra|{})}}
+ * @returns {{id: *, ver: *, platform: (*), process_type: *, guid: *, _version: *, _productName: *, prod: *, _companyName: *, upload_file_minidump: *, extra: {}}}
  */
 function formatToApi(crashLogObject) {
-	return {
-		id: crashLogObject._id,
-		ver: crashLogObject.ver,
-		platform: crashLogObject.platform,
-		process_type: crashLogObject.process_type,
-		guid: crashLogObject.guid,
-		_version: crashLogObject._version,
-		_productName: crashLogObject._productName,
-		prod: crashLogObject.prod,
-		_companyName: crashLogObject._companyName,
-		upload_file_minidump: crashLogObject.upload_file_minidump,
-		extra: crashLogObject.extra,
-		date: crashLogObject.date
-	};
+    return {
+        id: crashLogObject._id,
+        ver: crashLogObject.ver,
+        platform: crashLogObject.platform,
+        process_type: crashLogObject.process_type,
+        guid: crashLogObject.guid,
+        _version: crashLogObject._version,
+        _productName: crashLogObject._productName,
+        prod: crashLogObject.prod,
+        _companyName: crashLogObject._companyName,
+        upload_file_minidump: crashLogObject.upload_file_minidump,
+        extra: crashLogObject.extra,
+        date: crashLogObject.date,
+    };
 }

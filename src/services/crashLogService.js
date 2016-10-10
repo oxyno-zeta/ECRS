@@ -23,11 +23,11 @@ const mailService = require('./mailService');
 /* ************************************* */
 
 module.exports = {
-	saveNewCrashLog: saveNewCrashLog,
-	save: save,
-	findById: findById,
-	findByIdsWithPagination: findByIdsWithPagination,
-	deleteById: deleteById
+    saveNewCrashLog,
+    save,
+    findById,
+    findByIdsWithPagination,
+    deleteById,
 };
 
 /* ************************************* */
@@ -45,26 +45,27 @@ module.exports = {
  * @returns {*}
  */
 function deleteById(id) {
-	return new Promise((resolve, reject) => {
-		findById(id).then(function (crashLog) {
-			if (_.isNull(crashLog)) {
-				reject(crashLog);
-				return;
-			}
+    return new Promise((resolve, reject) => {
+        findById(id).then((crashLog) => {
+            if (!crashLog) {
+                reject(crashLog);
+                return;
+            }
 
-			// Delete file => Not important to know if it failed
-			if (crashLog.upload_file_minidump) {
-				let filePath = path.join(configurationService.getAppCrashLogDirectory(), crashLog.upload_file_minidump);
-				fs.unlink(filePath, function (err) {
-					if (err) {
-						logger.error(err);
-					}
-				});
-			}
-			// Delete data
-			crashLogDao.deleteById(id).then(resolve).catch(reject);
-		}).catch(reject);
-	});
+            // Delete file => Not important to know if it failed
+            if (crashLog.upload_file_minidump) {
+                const filePath = path.join(configurationService.getAppCrashLogDirectory(),
+                    crashLog.upload_file_minidump);
+                fs.unlink(filePath, (err) => {
+                    if (err) {
+                        logger.error(err);
+                    }
+                });
+            }
+            // Delete data
+            crashLogDao.deleteById(id).then(resolve).catch(reject);
+        }).catch(reject);
+    });
 }
 
 /**
@@ -76,7 +77,7 @@ function deleteById(id) {
  * @returns {*}
  */
 function findByIdsWithPagination(ids, limit, skip, sort) {
-	return crashLogDao.findByIdsWithPagination(ids, limit, skip, sort);
+    return crashLogDao.findByIdsWithPagination(ids, limit, skip, sort);
 }
 
 /**
@@ -85,7 +86,7 @@ function findByIdsWithPagination(ids, limit, skip, sort) {
  * @returns {Promise} Promise
  */
 function findById(id) {
-	return crashLogDao.findById(id);
+    return crashLogDao.findById(id);
 }
 
 /**
@@ -94,7 +95,7 @@ function findById(id) {
  * @returns {Promise} Promise
  */
 function save(crashLogObject) {
-	return crashLogDao.save(crashLogObject);
+    return crashLogDao.save(crashLogObject);
 }
 
 /**
@@ -104,72 +105,69 @@ function save(crashLogObject) {
  * @returns {Promise}
  */
 function saveNewCrashLog(crashLogApiData, projectObject) {
-	return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
+        // Continue function
+        function go() {
+            // Build CrashLog object
+            const crashLog = crashLogMapper.build(crashLogApiData);
 
-		// Continue function
-		function go() {
-			// Build CrashLog object
-			let crashLog = crashLogMapper.build(crashLogApiData);
+            logger.debug(`Build database object : ${crashLog.toString()}`);
 
-			logger.debug(`Build database object : ${crashLog.toString()}`);
+            // Add project to crash log object and other way
+            const projectId = projectObject._id;
+            crashLog.project = projectId;
+            projectObject.crashLogList.push(crashLog._id);
 
-			// Add project to crash log object and other way
-			let projectId = projectObject._id;
-			crashLog.project = projectId;
-			projectObject.crashLogList.push(crashLog._id);
+            // Save and update
+            const promises = [];
+            promises.push(crashLogDao.save(crashLog));
+            promises.push(projectDao.save(projectObject));
+            Promise.all(promises).then(([crashLogSaved]) => {
+                resolve(crashLogSaved);
 
-			// Save and update
-			let promises = [];
-			promises.push(crashLogDao.save(crashLog));
-			promises.push(projectDao.save(projectObject));
-			Promise.all(promises).then(function ([crashLogSaved]) {
-				resolve(crashLogSaved);
+                // Find user from project
+                userService.findUserByProjectId(projectId).then((userInstance) => {
+                    // Send email to user if email exists
+                    if (userInstance && userInstance.email && !_.isEqual(userInstance.email, '')) {
+                        mailService.sendNewCrashLogEmail(userInstance.email, projectObject)
+                            .then(logger.debug).catch(logger.error);
+                    }
+                }).catch(logger.error);
+            }).catch((err) => {
+                logger.error(err);
+                reject(err);
+            });
+        }
 
-				// Find user from project
-				userService.findUserByProjectId(projectId).then((userInstance) => {
-					// Send email to user if email exists
-					if (userInstance.email && !_.isEqual(userInstance.email, '')) {
-						mailService.sendNewCrashLogEmail(userInstance.email, projectObject)
-							.then(logger.debug).catch(logger.error);
-					}
-				}).catch(logger.error);
-			}).catch(function (err) {
-				logger.error(err);
-				reject(err);
-			});
-		}
+        if (!crashLogApiData.upload_file_minidump) {
+            logger.debug('No dump detected => Continue');
+            go();
+            return;
+        }
 
-		if (!_.isUndefined(crashLogApiData.upload_file_minidump) && !_.isNull(crashLogApiData.upload_file_minidump)) {
+        const uploadFilePath = path.join(configurationService.getLogUploadDirectory(),
+            crashLogApiData.upload_file_minidump);
+        const newFilePath = path.join(configurationService.getAppCrashLogDirectory(),
+            crashLogApiData.upload_file_minidump);
 
-			let uploadFilePath = path.join(configurationService.getLogUploadDirectory(), crashLogApiData.upload_file_minidump);
-			let newFilePath = path.join(configurationService.getAppCrashLogDirectory(), crashLogApiData.upload_file_minidump);
+        // Check if file exist
+        fs.exists(uploadFilePath, (isExist) => {
+            // Move file if exists
+            if (isExist) {
+                logger.debug('File exist => move it');
 
-			// Check if file exist
-			fs.exists(uploadFilePath, function (isExist) {
-
-				// Move file if exists
-				if (isExist) {
-					logger.debug('File exist => move it');
-
-					fs.rename(uploadFilePath, newFilePath, function (err) {
-						if (err) {
-							reject(err);
-						}
-						else {
-							logger.debug('File moved => Continue');
-							go();
-						}
-					});
-				}
-				else {
-					logger.debug('No file => Continue');
-					go();
-				}
-			});
-		}
-		else {
-			logger.debug('No dump detected => Continue');
-			go();
-		}
-	});
+                fs.rename(uploadFilePath, newFilePath, (err) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        logger.debug('File moved => Continue');
+                        go();
+                    }
+                });
+            } else {
+                logger.debug('No file => Continue');
+                go();
+            }
+        });
+    });
 }

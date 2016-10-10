@@ -7,14 +7,14 @@
 /* ************************************* */
 /* ********       REQUIRE       ******** */
 /* ************************************* */
-var path = require('path');
-var gulp = require('gulp');
-var runSequence = require('run-sequence');
-var es = require('event-stream');
-var tar = require('gulp-tar');
-var gzip = require('gulp-gzip');
-var conf = require('./conf');
-var packageJSON = require('../package.json');
+const path = require('path');
+const gulp = require('gulp');
+const runSequence = require('run-sequence');
+const es = require('event-stream');
+const tar = require('gulp-tar');
+const gzip = require('gulp-gzip');
+const conf = require('./conf');
+const packageJSON = require('../package.json');
 
 /* ************************************* */
 /* ********  PRIVATE FUNCTIONS  ******** */
@@ -22,45 +22,43 @@ var packageJSON = require('../package.json');
 
 /**
  * Filter for only directories with files in
- * @param es
+ * @param esMap
  * @returns {*}
  */
-function onlyDirs(es) {
-	return es.map(function (file, cb) {
-		if (file.stat.isFile()) {
-			return cb(null, file);
-		} else {
-			return cb();
-		}
-	});
+function onlyDirs(esMap) {
+    return esMap.map((file, cb) => {
+        if (file.stat.isFile()) {
+            return cb(null, file);
+        }
+        return cb();
+    });
 }
-
 
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
 
-gulp.task('release', function (cb) {
-	runSequence('clean:release:tmp', 'prepare:sources', 'web:release',
-		['tar-raspberrypi', 'tar-x64'], ['docker:raspberrypi', 'docker:x64'], cb);
-});
+gulp.task('release', cb => (
+    runSequence('clean:release:tmp', 'prepare:sources', 'web:release',
+        ['tar-raspberrypi', 'tar-x64'], ['docker:raspberrypi', 'docker:x64'], cb)
+));
 
-gulp.task('prepare:sources', function () {
-	return gulp.src(conf.sources.backend)
-		.pipe(onlyDirs(es))
-		.pipe(gulp.dest(conf.release.tmp.main));
-});
+gulp.task('prepare:sources', () => (
+    gulp.src(conf.sources.backend)
+        .pipe(onlyDirs(es))
+        .pipe(gulp.dest(conf.release.tmp.main))
+));
 
-gulp.task('tar-raspberrypi', function () {
-	return gulp.src(conf.release.tmp.files)
-		.pipe(tar('archive.tar'))
-		.pipe(gzip())
-		.pipe(gulp.dest(path.join(conf.release.dist.raspberrypi, packageJSON.version)));
-});
+gulp.task('tar-raspberrypi', () => (
+    gulp.src(conf.release.tmp.files)
+        .pipe(tar('archive.tar'))
+        .pipe(gzip())
+        .pipe(gulp.dest(path.join(conf.release.dist.raspberrypi, packageJSON.version)))
+));
 
-gulp.task('tar-x64', function () {
-	return gulp.src(conf.release.tmp.files)
-		.pipe(tar('archive.tar'))
-		.pipe(gzip())
-		.pipe(gulp.dest(path.join(conf.release.dist.x64, packageJSON.version)));
-});
+gulp.task('tar-x64', () => (
+    gulp.src(conf.release.tmp.files)
+        .pipe(tar('archive.tar'))
+        .pipe(gzip())
+        .pipe(gulp.dest(path.join(conf.release.dist.x64, packageJSON.version)))
+));

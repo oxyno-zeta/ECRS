@@ -19,7 +19,7 @@ const apiAuth = require('../../api/core/apiAuth');
 /* ************************************* */
 
 module.exports = {
-	run: run
+    run,
 };
 
 /* ************************************* */
@@ -32,26 +32,24 @@ module.exports = {
  * @returns {Promise} Promise
  */
 function createDirectory(path) {
-	return new Promise(function (resolve, reject) {
-		logger.debug(`Create directory: Check if directory "${path}" exists`);
-		fs.exists(path, function (exists) {
-			if (exists) {
-				// Already exists
-				resolve();
-			}
-			else {
-				logger.debug(`Create directory: Create directory "${path}"`);
-				fs.mkdir(path, function (err) {
-					if (err) {
-						reject(err);
-					}
-					else {
-						resolve();
-					}
-				});
-			}
-		});
-	});
+    return new Promise((resolve, reject) => {
+        logger.debug(`Create directory: Check if directory "${path}" exists`);
+        fs.exists(path, (exists) => {
+            if (exists) {
+                // Already exists
+                resolve();
+            } else {
+                logger.debug(`Create directory: Create directory "${path}"`);
+                fs.mkdir(path, (err) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                });
+            }
+        });
+    });
 }
 
 /* ************************************* */
@@ -63,19 +61,19 @@ function createDirectory(path) {
  * @returns {Promise} Promise
  */
 function run() {
-	return new Promise(function (resolve, reject) {
-		logger.debug('Run initialize service');
+    return new Promise((resolve, reject) => {
+        logger.debug('Run initialize service');
 
-		// Promise storage
-		let promises = [];
+        // Promise storage
+        const promises = [];
 
-		// Add promise
-		promises.push(createDirectory(configurationService.getAppCrashLogDirectory()));
-		promises.push(createDirectory(configurationService.getLogUploadDirectory()));
-		promises.push(databaseService.initDatabase());
-		promises.push(apiAuth.initAuth());
-		promises.push(mailCoreService.initialize());
+        // Add promise
+        promises.push(createDirectory(configurationService.getAppCrashLogDirectory()));
+        promises.push(createDirectory(configurationService.getLogUploadDirectory()));
+        promises.push(databaseService.initDatabase());
+        promises.push(apiAuth.initAuth());
+        promises.push(mailCoreService.initialize());
 
-		Promise.all(promises).then(resolve).catch(reject);
-	});
+        Promise.all(promises).then(resolve).catch(reject);
+    });
 }
