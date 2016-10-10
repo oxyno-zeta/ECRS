@@ -343,7 +343,7 @@ function updateUser(req, res) {
     const body = APIResponse.getDefaultResponseBody();
 
     // Validation
-    req.checkBody('role', 'Invalid Role').notEmpty();
+    req.checkBody('role', 'Empty Role').notEmpty();
     req.checkBody('email', 'Invalid Email').isEmail(false);
 
     const errors = req.validationErrors();
@@ -361,7 +361,7 @@ function updateUser(req, res) {
     };
 
     // Check that role exists
-    if (rolesObj[userData.role]) {
+    if (!rolesObj[userData.role]) {
         APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.BAD_REQUEST);
         return;
     }
@@ -371,7 +371,7 @@ function updateUser(req, res) {
 
     // Find user
     userService.findById(userId).then((userDb) => {
-        if (userDb) {
+        if (!userDb) {
             APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.NOT_FOUND);
             return;
         }
@@ -391,7 +391,7 @@ function updateUser(req, res) {
         if (_.isEqual(userDb.role, rolesObj.admin) && !_.isEqual(userDb.role, userData.role)) {
             userService.checkIsUserLastAdministrator(userDb).then((isLastAdmin) => {
                 if (isLastAdmin) {
-                    APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.BAD_REQUEST);
+                    APIResponse.sendResponse(res, body, APICodes.CLIENT_ERROR.FORBIDDEN);
                     return;
                 }
 

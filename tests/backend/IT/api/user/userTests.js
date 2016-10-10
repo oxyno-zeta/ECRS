@@ -2149,4 +2149,561 @@ describe('[IT] [API] User', () => {
                 });
         });
     });
+
+    describe('PUT /users/:id/', () => {
+        it('should return 401 when no security token provided', (done) => {
+            supertest(this.expressApp)
+                .put(`/api/v1/users/${userId2}/`)
+                .expect(401)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Unauthorized', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 401 when user not found in database', (done) => {
+            supertest(this.expressApp)
+                .put(`/api/v1/users/${userId2}/`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(401)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Unauthorized', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 400 when no body', (done) => {
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+
+            supertest(this.expressApp)
+                .put(`/api/v1/users/${userId2}/`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .expect(400)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Bad Request', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 400 when empty body', (done) => {
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+
+            supertest(this.expressApp)
+                .put(`/api/v1/users/${userId2}/`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .send({})
+                .expect(400)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Bad Request', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 400 when empty fields', (done) => {
+            const body = {
+                role: '',
+            };
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+
+            supertest(this.expressApp)
+                .put(`/api/v1/users/${userId2}/`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .send(body)
+                .expect(400)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Bad Request', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 400 when good fields but not an email', (done) => {
+            const body = {
+                role: rolesObj.normal,
+                email: 'test',
+            };
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+
+            supertest(this.expressApp)
+                .put(`/api/v1/users/${userId2}/`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .send(body)
+                .expect(400)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Bad Request', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 400 when role not valid', (done) => {
+            const body = {
+                role: 'test',
+                email: 'test@test.com',
+            };
+            // Mock data
+            userDaoFindByIdHasResult = true;
+            userDaoFindByIdResult = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+
+            supertest(this.expressApp)
+                .put(`/api/v1/users/${userId2}/`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .send(body)
+                .expect(400)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Bad Request', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 404 when user is not found in database', (done) => {
+            const body = {
+                role: rolesObj.admin,
+                email: 'test@test.com',
+            };
+            // Mock data
+            userDaoFindByIdHasObjectResult = true;
+            userDaoFindByIdResult = {};
+            userDaoFindByIdResult[userId] = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+
+            supertest(this.expressApp)
+                .put(`/api/v1/users/${userId2}/`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .send(body)
+                .expect(404)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Not Found', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 403 when try to remove last administrator', (done) => {
+            const body = {
+                role: rolesObj.normal,
+                email: 'test@test.com',
+            };
+            // Mock data
+            userDaoFindByIdHasObjectResult = true;
+            userDaoFindByIdResult = {};
+            userDaoFindByIdResult[userId] = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+            userDaoFindByIdResult[userId2] = {
+                _id: userId2,
+                role: rolesObj.admin,
+                username: 'test2',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+            userDaoFindOtherAdministratorHasResult = true;
+            userDaoFindOtherAdministratorResult = null;
+
+            supertest(this.expressApp)
+                .put(`/api/v1/users/${userId2}/`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .send(body)
+                .expect(403)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Forbidden', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 500 when userDao.findOtherAdministrator is rejected', (done) => {
+            const body = {
+                role: rolesObj.normal,
+                email: 'test@test.com',
+            };
+            // Mock data
+            userDaoFindByIdHasObjectResult = true;
+            userDaoFindByIdResult = {};
+            userDaoFindByIdResult[userId] = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+            userDaoFindByIdResult[userId2] = {
+                _id: userId2,
+                role: rolesObj.admin,
+                username: 'test2',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+            userDaoFindOtherAdministratorFail = true;
+
+            supertest(this.expressApp)
+                .put(`/api/v1/users/${userId2}/`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .send(body)
+                .expect(500)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Internal Server Error', resultBody.reason);
+                    done();
+                });
+        });
+
+        it('should return 200 when update an administrator', (done) => {
+            const body = {
+                role: rolesObj.normal,
+                email: 'test@test.com',
+            };
+            // Mock data
+            userDaoFindByIdHasObjectResult = true;
+            userDaoFindByIdResult = {};
+            userDaoFindByIdResult[userId] = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+            userDaoFindByIdResult[userId2] = {
+                _id: userId2,
+                role: rolesObj.admin,
+                username: 'test2',
+                email: '',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+            userDaoFindOtherAdministratorHasResult = true;
+            userDaoFindOtherAdministratorResult = userDaoFindByIdResult[userId];
+
+            supertest(this.expressApp)
+                .put(`/api/v1/users/${userId2}/`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .send(body)
+                .expect(200)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal(body.email, resultBody.email);
+                    assert.equal(body.role, resultBody.role);
+                    done();
+                });
+        });
+
+        it('should return 200 when update a normal user', (done) => {
+            const body = {
+                role: rolesObj.admin,
+                email: 'test@test.com',
+            };
+            // Mock data
+            userDaoFindByIdHasObjectResult = true;
+            userDaoFindByIdResult = {};
+            userDaoFindByIdResult[userId] = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+            userDaoFindByIdResult[userId2] = {
+                _id: userId2,
+                role: rolesObj.normal,
+                username: 'test2',
+                email: '',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+
+            supertest(this.expressApp)
+                .put(`/api/v1/users/${userId2}/`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .send(body)
+                .expect(200)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal(body.email, resultBody.email);
+                    assert.equal(body.role, resultBody.role);
+                    done();
+                });
+        });
+
+        it('should return 500 when userDao.save is rejected', (done) => {
+            const body = {
+                role: rolesObj.admin,
+                email: 'test@test.com',
+            };
+            // Mock data
+            userDaoFindByIdHasObjectResult = true;
+            userDaoFindByIdResult = {};
+            userDaoFindByIdResult[userId] = {
+                _id: userId,
+                role: rolesObj.admin,
+                username: 'test',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+            userDaoFindByIdResult[userId2] = {
+                _id: userId2,
+                role: rolesObj.normal,
+                username: 'test2',
+                email: '',
+                projects: [],
+                local: {
+                    hash: 'hash',
+                    salt: 'salt',
+                },
+                github: {
+                    accessToken: undefined,
+                    id: undefined,
+                    profileUrl: undefined,
+                },
+            };
+            userDaoSaveFail = true;
+
+            supertest(this.expressApp)
+                .put(`/api/v1/users/${userId2}/`)
+                .set('Authorization', `Bearer ${apiToken}`)
+                .send(body)
+                .expect(500)
+                .end((err, result) => {
+                    if (err) {
+                        done(err);
+                        return;
+                    }
+
+                    const resultBody = result.body;
+                    assert.equal('Internal Server Error', resultBody.reason);
+                    done();
+                });
+        });
+    });
 });
