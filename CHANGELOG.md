@@ -5,5 +5,7 @@
 ## Code
 * Add ESLint support (Extends Airbnb standard)
 * Add Tests and code coverage (Backend)
+* Add Coveralls report with Travis-CI
+* Add VOLUME in Dockerfile
 ## Bug
 * Fix forgotten dependency

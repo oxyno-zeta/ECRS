@@ -13,4 +13,7 @@ EXPOSE 2000
 
 WORKDIR $WORKING_DIR
 
+VOLUME $WORKING_DIR"/upload-logs/"
+VOLUME $WORKING_DIR"/app-crash-logs/"
+
 ENTRYPOINT ["node", "index.js"]
