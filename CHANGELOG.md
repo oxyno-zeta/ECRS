@@ -1,5 +1,4 @@
-# 1.0.0
-## Main Release !
+# 1.0.2
 
 # 1.0.1
 ## Code
@@ -9,3 +8,6 @@
 * Add VOLUME in Dockerfile
 ## Bug
 * Fix forgotten dependency
+
+# 1.0.0
+## Main Release !
