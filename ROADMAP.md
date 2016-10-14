@@ -1,6 +1,5 @@
 ROADMAP
 =======
-* Rework loading => remove use of modal
 * Rework profile design to use left menu
 * Rework Administration to use left menu
 * Add page to see actual configuration in administration

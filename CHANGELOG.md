@@ -1,4 +1,6 @@
 # 1.0.2
+## Code
+* Rework loading (Remove block loading) 
 
 # 1.0.1
 ## Code
@@ -6,6 +8,7 @@
 * Add Tests and code coverage (Backend)
 * Add Coveralls report with Travis-CI
 * Add VOLUME in Dockerfile
+
 ## Bug
 * Fix forgotten dependency
 
