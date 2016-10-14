@@ -50,7 +50,7 @@
          * Close modal.
          */
         function close() {
-            $mdDialog.hide();
+            $mdDialog.cancel();
         }
     }
 

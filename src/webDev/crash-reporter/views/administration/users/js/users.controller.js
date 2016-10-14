@@ -86,8 +86,6 @@
                 bindToController: true
             }).then(function () {
                 $state.go($state.current, {}, {reload: true});
-            }, function () {
-                $state.go($state.current, {}, {reload: true});
             });
         }
 
@@ -106,8 +104,6 @@
                 },
                 bindToController: true
             }).then(function () {
-                $state.go($state.current, {}, {reload: true});
-            }, function () {
                 $state.go($state.current, {}, {reload: true});
             });
         }
