@@ -4,36 +4,34 @@
  * Licence: See Readme
  */
 (function () {
-	'use strict';
+    'use strict';
 
-	angular
-		.module('crash-reporter.views.project.statistics')
-		.controller('VersionsStatisticsModalController', VersionsStatisticsModalController);
+    angular
+        .module('crash-reporter.views.project.statistics')
+        .controller('VersionsStatisticsModalController', VersionsStatisticsModalController);
 
-	/** @ngInject */
-	function VersionsStatisticsModalController($mdDialog) {
-		var vm = this;
-		// Functions
-		vm.close = close;
+    /** @ngInject */
+    function VersionsStatisticsModalController($mdDialog) {
+        var vm = this;
+        // Functions
+        vm.close = close;
 
-		////////////////
+        ////////////////
 
+        /* ************************************* */
+        /* ********  PRIVATE FUNCTIONS  ******** */
+        /* ************************************* */
 
-		/* ************************************* */
-		/* ********  PRIVATE FUNCTIONS  ******** */
-		/* ************************************* */
+        /* ************************************* */
+        /* ********   PUBLIC FUNCTIONS  ******** */
+        /* ************************************* */
 
-		/* ************************************* */
-		/* ********   PUBLIC FUNCTIONS  ******** */
-		/* ************************************* */
-
-		/**
-		 * Close modal.
-		 */
-		function close() {
-			$mdDialog.hide();
-		}
-	}
+        /**
+         * Close modal.
+         */
+        function close() {
+            $mdDialog.hide();
+        }
+    }
 
 })();
-

@@ -4,18 +4,18 @@
  * Licence: See Readme
  */
 (function () {
-	'use strict';
+    'use strict';
 
-	angular
-		.module('crash-reporter.views.projects')
-		.config(routeConfig);
+    angular
+        .module('crash-reporter.views.projects')
+        .config(routeConfig);
 
-	/** @ngInject */
-	function routeConfig($stateProvider) {
-		$stateProvider
-			.state('header.projects', {
-				abstract: true
-			});
-	}
+    /** @ngInject */
+    function routeConfig($stateProvider) {
+        $stateProvider
+            .state('header.projects', {
+                abstract: true
+            });
+    }
 
 })();

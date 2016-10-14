@@ -4,59 +4,58 @@
  * Licence: See Readme
  */
 (function () {
-	'use strict';
+    'use strict';
 
-	angular
-		.module('crash-reporter.views.header')
-		.controller('HeaderController', HeaderController);
+    angular
+        .module('crash-reporter.views.header')
+        .controller('HeaderController', HeaderController);
 
-	/** @ngInject */
-	function HeaderController($rootScope, loginService, usersService, CONFIG) {
-		var vm = this;
-		// Variables
-		vm.isLoggedIn = loginService.isLoggedIn();
-		vm.currentUser = null;
-		vm.roles = CONFIG.ROLES;
-		// Functions
-		vm.logout = loginService.logout;
+    /** @ngInject */
+    function HeaderController($rootScope, loginService, usersService, CONFIG) {
+        var vm = this;
+        // Variables
+        vm.isLoggedIn = loginService.isLoggedIn();
+        vm.currentUser = null;
+        vm.roles = CONFIG.ROLES;
+        // Functions
+        vm.logout = loginService.logout;
 
-		// Activate
-		activate();
+        // Activate
+        activate();
 
-		////////////////
+        ////////////////
 
-		/**
-		 * Activate
-		 */
-		function activate() {
-			if (vm.isLoggedIn) {
-				getAndSetCurrentUser();
-			}
-		}
+        /**
+         * Activate
+         */
+        function activate() {
+            if (vm.isLoggedIn) {
+                getAndSetCurrentUser();
+            }
+        }
 
-		/**
-		 * Get and set current user.
-		 */
-		function getAndSetCurrentUser() {
-			usersService.getCurrent().then(function (user) {
-				vm.currentUser = user;
-			});
-		}
+        /**
+         * Get and set current user.
+         */
+        function getAndSetCurrentUser() {
+            usersService.getCurrent().then(function (user) {
+                vm.currentUser = user;
+            });
+        }
 
-		/* ************************************* */
-		/* ********       UPDATE        ******** */
-		/* ************************************* */
+        /* ************************************* */
+        /* ********       UPDATE        ******** */
+        /* ************************************* */
 
-		$rootScope.$on('loginService:update:login', function () {
-			vm.isLoggedIn = true;
-			getAndSetCurrentUser();
-		});
+        $rootScope.$on('loginService:update:login', function () {
+            vm.isLoggedIn = true;
+            getAndSetCurrentUser();
+        });
 
-		$rootScope.$on('loginService:update:logout', function () {
-			vm.isLoggedIn = false;
-			vm.currentUser = null;
-		});
-	}
+        $rootScope.$on('loginService:update:logout', function () {
+            vm.isLoggedIn = false;
+            vm.currentUser = null;
+        });
+    }
 
 })();
-

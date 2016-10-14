@@ -4,18 +4,18 @@
  * Licence: See Readme
  */
 (function () {
-	'use strict';
+    'use strict';
 
-	angular
-		.module('crash-reporter')
-		.constant('CONFIG', {
-			'URL': {
-				'PREFIX': '/api/v1'
-			},
-			'ROLES': {
-				admin: 'admin',
-				normal: 'normal'
-			}
-		});
+    angular
+        .module('crash-reporter')
+        .constant('CONFIG', {
+            'URL': {
+                'PREFIX': '/api/v1'
+            },
+            'ROLES': {
+                admin: 'admin',
+                normal: 'normal'
+            }
+        });
 
 })();

@@ -4,13 +4,13 @@
  * Licence: See Readme
  */
 (function () {
-	'use strict';
+    'use strict';
 
-	angular
-		.module('crash-reporter.views.project', [
-			'crash-reporter.views.project.details',
-			'crash-reporter.views.project.statistics',
-			'crash-reporter.views.project.crashLogs'
-		]);
+    angular
+        .module('crash-reporter.views.project', [
+            'crash-reporter.views.project.details',
+            'crash-reporter.views.project.statistics',
+            'crash-reporter.views.project.crashLogs'
+        ]);
 
 })();

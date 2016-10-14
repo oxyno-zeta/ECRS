@@ -4,31 +4,29 @@
  * Licence: See Readme
  */
 (function () {
-	'use strict';
+    'use strict';
 
-	angular
-		.module('crash-reporter.views.projects.list')
-		.controller('ProjectsController', ProjectsController);
+    angular
+        .module('crash-reporter.views.projects.list')
+        .controller('ProjectsController', ProjectsController);
 
-	/** @ngInject */
-	function ProjectsController(projectList) {
-		var vm = this;
-		// Variables
-		vm.projectList = projectList;
-		// Functions
+    /** @ngInject */
+    function ProjectsController(projectList) {
+        var vm = this;
+        // Variables
+        vm.projectList = projectList;
+        // Functions
 
-		////////////////
+        ////////////////
 
+        /* ************************************* */
+        /* ********  PRIVATE FUNCTIONS  ******** */
+        /* ************************************* */
 
-		/* ************************************* */
-		/* ********  PRIVATE FUNCTIONS  ******** */
-		/* ************************************* */
+        /* ************************************* */
+        /* ********   PUBLIC FUNCTIONS  ******** */
+        /* ************************************* */
 
-		/* ************************************* */
-		/* ********   PUBLIC FUNCTIONS  ******** */
-		/* ************************************* */
-
-	}
+    }
 
 })();
-

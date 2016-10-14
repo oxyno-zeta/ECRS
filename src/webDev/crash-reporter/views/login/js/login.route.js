@@ -4,25 +4,25 @@
  * Licence: See Readme
  */
 (function () {
-	'use strict';
+    'use strict';
 
-	angular
-		.module('crash-reporter.views.login')
-		.config(routeConfig);
+    angular
+        .module('crash-reporter.views.login')
+        .config(routeConfig);
 
-	/** @ngInject */
-	function routeConfig($stateProvider) {
-		$stateProvider
-			.state('header.login', {
-				url: '/login',
-				views: {
-					'content@header': {
-						templateUrl: 'crash-reporter/views/login/login.html',
-						controller: 'LoginController',
-						controllerAs: 'loginCtrl'
-					}
-				}
-			});
-	}
+    /** @ngInject */
+    function routeConfig($stateProvider) {
+        $stateProvider
+            .state('header.login', {
+                url: '/login',
+                views: {
+                    'content@header': {
+                        templateUrl: 'crash-reporter/views/login/login.html',
+                        controller: 'LoginController',
+                        controllerAs: 'loginCtrl'
+                    }
+                }
+            });
+    }
 
 })();

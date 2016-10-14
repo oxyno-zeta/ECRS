@@ -4,9 +4,9 @@
  * Licence: See Readme
  */
 (function () {
-	'use strict';
+    'use strict';
 
-	angular
-		.module('crash-reporter.loading', []);
+    angular
+        .module('crash-reporter.loading', []);
 
 })();

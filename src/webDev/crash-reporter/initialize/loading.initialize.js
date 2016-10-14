@@ -4,24 +4,24 @@
  * Licence: See Readme
  */
 (function () {
-	'use strict';
+    'use strict';
 
-	angular
-		.module('crash-reporter.initialize')
-		.run(runLoading);
+    angular
+        .module('crash-reporter.initialize')
+        .run(runLoading);
 
-	/** @ngInject */
-	function runLoading($rootScope, loadingService) {
-		// Listening event
-		$rootScope.$on('cfpLoadingBar:loaded', function () {
-			// Called on every request
-			loadingService.startLoading();
-		});
+    /** @ngInject */
+    function runLoading($rootScope, loadingService) {
+        // Listening event
+        $rootScope.$on('cfpLoadingBar:loaded', function () {
+            // Called on every request
+            loadingService.startLoading();
+        });
 
-		$rootScope.$on('cfpLoadingBar:completed', function () {
-			// Called when are finished
-			loadingService.stopLoading();
-		});
-	}
+        $rootScope.$on('cfpLoadingBar:completed', function () {
+            // Called when are finished
+            loadingService.stopLoading();
+        });
+    }
 
 })();

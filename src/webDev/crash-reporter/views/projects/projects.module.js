@@ -4,12 +4,12 @@
  * Licence: See Readme
  */
 (function () {
-	'use strict';
+    'use strict';
 
-	angular
-		.module('crash-reporter.views.projects', [
-			'crash-reporter.views.projects.list',
-			'crash-reporter.views.projects.create'
-		]);
+    angular
+        .module('crash-reporter.views.projects', [
+            'crash-reporter.views.projects.list',
+            'crash-reporter.views.projects.create'
+        ]);
 
 })();
