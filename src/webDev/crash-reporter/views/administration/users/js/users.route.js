@@ -15,7 +15,7 @@
         $stateProvider.state('header.administration.users', {
             url: '/users',
             views: {
-                'content@header': {
+                'content@header.administration': {
                     controller: 'AdministrationUsersController',
                     controllerAs: 'adminUsersCtrl',
                     templateUrl: 'crash-reporter/views/administration/users/users.html'

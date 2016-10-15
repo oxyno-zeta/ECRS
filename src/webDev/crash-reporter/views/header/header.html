@@ -12,18 +12,10 @@
         </md-button>
         <span flex></span>
 
-        <md-menu md-offset="-5 75" ng-if="headerCtrl.currentUser.role === headerCtrl.roles.admin">
-            <md-button class="md-icon-button opened" aria-label="Administration" ng-click="$mdOpenMenu($event)">
-                <md-icon class="fa fa-cog big-icons"></md-icon>
-            </md-button>
-            <md-menu-content width="2">
-                <md-menu-item>
-                    <md-button ui-sref="header.administration.users">
-                        <span md-menu-align-target>Users</span>
-                    </md-button>
-                </md-menu-item>
-            </md-menu-content>
-        </md-menu>
+        <md-button class="md-icon-button opened" aria-label="Administration"
+                   ng-if="headerCtrl.currentUser.role === headerCtrl.roles.admin" ui-sref="header.administration.users">
+            <md-icon class="fa fa-cog big-icons"></md-icon>
+        </md-button>
 
         <md-menu md-offset="-5 66" ng-if="headerCtrl.isLoggedIn">
             <md-button aria-label="User menu" class="md-icon-button opened"
@@ -49,7 +41,7 @@
 <md-content ui-view="content"></md-content>
 
 <md-subheader class="md-primary">
-    <p>
+    <p class="footer">
         <i class="fa fa-fw fa-code"></i>
         with
         <i class="fa fa-fw fa-heart"></i>

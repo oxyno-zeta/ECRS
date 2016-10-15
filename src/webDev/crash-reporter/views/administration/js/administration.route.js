@@ -14,7 +14,14 @@
     function routeConfig($stateProvider) {
         $stateProvider.state('header.administration', {
             url: '/administration',
-            abstract: true
+            abstract: true,
+            views: {
+                'content@header': {
+                    templateUrl: 'crash-reporter/views/administration/administration.html',
+                    controller: 'AdministrationController',
+                    controllerAs: 'administrationCtrl'
+                }
+            }
         });
     }
 

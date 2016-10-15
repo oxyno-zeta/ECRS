@@ -1,5 +1,8 @@
-<md-content class="projects" layout="column" layout-padding layout-wrap>
+<md-content class="projects" layout="column" layout-padding layout-wrap flex>
     <div layout="row" layout-align="center center">
+        <md-button class="md-icon-button" aria-label="More" ng-click="administrationCtrl.openSideNav()">
+            <i class="fa fa-bars" aria-hidden="true"></i>
+        </md-button>
         <h3 class="md-title">Users</h3>
         <span flex></span>
         <md-button class="md-icon-button" aria-label="Add User" ng-click="adminUsersCtrl.addUserModal()">
@@ -33,7 +36,8 @@
                 <td md-cell ng-bind="adminUsersCtrl.getAccountType(item)"></td>
                 <td md-cell>
                     <p class="spacing-left-th" ng-if="item.github.id">Not possible</p>
-                    <md-button class="md-raised" ng-if="!item.github.id" ng-click="adminUsersCtrl.changePassword(item)">
+                    <md-button class="md-raised" ng-if="!item.github.id"
+                               ng-click="adminUsersCtrl.changePassword(item)">
                         Change
                     </md-button>
                 </td>
@@ -69,7 +73,8 @@
                    ng-model="adminUsersCtrl.query.limit"
                    ng-change="adminUsersCtrl.changeRowPage()"
                    layout="column" aria-label="Row per page">
-            <md-option ng-repeat="row in adminUsersCtrl.query.rowsPerPage" value="{{row}}" ng-bind="row"></md-option>
+            <md-option ng-repeat="row in adminUsersCtrl.query.rowsPerPage" value="{{row}}"
+                       ng-bind="row"></md-option>
         </md-select>
         <div layout="column" class="divider"></div>
         <div layout="column">
