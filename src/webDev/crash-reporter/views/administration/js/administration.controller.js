@@ -11,11 +11,12 @@
         .controller('AdministrationController', AdministrationController);
 
     /** @ngInject */
-    function AdministrationController($mdSidenav) {
+    function AdministrationController($state, $mdSidenav) {
         var vm = this;
         // Variables
         // Functions
         vm.openSideNav = openSideNav;
+        vm.goAndCloseSideNav = goAndCloseSideNav;
 
         ////////////////
 
@@ -26,6 +27,17 @@
         /* ************************************* */
         /* ********   PUBLIC FUNCTIONS  ******** */
         /* ************************************* */
+
+        /**
+         * Go to state and Close SideNav.
+         * @param stateName
+         */
+        function goAndCloseSideNav(stateName) {
+            $state.go(stateName).then(function () {
+                $mdSidenav('leftAdminMenu')
+                    .toggle();
+            });
+        }
 
         /**
          * Open Side Nav.

@@ -17,24 +17,15 @@
             <md-icon class="fa fa-cog big-icons"></md-icon>
         </md-button>
 
-        <md-menu md-offset="-5 66" ng-if="headerCtrl.isLoggedIn">
-            <md-button aria-label="User menu" class="md-icon-button opened"
-                       ng-click="$mdOpenMenu($event)">
-                <md-icon md-menu-origin class="fa fa-user big-icons"></md-icon>
-            </md-button>
-            <md-menu-content width="2">
-                <md-menu-item>
-                    <md-button ui-sref="header.profile">
-                        <span md-menu-align-target>Profile</span>
-                    </md-button>
-                </md-menu-item>
-                <md-menu-item>
-                    <md-button ng-click="headerCtrl.logout()">
-                        <span md-menu-align-target>Logout</span>
-                    </md-button>
-                </md-menu-item>
-            </md-menu-content>
-        </md-menu>
+        <md-button aria-label="Profile" class="md-icon-button opened" ng-if="headerCtrl.isLoggedIn"
+                   ui-sref="header.profile.user">
+            <md-icon md-menu-origin class="fa fa-user big-icons"></md-icon>
+        </md-button>
+
+        <md-button aria-label="Logout" class="md-icon-button opened" ng-if="headerCtrl.isLoggedIn"
+                   ng-click="headerCtrl.logout()">
+            <md-icon md-menu-origin class="fa fa-sign-out big-icons"></md-icon>
+        </md-button>
     </div>
 </md-toolbar>
 
