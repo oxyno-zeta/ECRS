@@ -1,125 +1,27 @@
-<md-content class="profile" layout-padding layout-wrap>
-    <md-card>
-        <md-card-title class="bottom-line">
-            <md-card-title-text>
-                <span class="md-headline">User data</span>
-            </md-card-title-text>
-        </md-card-title>
-        <md-card-content class="margin-top" layout="column">
-            <div layout="row">
-                <div layout="column" class="text-bold">
-                    <p>Account Type : </p>
-                </div>
-                <div layout="column">
-                    <p ng-bind="profileCtrl.getAccountType()"></p>
-                </div>
-            </div>
-            <div layout="row">
-                <div layout="column" class="text-bold">
-                    <p>Name : </p>
-                </div>
-                <div layout="column">
-                    <p ng-bind="profileCtrl.user.username"></p>
-                </div>
-            </div>
-            <div layout="row">
-                <div layout="column" class="text-bold">
-                    <p>Role : </p>
-                </div>
-                <div layout="column">
-                    <p ng-bind="profileCtrl.getRoleName()"></p>
-                </div>
-            </div>
-            <div layout="row">
-                <div layout="column" class="text-bold">
-                    <p>Email : </p>
-                </div>
-                <div layout="column">
-                    <p ng-bind="profileCtrl.user.email"></p>
-                    <p ng-if="!profileCtrl.user.email">No email !</p>
-                </div>
-            </div>
-            <div layout="row" ng-if="profileCtrl.user.github.profileUrl">
-                <div layout="column" class="text-bold">
-                    <p>Github Profile : </p>
-                </div>
-                <div layout="column">
-                    <p>
-                        <a ng-href="{{profileCtrl.user.github.profileUrl}}"
-                           target="_blank"
-                           ng-bind="profileCtrl.user.github.profileUrl"></a>
-                    </p>
-                </div>
-            </div>
-        </md-card-content>
-    </md-card>
+<md-content>
+    <md-sidenav class="md-sidenav-left md-whiteframe-4dp" md-component-id="leftProfileMenu">
+        <md-toolbar class="md-theme-light">
+            <h1 class="md-toolbar-tools">Menu</h1>
+        </md-toolbar>
+        <md-content>
+            <md-list flex>
+                <md-list-item ng-click="profileCtrl.goAndCloseSideNav('header.profile.user')">
+                    <md-icon aria-label="User Data" class="fa fa-users"></md-icon>
+                    <p>User Data</p>
+                </md-list-item>
+                <md-list-item ng-click="profileCtrl.goAndCloseSideNav('header.profile.email')">
+                    <md-icon aria-label="Change Email" class="fa fa-envelope"></md-icon>
+                    <p>Change Email</p>
+                </md-list-item>
+                <md-list-item ng-click="profileCtrl.goAndCloseSideNav('header.profile.password')"
+                              ng-if="!profileCtrl.user.github.id">
+                    <md-icon aria-label="Change Password" class="fa fa-lock"></md-icon>
+                    <p>Change Password</p>
+                </md-list-item>
+            </md-list>
+        </md-content>
+    </md-sidenav>
 
-    <md-card>
-        <md-card-title class="bottom-line">
-            <md-card-title-text>
-                <span class="md-headline">Change Email</span>
-            </md-card-title-text>
-        </md-card-title>
-        <md-card-content class="margin-top" layout="column">
-            <form name="changeEmailForm">
-                <md-input-container class="max-width">
-                    <label>Email</label>
-                    <input ng-model="profileCtrl.newEmail" name="newEmail" type="email" required md-no-asterisk>
-                    <div ng-messages="changeEmailForm.newEmail.$error">
-                        <div ng-message="required">This is required.</div>
-                        <div ng-message="email">Not an email.</div>
-                    </div>
-                </md-input-container>
-                <div layout="row">
-                    <div layout="column" flex></div>
-                    <md-button ng-disabled="changeEmailForm.$invalid" layout="column"
-                               ng-click="profileCtrl.changeEmail()"
-                               class="md-raised md-primary">Save
-                    </md-button>
-                </div>
-            </form>
-        </md-card-content>
-    </md-card>
+    <div ui-view="content"></div>
 
-    <md-card ng-if="!profileCtrl.user.github.id">
-        <md-card-title class="bottom-line">
-            <md-card-title-text>
-                <span class="md-headline">Change Password</span>
-            </md-card-title-text>
-        </md-card-title>
-        <md-card-content class="margin-top" layout="column">
-            <form name="changePassword">
-                <md-input-container class="max-width">
-                    <label>Old Password</label>
-                    <input ng-model="profileCtrl.oldPassword" name="oldPassword" type="password" required>
-                    <div ng-messages="changePassword.oldPassword.$error">
-                        <div ng-message="required">This is required.</div>
-                    </div>
-                </md-input-container>
-                <md-input-container class="max-width">
-                    <label>New Password</label>
-                    <input ng-model="profileCtrl.newPassword" name="newPassword" type="password" required>
-                    <div ng-messages="changePassword.newPassword.$error">
-                        <div ng-message="required">This is required.</div>
-                    </div>
-                </md-input-container>
-                <md-input-container class="max-width">
-                    <label>Confirm New Password</label>
-                    <input ng-model="profileCtrl.confirmPassword" name="confirmPassword"
-                           ng-pattern="{{profileCtrl.newPassword}}" type="password" required>
-                    <div ng-messages="changePassword.confirmPassword.$error">
-                        <div ng-message="required">This is required.</div>
-                        <div ng-message="pattern">Not same as new password.</div>
-                    </div>
-                </md-input-container>
-                <div layout="row">
-                    <div layout="column" flex></div>
-                    <md-button ng-disabled="changePassword.$invalid" layout="column"
-                               ng-click="profileCtrl.changePassword()"
-                               class="md-raised md-primary">Save
-                    </md-button>
-                </div>
-            </form>
-        </md-card-content>
-    </md-card>
 </md-content>

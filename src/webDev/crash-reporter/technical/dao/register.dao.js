@@ -4,46 +4,45 @@
  * Licence: See Readme
  */
 (function () {
-	'use strict';
+    'use strict';
 
-	angular
-		.module('crash-reporter.technical.dao')
-		.factory('registerDao', registerDao);
+    angular
+        .module('crash-reporter.technical.dao')
+        .factory('registerDao', registerDao);
 
-	/** @ngInject */
-	function registerDao($q, $resource, CONFIG) {
-		var service = {
-			register: register
-		};
-		/* ************************************* */
-		/* ********  PRIVATE VARIABLES  ******** */
-		/* ************************************* */
+    /** @ngInject */
+    function registerDao($q, $resource, CONFIG) {
+        var service = {
+            register: register
+        };
+        /* ************************************* */
+        /* ********  PRIVATE VARIABLES  ******** */
+        /* ************************************* */
 
-		var registerResource = $resource(CONFIG.URL.PREFIX + '/register', {}, {});
+        var registerResource = $resource(CONFIG.URL.PREFIX + '/register', {}, {});
 
-		return service;
+        return service;
 
-		////////////////
+        ////////////////
 
-		/* ************************************* */
-		/* ********  PRIVATE FUNCTIONS  ******** */
-		/* ************************************* */
+        /* ************************************* */
+        /* ********  PRIVATE FUNCTIONS  ******** */
+        /* ************************************* */
 
-		/* ************************************* */
-		/* ********   PUBLIC FUNCTIONS  ******** */
-		/* ************************************* */
+        /* ************************************* */
+        /* ********   PUBLIC FUNCTIONS  ******** */
+        /* ************************************* */
 
-		/**
-		 * Register.
-		 * @param userData {Object} user data
-		 * @returns {*}
-		 */
-		function register(userData) {
-			var deferred = $q.defer();
-			registerResource.save(null, userData, deferred.resolve, deferred.reject);
-			return deferred.promise;
-		}
-	}
+        /**
+         * Register.
+         * @param userData {Object} user data
+         * @returns {*}
+         */
+        function register(userData) {
+            var deferred = $q.defer();
+            registerResource.save(null, userData, deferred.resolve, deferred.reject);
+            return deferred.promise;
+        }
+    }
 
 })();
-

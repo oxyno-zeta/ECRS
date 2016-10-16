@@ -4,25 +4,25 @@
  * Licence: See Readme
  */
 (function () {
-	'use strict';
+    'use strict';
 
-	angular
-		.module('crash-reporter.views.project.statistics')
-		.config(routeConfig);
+    angular
+        .module('crash-reporter.views.project.statistics')
+        .config(routeConfig);
 
-	/** @ngInject */
-	function routeConfig($stateProvider) {
-		$stateProvider
-			.state('header.project.statistics', {
-				url: '/statistics',
-				views: {
-					'content@header.project': {
-						templateUrl: 'crash-reporter/views/project/statistics/statistics.html',
-						controller: 'ProjectStatisticsController',
-						controllerAs: 'projectStatisticsCtrl'
-					}
-				}
-			});
-	}
+    /** @ngInject */
+    function routeConfig($stateProvider) {
+        $stateProvider
+            .state('header.project.statistics', {
+                url: '/statistics',
+                views: {
+                    'content@header.project': {
+                        templateUrl: 'crash-reporter/views/project/statistics/statistics.html',
+                        controller: 'ProjectStatisticsController',
+                        controllerAs: 'projectStatisticsCtrl'
+                    }
+                }
+            });
+    }
 
 })();

@@ -1,6 +1,6 @@
 {
   "name": "crash-reporter-electron",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Electron Crash Reporter Server",
   "author": "Oxyno-zeta",
   "license": "SEE LICENSE IN LICENSE.md",

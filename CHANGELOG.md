@@ -1,5 +1,7 @@
-# 1.0.0
-## Main Release !
+# 1.0.2
+## Code
+* Rework loading (Remove block loading) 
+* Rework menu on profile and administration
 
 # 1.0.1
 ## Code
@@ -7,5 +9,9 @@
 * Add Tests and code coverage (Backend)
 * Add Coveralls report with Travis-CI
 * Add VOLUME in Dockerfile
+
 ## Bug
 * Fix forgotten dependency
+
+# 1.0.0
+## Main Release !

@@ -4,38 +4,37 @@
  * Licence: See Readme
  */
 (function () {
-	'use strict';
+    'use strict';
 
-	angular
-		.module('crash-reporter.technical.service')
-		.factory('registerService', registerService);
+    angular
+        .module('crash-reporter.technical.service')
+        .factory('registerService', registerService);
 
-	/** @ngInject */
-	function registerService(registerDao) {
-		var service = {
-			register: register
-		};
-		return service;
+    /** @ngInject */
+    function registerService(registerDao) {
+        var service = {
+            register: register
+        };
+        return service;
 
-		////////////////
+        ////////////////
 
-		/* ************************************* */
-		/* ********  PRIVATE FUNCTIONS  ******** */
-		/* ************************************* */
+        /* ************************************* */
+        /* ********  PRIVATE FUNCTIONS  ******** */
+        /* ************************************* */
 
-		/* ************************************* */
-		/* ********   PUBLIC FUNCTIONS  ******** */
-		/* ************************************* */
+        /* ************************************* */
+        /* ********   PUBLIC FUNCTIONS  ******** */
+        /* ************************************* */
 
-		/**
-		 * Register.
-		 * @param userData {Object} user data
-		 * @returns {*}
-		 */
-		function register(userData) {
-			return registerDao.register(userData);
-		}
-	}
+        /**
+         * Register.
+         * @param userData {Object} user data
+         * @returns {*}
+         */
+        function register(userData) {
+            return registerDao.register(userData);
+        }
+    }
 
 })();
-
