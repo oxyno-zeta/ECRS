@@ -1,6 +1,7 @@
 # 1.0.2
 ## Code
 * Rework loading (Remove block loading) 
+* Rework menu on profile and administration
 
 # 1.0.1
 ## Code
