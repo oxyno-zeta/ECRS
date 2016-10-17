@@ -12,10 +12,11 @@ const logger = require('../../shared/logger')('[Configuration API]');
 const APIResponse = require('../core/APIResponse');
 const APICodes = require('../core/APICodes');
 const configurationService = require('../../services/core/configurationService');
+const apiSecurity = require('../core/apiSecurity');
 
 const pathsWithoutSecurity = [
     {
-        url: '/configurations',
+        url: '/configurations/public',
         methods: ['GET'],
     },
 ];
@@ -52,6 +53,19 @@ function getConfiguration(req, res) {
     APIResponse.sendResponse(res, configuration, APICodes.SUCCESS.OK);
 }
 
+/**
+ * Get all configuration.
+ * @param req
+ * @param res
+ */
+function getAllConfiguration(req, res) {
+    let configuration = configurationService.getAllConfiguration();
+    // Update
+    delete configuration.type;
+
+    APIResponse.sendResponse(res, configuration, APICodes.SUCCESS.OK);
+}
+
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
@@ -64,7 +78,9 @@ function expose() {
     logger.debug('Putting configuration API...');
     const router = express.Router();
 
-    router.get('/configurations', getConfiguration);
+    router.get('/configurations/public', getConfiguration);
+    router.get('/configurations/all', apiSecurity.middleware.populateUser(),
+        apiSecurity.middleware.onlyAdministrator(), getAllConfiguration);
 
     return router;
 }

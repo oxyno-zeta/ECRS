@@ -51,7 +51,7 @@ describe('[IT] [API] Configuration', () => {
 
     it('should get configuration', (done) => {
         supertest(this.expressApp)
-            .get('/api/v1/configurations')
+            .get('/api/v1/configurations/public')
             .expect(200)
             .end((err, result) => {
                 if (err) {

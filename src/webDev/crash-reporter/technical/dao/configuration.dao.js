@@ -13,14 +13,15 @@
     /** @ngInject */
     function configurationDao($q, $resource, CONFIG) {
         var service = {
-            getConfiguration: getConfiguration
+            getConfiguration: getConfiguration,
+            getAllConfiguration: getAllConfiguration
         };
 
         /* ************************************* */
         /* ********  PRIVATE VARIABLES  ******** */
         /* ************************************* */
 
-        var configurationResource = $resource(CONFIG.URL.PREFIX + '/configurations', {}, {});
+        var configurationResource = $resource(CONFIG.URL.PREFIX + '/configurations/:verb', {}, {});
 
         return service;
 
@@ -35,12 +36,22 @@
         /* ************************************* */
 
         /**
+         * Get all configuration.
+         * @returns {*}
+         */
+        function getAllConfiguration() {
+            var deferred = $q.defer();
+            configurationResource.get({verb: 'all'}, deferred.resolve, deferred.reject);
+            return deferred.promise;
+        }
+
+        /**
          * Get configuration.
          * @returns {*}
          */
         function getConfiguration() {
             var deferred = $q.defer();
-            configurationResource.get(deferred.resolve, deferred.reject);
+            configurationResource.get({verb: 'public'}, deferred.resolve, deferred.reject);
             return deferred.promise;
         }
     }

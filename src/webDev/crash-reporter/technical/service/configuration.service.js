@@ -15,7 +15,8 @@
         var service = {
             getConfiguration: getConfiguration,
             getCrashLogsPostUrl: getCrashLogsPostUrl,
-            getBaseCrashLogsDownloadUrl: getBaseCrashLogsDownloadUrl
+            getBaseCrashLogsDownloadUrl: getBaseCrashLogsDownloadUrl,
+            getAllConfiguration: getAllConfiguration
         };
         return service;
 
@@ -28,6 +29,14 @@
         /* ************************************* */
         /* ********   PUBLIC FUNCTIONS  ******** */
         /* ************************************* */
+
+        /**
+         * Get all configuration.
+         * @returns {*|{}}
+         */
+        function getAllConfiguration() {
+            return configurationDao.getAllConfiguration();
+        }
 
         /**
          * Get base Crash logs Download url.

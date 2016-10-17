@@ -8,7 +8,8 @@
 
     angular
         .module('crash-reporter.views.administration', [
-            'crash-reporter.views.administration.users'
+            'crash-reporter.views.administration.users',
+            'crash-reporter.views.administration.configuration'
         ]);
 
 })();
