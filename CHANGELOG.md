@@ -1,3 +1,8 @@
+
+# 1.1.0
+## Feature
+* Add page to see all configurations
+
 # 1.0.2
 ## Code
 * Rework loading (Remove block loading) 
