@@ -2,10 +2,15 @@ machine:
   node:
     version: 7.1.0
 
+dependencies:
+  override:
+    - npm install
+    - npm install -g gulp bower
+    - npm rebuild node-sass
+    - bower install
 
 test:
   override:
-    - npm rebuild node-sass
     - gulp tests
     - gulp release
 
