@@ -4,7 +4,9 @@
   "description": "Electron Crash Reporter Server",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "gulp tests",
+    "release": "gulp release",
+    "start": "gulp serve"
   },
   "repository": {
     "type": "git",
