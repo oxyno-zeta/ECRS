@@ -249,3 +249,4 @@ upload-logs/
 app-crash-logs/
 src/bower_components/
 src/views/
+yarn.lock
