@@ -4,6 +4,7 @@
 * Add page to see all configurations
 ## Code
 * Add Node 7 on Travis CI
+# Add Circle CI
 
 # 1.0.2
 ## Code
