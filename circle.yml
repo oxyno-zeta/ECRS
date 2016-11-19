@@ -5,6 +5,7 @@ machine:
 
 test:
   override:
+    - npm rebuild node-sass
     - gulp tests
     - gulp release
 
