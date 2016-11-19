@@ -23,6 +23,7 @@ module.exports = {
         backend: [
             'src/**/*',
             '!src/webDev/**/*',
+            '!src/bower_components/**/*',
             'package.json',
             'README.md',
             'LICENSE.md',
