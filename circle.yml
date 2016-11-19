@@ -1,0 +1,10 @@
+machine:
+  node:
+    version: 7.1.0
+
+
+test:
+  override:
+    - gulp tests
+    - gulp release
+

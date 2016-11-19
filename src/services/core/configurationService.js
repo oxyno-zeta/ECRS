@@ -52,6 +52,7 @@ module.exports = {
         },
         getMailFrom,
     },
+    getAllConfiguration,
 };
 
 /* ************************************* */
@@ -62,6 +63,14 @@ module.exports = {
 /* ************************************* */
 /* ********   PUBLIC FUNCTIONS  ******** */
 /* ************************************* */
+
+/**
+ * Get all configuration.
+ * @returns {{}}
+ */
+function getAllConfiguration() {
+    return configuration;
+}
 
 /**
  * Is mail pool.

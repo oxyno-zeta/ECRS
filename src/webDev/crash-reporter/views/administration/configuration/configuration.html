@@ -1,0 +1,29 @@
+<md-content class="projects" layout="column" layout-padding layout-wrap flex>
+    <div layout="row" layout-align="center center">
+        <md-button class="md-icon-button" aria-label="Menu" ng-click="administrationCtrl.openSideNav()">
+            <i class="fa fa-bars" aria-hidden="true"></i>
+        </md-button>
+        <h3 class="md-title">Configuration</h3>
+        <span flex></span>
+    </div>
+
+    <div class="line-separator" layout="row"></div>
+    
+    <md-table-container>
+        <table md-table md-row-select>
+            <thead md-head>
+            <tr md-row>
+                <th md-column>Key</th>
+                <th md-column>Value</th>
+            </tr>
+            </thead>
+            <tbody md-body>
+            <tr md-row md-select="item" md-select-id="id" md-auto-select
+                ng-repeat="(key, item) in administrationConfigurationCtrl.allConfiguration">
+                <td md-cell ng-bind="key"></td>
+                <td md-cell ng-bind="item"></td>
+            </tr>
+            </tbody>
+        </table>
+    </md-table-container>
+</md-content>

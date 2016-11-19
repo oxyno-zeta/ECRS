@@ -1,3 +1,10 @@
+
+# 1.1.0
+## Feature
+* Add page to see all configurations
+## Code
+* Add Node 7 on Travis CI
+
 # 1.0.2
 ## Code
 * Rework loading (Remove block loading) 
