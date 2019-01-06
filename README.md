@@ -5,7 +5,7 @@ ECRS (Electron Crash Report Server)
 # Docker
 There is some docker image with ECRS :
 * x64: [![Docker Pulls](https://img.shields.io/docker/pulls/oxynozeta/ecrs.svg?maxAge=2592000)](https://hub.docker.com/r/oxynozeta/ecrs/)
-* raspberrypi: [![Docker Pulls](https://img.shields.io/docker/pulls/oxynozeta/rpi-ecrs.svg?maxAge=2592000)](https://hub.docker.com/r/oxynozeta/rpi-ecrs/)
+* raspberrypi: [![Docker Pulls](https://img.shields.io/docker/pulls/oxynozeta/rpi-ecrs.svg?maxAge=2592000)](https://hub.docker.com/r/oxynozeta/rpi-ecrs/) [![Greenkeeper badge](https://badges.greenkeeper.io/oxyno-zeta/ECRS.svg)](https://greenkeeper.io/)
 
 # Description
 Electron Crash Report Server to see crash report data, statistics and some others...
