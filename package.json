@@ -38,7 +38,7 @@
     "gulp-csso": "^2.0.0",
     "gulp-gzip": "^1.4.0",
     "gulp-if": "^2.0.1",
-    "gulp-inject": "^4.1.0",
+    "gulp-inject": "^5.0.2",
     "gulp-istanbul": "^1.1.1",
     "gulp-minify-html": "^1.0.6",
     "gulp-mocha": "^3.0.1",
