@@ -48,7 +48,7 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-tar": "^1.9.0",
     "gulp-template": "^4.0.0",
-    "gulp-uglify": "^1.5.4",
+    "gulp-uglify": "^3.0.1",
     "gulp-useref": "^3.1.0",
     "mocha-lcov-reporter": "^1.2.0",
     "mockery": "^1.7.0",
