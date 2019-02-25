@@ -62,7 +62,7 @@
     "compression": "^1.6.2",
     "cookie-parser": "^1.4.3",
     "email-templates": "^2.4.1",
-    "email-validator": "^1.0.5",
+    "email-validator": "^2.0.4",
     "express": "^4.14.0",
     "express-jwt": "^3.4.0",
     "express-validator": "^2.20.8",
